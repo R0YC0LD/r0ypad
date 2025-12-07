@@ -65,9 +65,9 @@ function drawCircle(x, y, radius, color, name = null) {
     }
 }
 
-// Rengi koyulaştırma (Kenarlıklar için)
+// Rengi koyulaştırma (Kenarlıklar için basit placeholder)
 function adjustColor(color, amount) {
-    return color; // Basitlik için orijinal rengi dönüyor, hex manipülasyonu eklenebilir
+    return color; 
 }
 
 // --- SINIFLAR ---
@@ -80,7 +80,6 @@ class Food {
         this.color = randomColor();
     }
     draw() {
-        // Performans için basit çizim
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -96,7 +95,7 @@ class EjectedMass {
         this.color = color;
         this.speed = 25;
         this.angle = angle;
-        this.decay = 0.9; // Hız azalma çarpanı
+        this.decay = 0.9;
     }
 
     update() {
@@ -122,10 +121,10 @@ class Cell {
         this.vx = 0;
         this.vy = 0;
         this.speedBase = 4;
-        this.targetX = x; // Botlar için
+        this.targetX = x; 
         this.targetY = y;
-        this.mergeTimer = 0; // Bölündükten sonra birleşme süresi
-        this.canMerge = true;
+        this.randomTargetX = 0;
+        this.randomTargetY = 0;
     }
 
     getMass() { return this.radius * this.radius; }
@@ -135,7 +134,7 @@ class Cell {
         // Kütle arttıkça hız azalır
         let speed = this.speedBase * Math.pow(this.radius, -0.4) * 5;
         
-        // Vektör Normalizasyonu (Çapraz giderken hızlanmamak için)
+        // Vektör Normalizasyonu
         if (inputX !== 0 || inputY !== 0) {
             let length = Math.sqrt(inputX**2 + inputY**2);
             inputX /= length;
@@ -153,26 +152,19 @@ class Cell {
         this.y = Math.max(this.radius, Math.min(MAP_HEIGHT - this.radius, this.y));
     }
 
+    // --- GELİŞMİŞ YAPAY ZEKA ---
     botAI() {
-        // Hedef yön değişimleri
         let targetDx = 0;
         let targetDy = 0;
-        
-        // Karar Ağırlıkları (Öncelik Sırası)
-        let fleeWeight = 50;  // Kaçma önceliği en yüksek
-        let huntWeight = 30;  // Avlanma önceliği orta
-        let foodWeight = 1;   // Yem yeme önceliği en düşük
-
         let actionFound = false;
 
         // 1. TEHDİT ANALİZİ (Korku Modu)
-        // Kendinden büyük (%20 daha büyük) hücrelerden kaç
         let nearestThreat = null;
-        let minThreatDist = 300 + this.radius; // Görüş mesafesi
+        let minThreatDist = 300 + this.radius;
 
-        // Oyuncuyu kontrol et
+        // Oyuncudan Kaç
         player.cells.forEach(pCell => {
-            if (pCell.radius > this.radius * 1.2) { // Eğer oyuncu benden %20 büyükse
+            if (pCell.radius > this.radius * 1.2) { 
                 let d = getDist(this.x, this.y, pCell.x, pCell.y);
                 if (d < minThreatDist) {
                     nearestThreat = pCell;
@@ -181,7 +173,7 @@ class Cell {
             }
         });
 
-        // Diğer botları kontrol et
+        // Büyük Botlardan Kaç
         if (!nearestThreat) {
             bots.forEach(b => {
                 if (b !== this && b.radius > this.radius * 1.2) {
@@ -195,21 +187,19 @@ class Cell {
         }
 
         if (nearestThreat) {
-            // Tehditten ters yöne kaçış vektörü hesapla
             targetDx = this.x - nearestThreat.x;
             targetDy = this.y - nearestThreat.y;
             actionFound = true;
         }
 
         // 2. AVLANMA ANALİZİ (Saldırı Modu)
-        // Eğer kaçmıyorsak ve yiyebileceğimiz (%20 küçük) biri varsa kovala
         if (!actionFound) {
             let nearestPrey = null;
             let minPreyDist = 250 + this.radius;
 
-            // Oyuncuyu avla
+            // Oyuncuyu Avla
             player.cells.forEach(pCell => {
-                if (this.radius > pCell.radius * 1.2) { // Ben oyuncudan büyüğüm
+                if (this.radius > pCell.radius * 1.2) {
                     let d = getDist(this.x, this.y, pCell.x, pCell.y);
                     if (d < minPreyDist) {
                         nearestPrey = pCell;
@@ -218,7 +208,7 @@ class Cell {
                 }
             });
 
-            // Diğer küçük botları avla
+            // Küçük Botları Avla
             if (!nearestPrey) {
                 bots.forEach(b => {
                     if (b !== this && this.radius > b.radius * 1.2) {
@@ -239,10 +229,9 @@ class Cell {
         }
 
         // 3. BESLENME (Otlanma Modu)
-        // Tehlike veya av yoksa yeme git
         if (!actionFound) {
             let closestFood = null;
-            let minFoodDist = 150 + this.radius; // Yem görüş mesafesi daha kısa olabilir
+            let minFoodDist = 150 + this.radius;
 
             for (let f of foods) {
                 let d = getDist(this.x, this.y, f.x, f.y);
@@ -256,8 +245,7 @@ class Cell {
                 targetDx = closestFood.x - this.x;
                 targetDy = closestFood.y - this.y;
             } else {
-                // Etrafta hiçbir şey yoksa rastgele süzül (Perlin noise benzeri yumuşak geçiş)
-                // Mevcut hedefe doğru yavaşça devam et, ara sıra yön değiştir
+                // Rastgele Gezinme
                 if (Math.random() < 0.05) {
                     this.randomTargetX = randomRange(0, MAP_WIDTH) - this.x;
                     this.randomTargetY = randomRange(0, MAP_HEIGHT) - this.y;
@@ -267,7 +255,6 @@ class Cell {
             }
         }
 
-        // Hareketi Uygula
         this.move(targetDx, targetDy);
     }
 }
@@ -314,11 +301,10 @@ function checkCollisions() {
     player.cells.forEach(pCell => {
         for (let i = foods.length - 1; i >= 0; i--) {
             if (getDist(pCell.x, pCell.y, foods[i].x, foods[i].y) < pCell.radius + foods[i].radius) {
-                // Alan hesabı: Area += AreaFood
                 let newArea = Math.PI * pCell.radius * pCell.radius + Math.PI * foods[i].radius * foods[i].radius;
                 pCell.radius = Math.sqrt(newArea / Math.PI);
                 foods.splice(i, 1);
-                foods.push(new Food()); // Yeni yem üret
+                foods.push(new Food()); 
                 player.score += 1;
             }
         }
@@ -326,7 +312,6 @@ function checkCollisions() {
         // Oyuncu atılan parçayı (V) yiyor mu?
         for (let i = ejectedMasses.length - 1; i >= 0; i--) {
             let mass = ejectedMasses[i];
-            // Kendi attığını hemen yiyemez (hız kontrolü basit yöntem)
             if (mass.speed < 5 && getDist(pCell.x, pCell.y, mass.x, mass.y) < pCell.radius) {
                  let newArea = Math.PI * pCell.radius * pCell.radius + Math.PI * mass.radius * mass.radius;
                  pCell.radius = Math.sqrt(newArea / Math.PI);
@@ -353,15 +338,15 @@ function checkCollisions() {
             }
             // Bot Oyuncuyu Yerse
             else if (dist < bot.radius && bot.radius > pCell.radius * 1.1) {
-                // Bu hücre ölür
                 player.cells.splice(pIdx, 1);
                 if(player.cells.length === 0) gameOver();
             }
         });
     });
 
-    // 3. Bot Yem Yemesi (Basit simülasyon)
+    // 3. Bot Yem Yemesi ve Bot vs Bot
     bots.forEach(bot => {
+        // Yem
         for (let i = foods.length - 1; i >= 0; i--) {
             if (getDist(bot.x, bot.y, foods[i].x, foods[i].y) < bot.radius) {
                  let newArea = Math.PI * bot.radius * bot.radius + Math.PI * foods[i].radius * foods[i].radius;
@@ -370,6 +355,22 @@ function checkCollisions() {
                  foods.push(new Food());
             }
         }
+        
+        // Bot vs Bot (Basit)
+        bots.forEach(otherBot => {
+            if (bot !== otherBot) {
+                 let dist = getDist(bot.x, bot.y, otherBot.x, otherBot.y);
+                 if (dist < bot.radius && bot.radius > otherBot.radius * 1.1) {
+                     // Bot diğerini yer, diğeri respawn olur
+                     let newArea = Math.PI * bot.radius * bot.radius + Math.PI * otherBot.radius * otherBot.radius;
+                     bot.radius = Math.sqrt(newArea / Math.PI);
+                     
+                     otherBot.x = randomRange(0, MAP_WIDTH);
+                     otherBot.y = randomRange(0, MAP_HEIGHT);
+                     otherBot.radius = randomRange(20, 40);
+                 }
+            }
+        });
     });
 }
 
@@ -382,11 +383,9 @@ function splitPlayer() {
 
             let splitCell = new Cell(cell.x, cell.y, cell.radius, cell.color, false, cell.name);
             
-            // Fırlatma yönü (Son hareket yönüne göre)
             let angle = Math.atan2(cell.vy, cell.vx);
-            if(cell.vx === 0 && cell.vy === 0) angle = 0; // Duruyorsa sağa
+            if(cell.vx === 0 && cell.vy === 0) angle = 0; 
 
-            // Hızlıca ileri atılma (Boost)
             splitCell.x += Math.cos(angle) * cell.radius * 2; 
             splitCell.y += Math.sin(angle) * cell.radius * 2;
             
@@ -399,12 +398,10 @@ function splitPlayer() {
 function ejectMass() {
     player.cells.forEach(cell => {
         if (cell.radius > 30) {
-            // Kütle kaybet
-            let massLoss = 150; // Kaybedilen alan
+            let massLoss = 150; 
             let currentMass = cell.getMass();
             cell.setMass(currentMass - massLoss);
 
-            // Parça fırlat
             let angle = Math.atan2(cell.vy, cell.vx);
             if(cell.vx === 0 && cell.vy === 0) angle = 0;
 
@@ -439,7 +436,6 @@ function drawGrid() {
 function updateCamera() {
     if (player.cells.length === 0) return;
 
-    // Oyuncu hücrelerinin ortasını bul
     let totalX = 0, totalY = 0, totalR = 0;
     player.cells.forEach(c => {
         totalX += c.x;
@@ -450,15 +446,38 @@ function updateCamera() {
     let targetX = totalX / player.cells.length;
     let targetY = totalY / player.cells.length;
 
-    // Kamera yumuşatma
     camX += (targetX - camX) * CAMERA_SMOOTHING;
     camY += (targetY - camY) * CAMERA_SMOOTHING;
 
-    // Zoom ayarı (oyuncu büyüdükçe kamera uzaklaşır)
     let avgRadius = totalR / player.cells.length;
-    let targetZoom = 100 / (avgRadius + 100) * 1.5; // Basit bir zoom formülü
+    let targetZoom = 100 / (avgRadius + 100) * 1.5; 
     targetZoom = Math.max(0.5, Math.min(1.5, targetZoom));
     zoom += (targetZoom - zoom) * 0.05;
+}
+
+// --- LİDERLİK TABLOSU ---
+function updateLeaderboard() {
+    let allEntities = [...bots];
+    if (player.cells.length > 0) {
+        // Oyuncunun toplam boyutunu hesapla
+        let totalRadius = player.cells.reduce((acc, cell) => acc + Math.floor(cell.radius), 0);
+        allEntities.push({ name: player.name, radius: totalRadius, isPlayer: true });
+    }
+
+    // Büyükten küçüğe sırala
+    allEntities.sort((a, b) => b.radius - a.radius);
+
+    // İlk 5'i yazdır
+    let listHTML = "";
+    for (let i = 0; i < Math.min(5, allEntities.length); i++) {
+        let ent = allEntities[i];
+        let colorStyle = ent.isPlayer ? "style='color: #ffeaa7; font-weight: bold;'" : "";
+        listHTML += `<li ${colorStyle}>${i + 1}. ${ent.name} (${Math.floor(ent.radius)})</li>`;
+    }
+    
+    // HTML'de bu element varsa güncelle
+    let lbElement = document.getElementById('leaderboardList');
+    if (lbElement) lbElement.innerHTML = listHTML;
 }
 
 function gameLoop() {
@@ -474,24 +493,19 @@ function gameLoop() {
 
     // UI Güncelle
     document.getElementById('scoreDisplay').innerText = Math.floor(player.score);
+    updateLeaderboard(); // Liderlik tablosunu güncelle
 
     // --- ÇİZİM İŞLEMLERİ ---
     ctx.save();
     
-    // Kamerayı merkeze al
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.scale(zoom, zoom);
     ctx.translate(-camX, -camY);
 
     drawGrid();
-
-    // Ejected Mass
     ejectedMasses.forEach(m => m.draw());
-
-    // Yemler
     foods.forEach(f => f.draw());
 
-    // Botlar ve Oyuncu (Sıralı çizim: küçükler altta kalsın diye yarıçapa göre sort edilebilir)
     let allCells = [...bots, ...player.cells];
     allCells.sort((a, b) => a.radius - b.radius);
 
@@ -499,7 +513,6 @@ function gameLoop() {
         drawCircle(cell.x, cell.y, cell.radius, cell.color, cell.name);
     });
 
-    // Harita Sınırları
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 10;
     ctx.strokeRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
