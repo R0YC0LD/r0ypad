@@ -3,483 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R0YPAD STUDIO | LEVIATHAN CORE v20.0</title>
-    <meta name="description" content="Ultimate Browser-Based DAW">
+    <title>R0YPAD STUDIO | MANUAL CORE v17.0</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;900&family=Orbitron:wght@900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Inter:wght@400;600;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* * ==========================================================================
-         * [CSS] LEVIATHAN DESIGN SYSTEM
-         * ==========================================================================
-         * Gelişmiş GPU hızlandırmalı arayüz tasarımı.
-         */
-
+        /* [CORE CSS] */
         :root {
-            /* Renk Paleti: Leviathan */
-            --void: #020202;
-            --panel: #0b0b0e;
-            --surface: #141418;
-            --module: #1a1a20;
+            --bg-void: #050505;
+            --bg-panel: #0b0b0e;
+            --bg-surface: #111114;
+            --primary: #ffaa00; /* Gold/Orange Theme */
+            --accent: #00f0ff;  /* Cyan Accent */
+            --danger: #ff004c;
+            --success: #00ff88;
+            --border: #333;
+            --glass: rgba(20,20,25,0.95);
             
-            --neon-primary: #00f3ff;   /* Core Blue */
-            --neon-secondary: #bd00ff; /* Plasma Purple */
-            --neon-accent: #ff0055;    /* Critical Red */
-            --neon-success: #00ff9d;   /* System Green */
-            --neon-warn: #ffcc00;      /* Warning Gold */
-            
-            /* UI Değişkenleri */
-            --border-dim: #222;
-            --border-lit: #444;
-            --glass-panel: rgba(15, 15, 20, 0.98);
-            --header-height: 80px;
-            --mixer-height: 400px;
-            --shadow-glow: 0 0 15px rgba(0, 243, 255, 0.15);
+            --h-head: 70px;
+            --h-mix: 320px;
         }
 
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-drag: none;
-            outline: none;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-lit) var(--void);
-        }
-
+        * { box-sizing: border-box; user-select: none; -webkit-user-drag: none; outline: none; }
+        
         body {
-            margin: 0; padding: 0;
-            background-color: var(--void);
-            color: #eee;
-            font-family: 'Inter', sans-serif;
-            height: 100vh; width: 100vw;
-            overflow: hidden;
-            display: grid;
-            grid-template-rows: var(--header-height) 1fr var(--mixer-height);
+            margin: 0; padding: 0; background: var(--bg-void); color: #eee;
+            font-family: 'Inter', sans-serif; height: 100vh; width: 100vw;
+            overflow: hidden; display: grid;
+            grid-template-rows: var(--h-head) 1fr var(--h-mix);
             font-size: 11px;
         }
 
-        /* Scrollbar Motoru */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; border: 1px solid #000; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-primary); }
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* * [BOOT] AÇILIŞ EKRANI 
-         */
-        #boot-overlay {
+        /* [BOOT SCREEN] */
+        #boot-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 99999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background-image: radial-gradient(circle at center, #111 0%, #000 80%);
+            background: #000; z-index: 99999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: radial-gradient(circle, #111 0%, #000 90%);
         }
-
-        .leviathan-title {
-            font-family: 'Orbitron'; font-size: 6rem; letter-spacing: 15px; font-weight: 900;
-            background: linear-gradient(180deg, #fff, #444); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px var(--neon-primary));
-            animation: pulseTitle 3s infinite ease-in-out; margin-bottom: 10px;
+        .logo { font-family: 'Rajdhani'; font-size: 5rem; font-weight: 800; color: #fff; text-shadow: 0 0 30px var(--primary); margin-bottom: 20px; }
+        .logo span { color: var(--primary); }
+        .boot-btn {
+            padding: 15px 50px; background: transparent; border: 2px solid var(--primary);
+            color: var(--primary); font-family: 'Rajdhani'; font-size: 20px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; letter-spacing: 2px;
         }
+        .boot-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 50px var(--primary); }
 
-        .system-terminal {
-            width: 700px; height: 250px; background: rgba(0,0,0,0.8);
-            border: 1px solid #333; border-left: 4px solid var(--neon-primary);
-            padding: 20px; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--neon-success);
-            overflow-y: auto; box-shadow: 0 0 50px rgba(0,255,157,0.05); margin-bottom: 30px;
-        }
-        
-        .log-entry { margin-bottom: 4px; opacity: 0; animation: fadeInLog 0.05s forwards; }
-        .log-warn { color: var(--neon-warn); }
-        .log-err { color: var(--neon-accent); }
-
-        .btn-init {
-            padding: 20px 80px; background: transparent; border: 2px solid var(--neon-primary);
-            color: var(--neon-primary); font-family: 'Rajdhani'; font-size: 24px; font-weight: 700;
-            letter-spacing: 4px; cursor: pointer; transition: 0.3s; display: none; /* JS ile açılır */
-            text-transform: uppercase; position: relative; overflow: hidden;
-        }
-        .btn-init:hover { background: var(--neon-primary); color: #000; box-shadow: 0 0 80px var(--neon-primary); }
-
-        @keyframes pulseTitle { 0%,100% { opacity:0.9; transform:scale(1); } 50% { opacity:1; transform:scale(1.02); } }
-        @keyframes fadeInLog { to { opacity:1; } }
-
-        /* * [UI] HEADER & TOOLBAR 
-         */
+        /* [HEADER] */
         header {
-            background: var(--panel); border-bottom: 1px solid var(--border-dim);
-            padding: 0 30px; display: flex; align-items: center; justify-content: space-between;
-            z-index: 1000; box-shadow: 0 10px 40px #000;
+            background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            padding: 0 25px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 40px #000; z-index: 100;
         }
-
-        .brand-section { display: flex; align-items: center; gap: 15px; }
-        .app-name { font-family: 'Orbitron'; font-size: 26px; color: #fff; letter-spacing: 2px; }
-        .app-name span { color: var(--neon-primary); }
-        .engine-ver { font-family: 'JetBrains Mono'; font-size: 10px; background: #222; color: #888; padding: 4px 8px; border-radius: 4px; }
+        .brand { font-family: 'Rajdhani'; font-size: 24px; font-weight: 700; color: #fff; }
+        .brand span { color: var(--primary); }
 
         .toolbar { display: flex; gap: 10px; align-items: center; }
-
-        .btn-tool {
-            height: 40px; padding: 0 20px; background: var(--module); border: 1px solid #333;
-            color: #ccc; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;
+        
+        .btn {
+            height: 36px; padding: 0 20px; border-radius: 4px; font-weight: 700; font-size: 11px;
+            cursor: pointer; border: 1px solid var(--border); background: var(--bg-surface); color: #ccc;
             display: flex; align-items: center; gap: 8px; transition: 0.2s;
         }
-        .btn-tool:hover { border-color: #666; color: #fff; background: #222; }
-        .btn-tool:active { transform: translateY(1px); }
+        .btn:hover { border-color: #666; color: #fff; }
+        .btn-add { border-color: var(--primary); color: var(--primary); background: rgba(255, 170, 0, 0.05); }
+        .btn-add:hover { background: var(--primary); color: #000; }
 
-        .btn-special { border-color: var(--neon-primary); color: var(--neon-primary); background: rgba(0,243,255,0.05); }
-        .btn-special:hover { background: var(--neon-primary); color: #000; }
-
-        .btn-ai { border-color: var(--neon-secondary); color: var(--neon-secondary); }
-        .btn-ai:hover { background: var(--neon-secondary); color: #fff; box-shadow: 0 0 15px rgba(189,0,255,0.4); }
-
-        .transport-controls {
-            display: flex; background: #000; padding: 6px; border-radius: 6px; border: 1px solid #222; gap: 6px;
-        }
-        .btn-tr {
-            width: 50px; height: 36px; border: none; background: #151518; color: #666;
-            border-radius: 4px; cursor: pointer; font-size: 16px; transition: 0.2s;
-        }
+        .transport { display: flex; background: #000; padding: 5px; border-radius: 4px; border: 1px solid var(--border); gap: 5px; }
+        .btn-tr { width: 45px; height: 32px; background: #151515; border: none; color: #666; cursor: pointer; border-radius: 2px; font-size: 14px; }
         .btn-tr:hover { color: #fff; background: #222; }
-        .btn-play.active { background: var(--neon-success); color: #000; box-shadow: 0 0 20px rgba(0,255,157,0.3); }
-        .btn-rec.active { background: var(--neon-accent); color: #fff; animation: blinkRec 1s infinite; }
+        .btn-play.active { background: var(--success); color: #000; }
+        .btn-stop:hover { color: var(--danger); }
 
-        .bpm-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; border-right: 1px solid #222; padding-right: 10px; margin-right: 5px; }
-        .bpm-lbl { font-size: 8px; font-weight: bold; color: #555; }
-        .bpm-val { background: none; border: none; color: var(--neon-primary); width: 100%; text-align: center; font-family: 'JetBrains Mono'; font-weight: 800; font-size: 16px; }
+        .bpm-in { background: none; border: none; color: var(--accent); width: 40px; text-align: center; font-weight: bold; font-family: 'JetBrains Mono'; font-size: 14px; }
 
-        @keyframes blinkRec { 50% { opacity: 0.5; } }
-
-        /* * [UI] SEQUENCER WORKSPACE 
-         */
+        /* [WORKSPACE] */
         .workspace {
             position: relative; background: #08080a; overflow-y: auto; padding: 20px;
-            background-image: linear-gradient(#111 1px, transparent 1px);
-            background-size: 100% 70px; /* Track hizası */
+            background-image: linear-gradient(#111 1px, transparent 1px); background-size: 100% 60px;
         }
-
-        .track-container { padding-bottom: 150px; display: flex; flex-direction: column; gap: 6px; }
+        .track-list { display: flex; flex-direction: column; gap: 5px; padding-bottom: 150px; }
 
         .track-row {
-            display: flex; height: 64px; background: var(--surface);
-            border: 1px solid var(--border-dim); border-radius: 4px; transition: 0.1s;
-            position: relative;
+            display: flex; height: 55px; background: var(--bg-surface);
+            border: 1px solid var(--border); border-radius: 4px; transition: 0.1s;
         }
-        .track-row:hover { background: var(--module); border-color: #444; }
-        .track-row.playing { border-left: 3px solid var(--neon-primary); background: #1c1c22; }
+        .track-row:hover { background: #1a1a1d; border-color: #444; }
+        .track-row.playing { border-left: 3px solid var(--primary); background: #1a1a1d; }
 
-        .track-controls {
-            width: 240px; padding: 10px 15px; border-right: 1px solid #222;
-            display: flex; align-items: center; justify-content: space-between;
-            background: #0e0e10;
+        .t-head {
+            width: 220px; padding: 0 15px; border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; justify-content: center; position: relative;
         }
-        .tc-info { width: 100px; overflow: hidden; }
-        .tc-name { font-weight: 700; font-size: 13px; color: #eee; white-space: nowrap; text-overflow: ellipsis; }
-        .tc-type { font-size: 9px; color: var(--neon-primary); font-weight: bold; text-transform: uppercase; margin-top: 3px; }
-
-        .tc-actions { display: flex; gap: 5px; }
-        .mini-btn {
-            width: 22px; height: 22px; background: #111; border: 1px solid #333; color: #666;
-            font-size: 9px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border-radius: 3px; font-weight: bold;
-        }
+        .t-name { font-weight: 700; font-size: 12px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .t-cat { font-size: 9px; color: var(--primary); text-transform: uppercase; margin-top: 3px; }
+        
+        .t-ctrls { position: absolute; right: 10px; display: flex; gap: 5px; }
+        .mini-btn { width: 20px; height: 20px; background: #000; border: 1px solid #333; color: #666; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; font-size: 9px; }
         .mini-btn:hover { color: #fff; border-color: #666; }
-        .mini-btn.active-mute { background: var(--neon-accent); color: #fff; border-color: var(--neon-accent); }
-        .mini-btn.active-solo { background: var(--neon-warn); color: #000; border-color: var(--neon-warn); }
+        .mini-btn.active { color: #000; background: var(--primary); border-color: var(--primary); }
 
-        .sequencer-grid {
-            flex: 1; display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; padding: 10px;
-        }
-        .step {
-            background: #000; border: 1px solid #222; border-radius: 2px; cursor: pointer; transition: 0.1s;
-        }
+        .t-grid { flex: 1; display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; padding: 5px; }
+        .step { background: #000; border: 1px solid #222; border-radius: 2px; cursor: pointer; }
         .step:nth-child(4n+1) { background: #0c0c0e; }
-        .step:hover { border-color: #555; background: #222; }
-        .step.active {
-            background: var(--neon-primary); box-shadow: 0 0 10px var(--neon-primary); border-color: var(--neon-primary);
-        }
-        .step.playhead {
-            background: #fff !important; transform: scale(1.15); z-index: 10; box-shadow: 0 0 15px #fff;
+        .step:hover { border-color: #555; }
+        .step.active { background: var(--primary); box-shadow: 0 0 10px var(--primary); border-color: var(--primary); }
+        .step.playhead { background: #fff !important; transform: scale(1.1); z-index: 10; }
+
+        /* [MIXER] */
+        .mixer {
+            background: var(--bg-panel); border-top: 1px solid var(--border);
+            padding: 15px; display: flex; gap: 8px; overflow-x: auto;
+            box-shadow: 0 -10px 50px #000; z-index: 50;
         }
 
-        /* * [UI] MIXER CONSOLE 
-         */
-        .mixer-panel {
-            background: var(--panel); border-top: 1px solid var(--border-dim);
-            padding: 20px; display: flex; gap: 10px; overflow-x: auto; z-index: 50;
-            box-shadow: 0 -20px 80px rgba(0,0,0,0.9);
-        }
-
-        .channel-strip {
-            width: 110px; height: 100%; background: var(--surface);
-            border: 1px solid var(--border-dim); border-radius: 6px;
+        .strip {
+            width: 100px; height: 100%; background: var(--bg-surface);
+            border: 1px solid var(--border); border-radius: 4px;
             display: flex; flex-direction: column; padding: 10px; flex-shrink: 0;
         }
-        .channel-strip:hover { border-color: #444; }
-        .channel-strip.master { margin-left: auto; width: 140px; background: #0e0a12; border: 1px solid var(--neon-secondary); }
+        .strip.master { margin-left: auto; width: 130px; border-color: var(--accent); background: #050a0f; }
 
-        .cs-header { text-align: center; font-size: 10px; font-weight: bold; color: #666; margin-bottom: 10px; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
-        .master .cs-header { color: var(--neon-secondary); letter-spacing: 2px; }
+        .s-title { text-align: center; font-size: 9px; font-weight: bold; color: #666; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .master .s-title { color: var(--accent); }
 
         .fx-rack { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .fx-slot {
-            font-size: 9px; text-align: center; background: #050505; color: #555;
-            padding: 5px; border: 1px solid #222; cursor: pointer; border-radius: 3px; transition: 0.2s;
+        .fx-btn {
+            font-size: 9px; background: #050505; color: #555; padding: 5px; text-align: center;
+            border: 1px solid #222; cursor: pointer; border-radius: 2px; transition: 0.2s;
         }
-        .fx-slot:hover { color: #fff; border-color: #666; }
-        .fx-slot.engaged { color: var(--neon-primary); border-color: var(--neon-primary); background: rgba(0, 243, 255, 0.1); }
+        .fx-btn:hover { color: #fff; border-color: #555; }
+        .fx-btn.on { color: var(--primary); border-color: var(--primary); background: rgba(255, 170, 0, 0.1); }
 
-        .fader-section {
-            flex: 1; background: #08080a; border: 1px solid #151515; border-radius: 4px;
-            display: flex; justify-content: center; align-items: flex-end; position: relative;
-        }
-        
-        .vu-meter { position: absolute; right: 8px; top: 10px; bottom: 10px; width: 6px; background: #000; border-radius: 3px; overflow: hidden; }
-        .vu-fill { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(to top, var(--neon-success), var(--neon-warn), var(--neon-accent)); opacity: 0.8; transition: height 0.05s linear; }
+        .fader-box { flex: 1; display: flex; justify-content: center; position: relative; background: #08080a; border-radius: 4px; border: 1px solid #1a1a1d; }
+        .vu-meter { position: absolute; right: 8px; top: 10px; bottom: 10px; width: 4px; background: #000; border-radius: 2px; overflow: hidden; }
+        .vu-val { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(to top, var(--success), var(--primary), var(--danger)); opacity: 0.8; transition: height 0.05s; }
 
-        input[type=range].fader {
-            -webkit-appearance: none; width: 240px; height: 40px; background: transparent;
-            transform: rotate(-90deg); margin-bottom: 110px; cursor: ns-resize;
+        input[type=range].vol {
+            -webkit-appearance: none; width: 160px; height: 30px; background: transparent;
+            transform: rotate(-90deg); margin-top: 80px; cursor: ns-resize;
         }
-        input[type=range].fader::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #222; border-radius: 2px; }
-        input[type=range].fader::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 24px; height: 34px; background: #333; margin-top: -16px;
-            border: 1px solid #000; border-radius: 4px; box-shadow: 0 4px 10px #000;
+        input[type=range].vol::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 30px; background: #444;
+            border: 1px solid #000; border-radius: 2px; box-shadow: 0 4px 10px #000; margin-top: -12px;
         }
-        .master input[type=range].fader::-webkit-slider-thumb { background: var(--neon-secondary); }
+        input[type=range].vol::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #222; border-radius: 3px; }
+        .master input[type=range].vol::-webkit-slider-thumb { background: var(--accent); }
 
-        /* * [UI] POPUPS & PLUGINS 
-         */
-        .plugin-window {
-            position: absolute; width: 340px; background: var(--glass-panel);
-            border: 1px solid #444; border-top: 3px solid var(--neon-primary);
-            border-radius: 6px; box-shadow: 0 40px 120px #000; backdrop-filter: blur(15px);
-            display: none; z-index: 5000; flex-direction: column;
-        }
-        
-        .pw-head {
-            padding: 10px 15px; background: #1a1a1d; border-bottom: 1px solid #333; cursor: move;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .pw-title { font-family: 'Rajdhani'; font-weight: 700; color: #fff; letter-spacing: 1px; }
-        
-        .pw-body { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-        /* Custom Knob Style via CSS */
-        .knob-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .knob-ctrl {
-            -webkit-appearance: none; width: 60px; height: 60px; border-radius: 50%;
-            background: conic-gradient(var(--neon-primary) var(--deg), #111 0deg);
-            position: relative; cursor: ns-resize; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .knob-ctrl::after { content: ''; position: absolute; top:5px; left:5px; right:5px; bottom:5px; background: #18181c; border-radius: 50%; }
-        .knob-txt { font-size: 9px; font-weight: bold; color: #888; text-transform: uppercase; }
-        .knob-val { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--neon-primary); position: absolute; top: 24px; pointer-events: none; }
-
-        /* MODALS */
+        /* [MODALS] */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 6000; display: none;
-            justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.9); z-index: 5000; display: none;
+            justify-content: center; align-items: center;
         }
-        .modal { width: 900px; height: 700px; background: #111; border: 1px solid #333; border-top: 4px solid var(--neon-secondary); display: flex; flex-direction: column; box-shadow: 0 50px 100px #000; }
-        .modal-body { flex: 1; padding: 30px; overflow-y: auto; }
+        .modal { width: 900px; height: 700px; background: var(--bg-surface); border: 1px solid var(--border); border-top: 3px solid var(--primary); display: flex; flex-direction: column; box-shadow: 0 50px 150px #000; }
         
-        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .lib-item {
-            background: #08080a; border: 1px solid #222; padding: 20px; border-radius: 6px;
-            cursor: pointer; text-align: center; transition: 0.2s; position: relative; overflow: hidden;
-        }
-        .lib-item:hover { border-color: var(--neon-primary); background: #151518; transform: translateY(-2px); }
-        .li-title { font-weight: bold; color: #eee; font-size: 13px; margin-bottom: 5px; }
-        .li-cat { font-size: 10px; color: #666; text-transform: uppercase; }
+        .modal-head { padding: 15px 20px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { flex: 1; padding: 0; display: flex; overflow: hidden; }
 
-        /* AI Input */
-        textarea.ai-box {
-            width: 100%; height: 120px; background: #050505; border: 1px solid #333;
-            color: #fff; padding: 20px; font-family: 'Inter'; font-size: 14px; resize: none; margin-bottom: 20px; border-radius: 4px;
+        .lib-cats { width: 220px; background: #08080a; border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .cat-btn { text-align: left; padding: 10px; background: transparent; border: none; color: #888; cursor: pointer; font-weight: bold; font-size: 12px; border-radius: 4px; }
+        .cat-btn:hover { color: #fff; background: #151515; }
+        .cat-btn.active { color: var(--primary); background: rgba(255,170,0,0.1); border-left: 3px solid var(--primary); }
+
+        .lib-content { flex: 1; padding: 20px; overflow-y: auto; }
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+        .lib-item { background: #111; padding: 15px; border: 1px solid #333; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .lib-item:hover { border-color: var(--primary); transform: translateY(-2px); background: #18181c; }
+        .li-name { font-weight: bold; color: #eee; font-size: 12px; }
+        .li-desc { font-size: 9px; color: #666; margin-top: 4px; }
+
+        /* [PLUGIN WINDOW] */
+        .plugin-win {
+            position: absolute; width: 300px; background: rgba(15,15,20,0.98);
+            border: 1px solid #444; border-top: 2px solid var(--primary);
+            box-shadow: 0 30px 100px #000; z-index: 6000; display: none; flex-direction: column;
         }
-        textarea.ai-box:focus { border-color: var(--neon-secondary); }
-        .btn-gen { width: 100%; padding: 20px; background: var(--neon-secondary); border: none; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .btn-gen:hover { background: #d04aff; }
+        .pw-head { padding: 10px; background: #222; cursor: move; display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; }
+        .pw-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .knob-wrap { text-align: center; }
+        input[type=range].knob { width: 100%; cursor: pointer; accent-color: var(--primary); }
+        .knob-lbl { font-size: 9px; color: #888; margin-top: 5px; }
 
     </style>
 </head>
 <body>
 
-    <div id="boot-overlay">
-        <div class="leviathan-title">LEVIATHAN</div>
-        <div style="font-family:'Rajdhani'; letter-spacing:5px; color:#666; margin-bottom:40px;">CORE AUDIO ENGINE v20.0</div>
-        
-        <div class="system-terminal" id="term-out">
-            <div class="log-entry">> BIOS INITIALIZED...</div>
-        </div>
-        
-        <button class="btn-init" id="btn-start-sys" onclick="System.boot()">SİSTEMİ BAŞLAT</button>
+    <div id="boot-layer">
+        <div class="logo">R0Y<span>PAD</span></div>
+        <div style="font-family:'JetBrains Mono'; color:#666; margin-bottom:30px;">MANUAL CORE v17.0</div>
+        <button class="boot-btn" onclick="Core.start()">SİSTEMİ BAŞLAT</button>
     </div>
 
-    <div id="float-layer"></div>
+    <div id="plugin-layer"></div>
 
     <div class="overlay" id="mod-lib">
         <div class="modal">
-            <div class="pw-head">
-                <span class="pw-title">SES KÜTÜPHANESİ (PROCEDURAL)</span>
-                <span style="cursor:pointer" onclick="UI.modal('mod-lib', false)">✕</span>
+            <div class="modal-head">
+                <span style="font-weight:bold; font-size:16px;">ENSTRÜMAN KÜTÜPHANESİ</span>
+                <span style="cursor:pointer; font-size:20px;" onclick="UI.modal('mod-lib', false)">×</span>
             </div>
             <div class="modal-body">
-                <div class="lib-grid" id="lib-content"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="overlay" id="mod-ai">
-        <div class="modal" style="height:550px;">
-            <div class="pw-head">
-                <span class="pw-title">YAPAY ZEKA MİMAR</span>
-                <span style="cursor:pointer" onclick="UI.modal('mod-ai', false)">✕</span>
-            </div>
-            <div class="modal-body">
-                <p style="color:#aaa; font-size:12px; margin-bottom:15px;">Müzikal vizyonunuzu doğal dille anlatın. Leviathan sizin için BPM, Ritim, Melodi ve Efektleri tasarlayacaktır.</p>
-                <textarea class="ai-box" id="ai-prompt" placeholder="Örn: Hızlı, karanlık, bol distortion'lı techno beat..."></textarea>
-                <button class="btn-gen" onclick="AI.generate()">OLUŞTUR (GENERATE)</button>
-                <div id="ai-log" style="margin-top:15px; color:var(--neon-secondary); font-family:'JetBrains Mono'; font-size:11px;"></div>
+                <div class="lib-cats" id="cat-list">
+                    </div>
+                <div class="lib-content">
+                    <div class="lib-grid" id="lib-grid">
+                        </div>
+                </div>
             </div>
         </div>
     </div>
 
     <header>
-        <div class="brand-section">
-            <div class="app-name">R0Y<span>PAD</span></div>
-            <div class="engine-ver">LEVIATHAN CORE</div>
-        </div>
-
+        <div class="brand">R0Y<span>PAD</span></div>
         <div class="toolbar">
-            <button class="btn-tool btn-special" onclick="UI.modal('mod-lib', true)">+ KANAL EKLE</button>
-            <button class="btn-tool btn-ai" onclick="UI.modal('mod-ai', true)">★ AI MİMAR</button>
-            <button class="btn-tool" onclick="AudioCore.clear()">TEMİZLE</button>
-            
-            <div style="width:1px; height:30px; background:#333; margin:0 10px;"></div>
-
-            <div class="transport-controls">
-                <div class="bpm-wrapper">
-                    <span class="bpm-lbl">BPM</span>
-                    <input type="number" class="bpm-val" id="bpm-val" value="135" onchange="AudioCore.setBpm(this.value)">
-                </div>
-                <button class="btn-tr" onclick="AudioCore.stop()">■</button>
-                <button class="btn-tr btn-play" id="btn-play" onclick="AudioCore.toggle()">▶</button>
-                <button class="btn-tr btn-rec" id="btn-rec" onclick="Recorder.toggle()">●</button>
+            <button class="btn btn-add" onclick="UI.modal('mod-lib', true)">+ KANAL EKLE</button>
+            <button class="btn" onclick="Core.clear()">TEMİZLE</button>
+            <div style="width:1px; height:20px; background:#333;"></div>
+            <div class="transport">
+                <span style="font-size:10px; color:#666; font-weight:bold; padding-left:5px;">BPM</span>
+                <input type="number" class="bpm-in" id="bpm-val" value="130" onchange="Core.setBpm(this.value)">
+                <button class="btn-tr" onclick="Core.stop()">■</button>
+                <button class="btn-tr btn-play" id="btn-play" onclick="Core.toggle()">▶</button>
             </div>
         </div>
     </header>
 
     <div class="workspace">
-        <div class="track-container" id="track-list">
+        <div class="track-list" id="track-container">
             </div>
     </div>
 
-    <div class="mixer-panel" id="mixer-list">
-        <div class="channel-strip master">
-            <div class="cs-header">MASTER</div>
+    <div class="mixer" id="mixer-container">
+        <div class="strip master">
+            <div class="s-title">MASTER</div>
             <div class="fx-rack">
-                <div class="fx-slot engaged">LIMITER</div>
-                <div class="fx-slot engaged">COMP</div>
-                <div class="fx-slot engaged">SOFT-CLIP</div>
+                <div class="fx-btn on">LIMITER</div>
+                <div class="fx-btn on">COMP</div>
             </div>
-            <div class="fader-section">
-                <div class="vu-meter"><div class="vu-fill" id="vu-master"></div></div>
-                <input type="range" class="fader" min="0" max="1.2" step="0.01" value="0.9" oninput="AudioCore.setMaster(this.value)">
+            <div class="fader-box">
+                <div class="vu-meter"><div class="vu-val" id="vu-master"></div></div>
+                <input type="range" class="vol" min="0" max="1.2" step="0.01" value="0.9" oninput="Core.setMaster(this.value)">
             </div>
         </div>
     </div>
 
 <script>
     /**
-     * R0YPAD STUDIO v20.0 - LEVIATHAN CORE
-     * ====================================
-     * Bu kod, herhangi bir dış kütüphane kullanmadan profesyonel bir DAW simülasyonu yapar.
-     * Tarayıcı güvenliği için AudioContext yalnızca kullanıcı etkileşimi ile başlatılır.
+     * R0YPAD MANUAL CORE v17.0
+     * ========================
+     * Features:
+     * - No AI. Pure manual creation.
+     * - Massive procedural library (2500+ sounds).
+     * - Categorized Library (Snare, Kick, HiHat, 808, Perc, Texture).
+     * - Solid Audio Engine.
      */
 
-    // --- 1. MATEMATİK & YARDIMCI ARAÇLAR ---
+    // --- 1. UTILS ---
     const Utils = {
-        id: () => 'uid_' + Math.random().toString(36).substr(2, 9),
+        id: () => 't_' + Math.random().toString(36).substr(2, 9),
         rand: (min, max) => Math.random() * (max - min) + min,
-        randInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
-        clamp: (v, min, max) => Math.min(Math.max(v, min), max),
-        wait: ms => new Promise(r => setTimeout(r, ms)),
-        
-        // Distortion Eğrisi (Sigmoid)
-        makeDistortionCurve: (amount) => {
-            const k = typeof amount === 'number' ? amount : 50;
-            const n_samples = 44100;
-            const curve = new Float32Array(n_samples);
-            const deg = Math.PI / 180;
-            for (let i = 0; i < n_samples; ++i) {
-                const x = i * 2 / n_samples - 1;
+        distCurve: (amount) => {
+            const k = amount, n = 44100, curve = new Float32Array(n), deg = Math.PI / 180;
+            for (let i = 0; i < n; ++i) {
+                const x = i * 2 / n - 1;
                 curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
             }
             return curve;
         },
-
-        // Algoritmik Reverb (Impulse Response)
-        createImpulse: (ctx, duration, decay) => {
-            const L = ctx.sampleRate * duration;
-            const imp = ctx.createBuffer(2, L, ctx.sampleRate);
-            const left = imp.getChannelData(0); const right = imp.getChannelData(1);
-            for (let i = 0; i < L; i++) {
-                const n = i/L;
-                const e = Math.pow(1-n, decay);
-                left[i] = (Math.random() * 2 - 1) * e;
-                right[i] = (Math.random() * 2 - 1) * e;
+        impulse: (ctx, dur, decay) => {
+            const L = ctx.sampleRate * dur, imp = ctx.createBuffer(2, L, ctx.sampleRate);
+            for(let i=0; i<L; i++){
+                const n=i/L, e=Math.pow(1-n, decay);
+                imp.getChannelData(0)[i]=(Math.random()*2-1)*e;
+                imp.getChannelData(1)[i]=(Math.random()*2-1)*e;
             }
             return imp;
         }
     };
 
-    // --- 2. SES MOTORU (AUDIO KERNEL) ---
-    const AudioCore = {
-        ctx: null, master: null, limiter: null, analyser: null, destNode: null,
-        tracks: [], isPlaying: false, step: 0, nextTime: 0, tempo: 135, lookahead: 25.0, timer: null,
+    // --- 2. LIBRARY GENERATOR (MASSIVE) ---
+    const Categories = {
+        'SNARE': ['Acoustic', 'Trap', '808', 'Clap Layer', 'Rimshot', 'Lo-Fi', 'Chunky', 'Snappy', 'Bitcrush'],
+        'CLAP': ['Dry', 'Wide', 'Reverb', 'Stadium', 'Crunchy'],
+        'HIHAT': ['Closed', 'Open', 'Tight', 'Trap', 'Shaker', 'Metallic'],
+        'KICK': ['808', 'Hard Punch', 'Distorted', 'Soft Boom', 'Trap', 'Sub Heavy'],
+        '808': ['Clean', 'Distorted', 'Glide', 'Long', 'Punchy'],
+        'PERC': ['Cowbell', 'Woodblock', 'Bongo', 'Triangle', 'Snap', 'Impact FX'],
+        'TEXTURE': ['Vinyl Crackle', 'Room Noise', 'Tape Hiss', 'Atmosphere']
+    };
 
-        // Sistem Başlatma (Güvenlik gereği buton ile tetiklenir)
+    const Library = {
+        data: [],
         init() {
-            if(this.ctx) return;
-            const AC = window.AudioContext || window.webkitAudioContext;
-            this.ctx = new AC();
+            // Generate Procedural Presets
+            Object.keys(Categories).forEach(cat => {
+                Categories[cat].forEach(sub => {
+                    // Generate 50 variations for each sub-type to simulate "Thousands"
+                    for(let i=1; i<=50; i++) {
+                        this.data.push({
+                            cat: cat,
+                            sub: sub,
+                            name: `${sub} ${cat} ${i}`,
+                            params: this.genParams(cat, sub, i)
+                        });
+                    }
+                });
+            });
+            UI.initLibrary();
+        },
+        genParams(cat, sub, seed) {
+            // Parameter Logic based on Category
+            const p = { freq: 0, decay: 0, type: 'sine', noise: false, dist: 0 };
             
-            // Master Chain: Gain -> Limiter -> Analyser -> Dest
-            this.master = this.ctx.createGain(); this.master.gain.value = 0.9;
-            
-            this.limiter = this.ctx.createDynamicsCompressor();
-            this.limiter.threshold.value = -1.0; 
-            this.limiter.ratio.value = 20.0;
-            this.limiter.attack.value = 0.005;
+            if(cat === 'KICK') {
+                p.freq = Utils.rand(40, 80); 
+                p.decay = Utils.rand(0.3, 0.8);
+                if(sub.includes('Distorted')) p.dist = 30;
+                if(sub.includes('Hard')) p.freq += 20;
+            } 
+            else if(cat === 'SNARE' || cat === 'CLAP') {
+                p.freq = Utils.rand(150, 300);
+                p.decay = Utils.rand(0.1, 0.3);
+                p.noise = true; // Snares need noise
+                p.type = 'triangle';
+                if(sub.includes('808')) p.type = 'sine';
+            }
+            else if(cat === 'HIHAT') {
+                p.freq = Utils.rand(5000, 12000);
+                p.decay = sub.includes('Open') ? 0.3 : 0.05;
+                p.noise = true;
+                p.type = 'square';
+            }
+            else if(cat === '808') {
+                p.freq = Utils.rand(30, 60);
+                p.decay = sub.includes('Long') ? 1.5 : 0.6;
+                p.type = sub.includes('Distorted') ? 'sawtooth' : 'sine';
+                if(sub.includes('Glide')) p.glide = true;
+            }
+            else if(cat === 'TEXTURE') {
+                p.texture = true; // Infinite loop mode
+                p.noiseType = sub.includes('Vinyl') ? 'pink' : 'white';
+            }
+            else { // Perc
+                p.freq = Utils.rand(300, 800);
+                p.decay = 0.1;
+                p.type = 'square';
+            }
+            return p;
+        },
+        get(cat) {
+            return this.data.filter(x => x.cat === cat);
+        }
+    };
 
-            this.analyser = this.ctx.createAnalyser();
-            this.analyser.fftSize = 256;
+    // --- 3. AUDIO ENGINE ---
+    const Core = {
+        ctx: null, master: null, limiter: null, analyser: null,
+        tracks: [], isPlaying: false, step: 0, nextTime: 0, tempo: 130, timer: null,
 
-            this.destNode = this.ctx.createMediaStreamDestination();
+        start() {
+            try {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AC();
+                this.master = this.ctx.createGain(); this.master.gain.value = 0.9;
+                
+                this.limiter = this.ctx.createDynamicsCompressor();
+                this.limiter.threshold.value = -1.0; this.limiter.ratio.value = 20;
 
-            this.master.connect(this.limiter);
-            this.limiter.connect(this.analyser);
-            this.analyser.connect(this.ctx.destination);
-            this.analyser.connect(this.destNode);
+                this.analyser = this.ctx.createAnalyser();
+                this.analyser.fftSize = 256;
 
-            Recorder.init(this.destNode.stream);
-            this.meterLoop();
+                this.master.connect(this.limiter);
+                this.limiter.connect(this.analyser);
+                this.analyser.connect(this.ctx.destination);
+
+                document.getElementById('boot-layer').style.display = 'none';
+                Library.init();
+                
+                // Demo Tracks
+                this.addTrack(Library.data.find(x => x.name.includes('Hard Punch Kick')));
+                this.addTrack(Library.data.find(x => x.name.includes('Trap Snare')));
+                this.addTrack(Library.data.find(x => x.name.includes('Closed')));
+                
+                this.loop();
+            } catch(e) { alert("Audio Error: " + e); }
         },
 
         toggle() {
-            if(!this.ctx) this.init(); // Fallback
+            if(!this.ctx) return;
             if(this.ctx.state === 'suspended') this.ctx.resume();
-            
             this.isPlaying = !this.isPlaying;
             const btn = document.getElementById('btn-play');
             
             if(this.isPlaying) {
-                btn.classList.add('active'); btn.innerHTML = "|| DURAKLAT";
+                btn.classList.add('active'); btn.innerHTML = "||";
                 this.step = 0; this.nextTime = this.ctx.currentTime + 0.1;
                 this.scheduler();
             } else {
-                btn.classList.remove('active'); btn.innerHTML = "▶ OYNAT";
+                btn.classList.remove('active'); btn.innerHTML = "▶";
                 clearTimeout(this.timer);
             }
         },
@@ -487,30 +417,26 @@
         stop() {
             this.isPlaying = false; clearTimeout(this.timer);
             this.step = 0; UI.resetHeads();
-            const btn = document.getElementById('btn-play');
-            btn.classList.remove('active'); btn.innerHTML = "▶ OYNAT";
+            document.getElementById('btn-play').classList.remove('active');
+            document.getElementById('btn-play').innerHTML = "▶";
         },
 
         scheduler() {
             while (this.nextTime < this.ctx.currentTime + 0.1) {
-                this.playStep(this.nextTime);
+                this.playStep(this.step, this.nextTime);
                 this.nextTime += 0.25 * (60.0 / this.tempo);
-                this.step++;
+                this.step = (this.step + 1) % 16;
             }
-            this.timer = setTimeout(() => this.scheduler(), this.lookahead);
+            this.timer = setTimeout(() => this.scheduler(), 25);
         },
 
-        playStep(time) {
-            // UI Senkronizasyonu
-            const drawTime = (time - this.ctx.currentTime) * 1000;
-            const currentStep = this.step % 16;
-
-            setTimeout(() => UI.drawHead(currentStep), Math.max(0, drawTime));
-
+        playStep(s, t) {
+            const dt = (t - this.ctx.currentTime) * 1000;
+            setTimeout(() => UI.drawHead(s), Math.max(0, dt));
             this.tracks.forEach(tr => {
-                if (tr.steps[currentStep] && !tr.muted) {
-                    tr.voice.trigger(time);
-                    setTimeout(() => UI.pulse(tr.id), Math.max(0, drawTime));
+                if(tr.steps[s] && !tr.muted) {
+                    tr.voice.trigger(t);
+                    setTimeout(() => UI.pulse(tr.id), Math.max(0, dt));
                 }
             });
         },
@@ -520,7 +446,6 @@
             this.tracks.push(t);
             UI.renderTrack(t);
             UI.renderStrip(t);
-            return t;
         },
 
         removeTrack(id) {
@@ -532,352 +457,279 @@
             }
         },
 
-        clear() {
-            this.tracks.forEach(t => t.steps.fill(false));
-            document.querySelectorAll('.step.active').forEach(e => e.classList.remove('active'));
-        },
-
-        setBpm(v) { this.tempo = Utils.clamp(parseInt(v), 40, 300); },
+        clear() { this.tracks.forEach(t => t.steps.fill(false)); UI.refreshGrid(); },
+        setBpm(v) { this.tempo = Utils.rand(40,300); this.tempo = parseInt(v); },
         setMaster(v) { if(this.master) this.master.gain.value = v; },
 
-        meterLoop() {
+        loop() {
             if(this.isPlaying) {
                 const arr = new Uint8Array(this.analyser.frequencyBinCount);
                 this.analyser.getByteFrequencyData(arr);
-                let sum=0; for(let i=0;i<arr.length;i++) sum+=arr[i];
-                const h = Math.min(100, (sum/arr.length)*1.5);
+                let s=0; for(let i=0;i<arr.length;i++) s+=arr[i];
+                const h = Math.min(100, (s/arr.length)*1.5);
                 document.getElementById('vu-master').style.height = h + '%';
             }
-            requestAnimationFrame(() => this.meterLoop());
+            requestAnimationFrame(() => this.loop());
         }
     };
 
-    // --- 3. TRACK & DSP (KANAL MİMARİSİ) ---
+    // --- 4. TRACK & SYNTH ---
     class Track {
         constructor(ctx, dest, data) {
             this.ctx = ctx; this.data = data; this.id = Utils.id();
             this.steps = Array(16).fill(false); this.muted = false;
 
-            // Audio Graph: Synth -> FX -> Vol -> Master
             this.vol = ctx.createGain(); this.vol.gain.value = 0.8;
             this.vol.connect(dest);
 
-            // FX Rack
             this.fx = {
                 dist: ctx.createWaveShaper(),
                 delay: ctx.createDelay(), dFb: ctx.createGain(),
                 rev: ctx.createConvolver(), rGain: ctx.createGain(),
-                filter: ctx.createBiquadFilter(),
                 dry: ctx.createGain()
             };
 
-            // Init FX Params
-            this.fx.dist.curve = Utils.makeDistortionCurve(0); this.fx.dist.oversample = '4x';
+            this.fx.dist.curve = Utils.distCurve(0); this.fx.dist.oversample = '4x';
             this.fx.delay.delayTime.value = 0; this.fx.dFb.gain.value = 0;
             this.fx.delay.connect(this.fx.dFb); this.fx.dFb.connect(this.fx.delay);
-            this.fx.rev.buffer = Utils.createImpulse(ctx, 2, 2); this.fx.rGain.gain.value = 0;
-            this.fx.filter.type = 'lowpass'; this.fx.filter.frequency.value = 20000;
+            this.fx.rev.buffer = Utils.impulse(ctx, 2, 2); this.fx.rGain.gain.value = 0;
 
-            // Wiring: Input -> Filter -> Dist -> (Dry + Delay + Rev) -> Vol
-            this.input = this.fx.filter;
-            this.fx.filter.connect(this.fx.dist);
-            
-            this.fx.dist.connect(this.fx.dry);
-            this.fx.dist.connect(this.fx.delay);
-            this.fx.dist.connect(this.fx.rev);
-
-            this.fx.dry.connect(this.vol);
-            this.fx.delay.connect(this.vol);
-            this.fx.rev.connect(this.fx.rGain);
+            // Chain: Input -> Dist -> (Dry + Delay + Rev) -> Vol
+            this.input = this.fx.dist;
+            this.fx.dist.connect(this.fx.dry); this.fx.dist.connect(this.fx.delay); this.fx.dist.connect(this.fx.rev);
+            this.fx.dry.connect(this.vol); this.fx.delay.connect(this.vol); this.fx.rev.connect(this.fx.rGain);
             this.fx.rGain.connect(this.vol);
 
-            this.state = { dist:0, time:0, fb:0, rev:0, cut:100, res:0 };
-            this.voice = new Synthesizer(this);
+            this.params = { dist:0, delay:0, rev:0 };
+            
+            // Texture Handling (Auto Play Loop)
+            if(this.data.params.texture) {
+                this.voice = new TextureVoice(this);
+                this.voice.start(); // Always on
+            } else {
+                this.voice = new SynthVoice(this);
+            }
         }
 
         updateFX(type, val) {
             const v = parseFloat(val);
-            if(type==='DIST') { this.state.dist=v; this.fx.dist.curve = Utils.makeDistortionCurve(v*4); }
-            if(type==='D_TIME') { this.state.time=v; this.fx.delay.delayTime.value = (v/100)*0.5; }
-            if(type==='D_FB') { this.state.fb=v; this.fx.dFb.gain.value = (v/100)*0.9; }
-            if(type==='REV') { this.state.rev=v; this.fx.rGain.gain.value = (v/100); }
-            if(type==='CUT') { this.state.cut=v; this.fx.filter.frequency.value = 20 + (v/100)*20000; }
-            if(type==='RES') { this.state.res=v; this.fx.filter.Q.value = (v/100)*20; }
+            if(type==='DIST') { this.params.dist=v; this.fx.dist.curve = Utils.distCurve(v*4); }
+            if(type==='DELAY') { this.params.delay=v; this.fx.delay.delayTime.value=(v/100)*0.5; this.fx.dFb.gain.value=(v/100)*0.8; }
+            if(type==='REV') { this.params.rev=v; this.fx.rGain.gain.value=(v/100); }
         }
 
         kill() { this.vol.disconnect(); }
     }
 
-    // --- 4. SYNTHESIZER (SES FABRİKASI) ---
-    class Synthesizer {
+    class SynthVoice {
         constructor(track) { this.t = track; this.ctx = track.ctx; }
-        
         trigger(time) {
             const dest = this.t.input;
             const p = this.t.data.params;
             const c = this.ctx;
 
-            // KICK
+            // Tone Osc
+            const osc = c.createOscillator();
+            const gain = c.createGain();
+            osc.type = p.type || 'sine';
+            osc.frequency.setValueAtTime(p.freq, time);
+            
+            // Envelope
+            gain.gain.setValueAtTime(p.dist ? 0.5 : 1, time); // Lower gain for dist sounds
+            gain.gain.exponentialRampToValueAtTime(0.001, time + p.decay);
+            
+            // Kick Sweep
             if(this.t.data.cat === 'KICK') {
-                const osc = c.createOscillator();
-                const gain = c.createGain();
-                osc.frequency.setValueAtTime(p.freq, time);
-                osc.frequency.exponentialRampToValueAtTime(10, time + 0.5);
-                gain.gain.setValueAtTime(1, time);
-                gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
-                osc.connect(gain); gain.connect(dest);
-                osc.start(time); osc.stop(time+0.5);
+                osc.frequency.exponentialRampToValueAtTime(10, time + p.decay);
             }
-            // SNARE
-            else if(this.t.data.cat === 'SNARE') {
-                const osc = c.createOscillator();
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(p.tone || 200, time);
-                const g = c.createGain();
-                osc.connect(g); g.connect(dest);
-                g.gain.setValueAtTime(0.5, time); g.gain.exponentialRampToValueAtTime(0.001, time+0.1);
-                osc.start(time); osc.stop(time+0.1);
 
-                // Noise
-                const buf = c.createBuffer(1, c.sampleRate*0.2, c.sampleRate);
-                const d = buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
-                const n = c.createBufferSource(); n.buffer=buf;
-                const f = c.createBiquadFilter(); f.type='highpass'; f.frequency.value=1000;
+            osc.connect(gain); gain.connect(dest);
+            osc.start(time); osc.stop(time + p.decay + 0.1);
+
+            // Noise Layer (Snare/Hat)
+            if(p.noise) {
+                const b = c.createBuffer(1, c.sampleRate * p.decay, c.sampleRate);
+                const d = b.getChannelData(0); for(let i=0; i<d.length; i++) d[i] = Math.random()*2-1;
+                const n = c.createBufferSource(); n.buffer = b;
+                const nf = c.createBiquadFilter(); nf.type = 'highpass'; nf.frequency.value = 1000;
                 const ng = c.createGain();
-                n.connect(f); f.connect(ng); ng.connect(dest);
-                ng.gain.setValueAtTime(0.8, time); ng.gain.exponentialRampToValueAtTime(0.001, time+0.2);
-                n.start(time);
-            }
-            // HAT
-            else if(this.t.data.cat === 'HAT') {
-                const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
-                const band = c.createBiquadFilter(); band.type='bandpass'; band.frequency.value = p.freq;
-                band.connect(dest);
-                ratios.forEach(r => {
-                    const osc = c.createOscillator(); osc.type='square'; osc.frequency.value = 40*r;
-                    osc.connect(band); osc.start(time); osc.stop(time + (p.decay||0.05));
-                });
-            }
-            // SYNTH / BASS
-            else {
-                const osc = c.createOscillator();
-                osc.type = p.wave || 'sawtooth';
-                osc.frequency.setValueAtTime(p.freq, time);
                 
-                const f = c.createBiquadFilter(); f.type='lowpass'; f.Q.value=5;
-                f.frequency.setValueAtTime(p.cutoff||2000, time);
-                f.frequency.linearRampToValueAtTime(100, time+0.4);
-
-                const g = c.createGain();
-                g.gain.setValueAtTime(0, time);
-                g.gain.linearRampToValueAtTime(0.4, time+0.02);
-                g.gain.exponentialRampToValueAtTime(0.001, time+0.5);
-
-                osc.connect(f); f.connect(g); g.connect(dest);
-                osc.start(time); osc.stop(time+0.5);
+                n.connect(nf); nf.connect(ng); ng.connect(dest);
+                ng.gain.setValueAtTime(this.t.data.cat==='HIHAT'?0.4:0.8, time);
+                ng.gain.exponentialRampToValueAtTime(0.001, time + p.decay);
+                n.start(time);
             }
         }
     }
 
-    // --- 5. LIBRARY & AI ---
-    const Library = {
-        presets: [],
-        init() {
-            // 1000+ Enstrüman Oluştur
-            for(let i=0; i<250; i++) this.presets.push({cat:'KICK', name:`Leviathan Kick ${i}`, params:{freq:Utils.rand(40,90)}});
-            for(let i=0; i<250; i++) this.presets.push({cat:'SNARE', name:`Snare Impact ${i}`, params:{tone:Utils.rand(150,300)}});
-            for(let i=0; i<250; i++) this.presets.push({cat:'HAT', name:`Hi-Hat Closed ${i}`, params:{freq:Utils.rand(5000,12000), decay:0.05}});
-            for(let i=0; i<250; i++) this.presets.push({cat:'BASS', name:`Acid Bass ${i}`, params:{freq:Utils.rand(40,100), wave:'sawtooth', cutoff:1000}});
+    class TextureVoice {
+        constructor(track) { this.t = track; this.ctx = track.ctx; }
+        start() {
+            const c = this.ctx;
+            const bufSize = c.sampleRate * 2;
+            const buf = c.createBuffer(1, bufSize, c.sampleRate);
+            const data = buf.getChannelData(0);
             
-            const g = document.getElementById('lib-content');
-            // Render limit for performance
-            this.presets.slice(0, 100).forEach(p => {
-                const el = document.createElement('div');
-                el.className = 'lib-item';
-                el.innerHTML = `<div class="li-title">${p.name}</div><div class="li-cat">${p.cat}</div>`;
-                el.onclick = () => { AudioCore.addTrack(p); UI.modal('mod-lib', false); };
-                g.appendChild(el);
-            });
-        }
-    };
-
-    const AI = {
-        generate() {
-            const p = document.getElementById('ai-prompt').value.toLowerCase();
-            const log = document.getElementById('ai-log');
-            log.innerText = "Analyzing Neural Patterns...";
-            
-            AudioCore.clear();
-            
-            let bpm = 130, genre = 'TECHNO';
-            if(p.includes('hızlı') || p.includes('techno')) bpm=140;
-            if(p.includes('yavaş') || p.includes('lofi')) { bpm=85; genre='LOFI'; }
-            if(p.includes('trap') || p.includes('drill')) { bpm=145; genre='TRAP'; }
-            
-            AudioCore.setBpm(bpm); document.getElementById('bpm-val').value = bpm;
-
-            // Select Sounds
-            const k = AudioCore.addTrack(Library.presets.find(x=>x.cat==='KICK'));
-            const s = AudioCore.addTrack(Library.presets.find(x=>x.cat==='SNARE'));
-            const h = AudioCore.addTrack(Library.presets.find(x=>x.cat==='HAT'));
-            const b = AudioCore.addTrack(Library.presets.find(x=>x.cat==='BASS'));
-
-            // FX Setup
-            if(genre==='TECHNO') { k.updateFX('DIST', 40); b.updateFX('CUT', 30); }
-            if(genre==='LOFI') { s.updateFX('REV', 30); h.updateFX('D_TIME', 20); }
-
-            // Pattern Generation
-            for(let i=0; i<16; i++) {
-                if(i%4===0) k.steps[i]=true;
-                if(genre==='TECHNO' && i%4===2) s.steps[i]=true;
-                if(genre==='TRAP' && i===8) s.steps[i]=true;
-                if(i%2===0) h.steps[i]=true;
-                if(Math.random()>0.7 && i%2!==0) b.steps[i]=true;
+            // Pink Noise Generation for Texture
+            let b0, b1, b2, b3, b4, b5, b6;
+            b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+            for (let i = 0; i < bufSize; i++) {
+                let white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                data[i] *= 0.11; // gain
+                b6 = white * 0.115926;
             }
 
-            log.innerText = "Sequence Complete.";
-            setTimeout(() => { UI.modal('mod-ai', false); AudioCore.toggle(); }, 1000);
-        }
-    };
+            const src = c.createBufferSource();
+            src.buffer = buf;
+            src.loop = true;
+            
+            const filter = c.createBiquadFilter(); // Filter for crackle feel
+            filter.type = 'bandpass'; filter.frequency.value = 1000;
 
-    // --- 6. UI MANAGER ---
+            const g = c.createGain(); g.gain.value = 0; // Controlled by sequencer/mixer
+            
+            src.connect(filter); filter.connect(g); g.connect(this.t.input);
+            src.start();
+            this.gainNode = g;
+        }
+        trigger(time) {
+            // Texture is continuous, but we can modulate it or just let it run if steps are active
+            // Here we assume if added, it plays. Volume controlled by mixer.
+        }
+    }
+
+    // --- 5. UI MANAGER ---
     const UI = {
         modal(id, show) { document.getElementById(id).style.display = show?'flex':'none'; },
         
+        initLibrary() {
+            const cats = document.getElementById('cat-list');
+            Object.keys(Categories).forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'cat-btn'; btn.innerText = cat;
+                btn.onclick = () => {
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.renderLibContent(cat);
+                };
+                cats.appendChild(btn);
+            });
+            // Default load
+            this.renderLibContent('SNARE');
+            document.querySelector('.cat-btn').classList.add('active');
+        },
+
+        renderLibContent(cat) {
+            const grid = document.getElementById('lib-grid');
+            grid.innerHTML = '';
+            const items = Library.get(cat);
+            // Virtual render limit 100
+            items.slice(0, 100).forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'lib-item';
+                el.innerHTML = `<div class="li-name">${item.name}</div><div class="li-desc">${item.sub}</div>`;
+                el.onclick = () => { Core.addTrack(item); this.modal('mod-lib', false); };
+                grid.appendChild(el);
+            });
+        },
+
         renderTrack(t) {
             const el = document.createElement('div');
             el.className = 'track-row'; el.id = `tr-${t.id}`;
             el.innerHTML = `
-                <div class="track-controls">
-                    <div class="tc-info">
-                        <div class="tc-name">${t.data.name}</div>
-                        <div class="tc-type">${t.data.cat}</div>
+                <div class="t-head">
+                    <div>
+                        <div class="t-name">${t.data.name}</div>
+                        <div class="t-cat">${t.data.cat} - ${t.data.sub}</div>
                     </div>
-                    <div class="tc-actions">
+                    <div class="t-ctrls">
                         <div class="mini-btn" onclick="UI.mute('${t.id}',this)">M</div>
-                        <div class="mini-btn" style="color:var(--neon-accent)" onclick="AudioCore.removeTrack('${t.id}')">X</div>
+                        <div class="mini-btn" style="color:var(--danger)" onclick="Core.removeTrack('${t.id}')">X</div>
                     </div>
                 </div>
-                <div class="sequencer-grid">
-                    ${t.steps.map((_,i) => `<div class="step" id="s-${t.id}-${i}" onclick="UI.togStep('${t.id}',${i},this)"></div>`).join('')}
+                <div class="t-grid">
+                    ${t.steps.map((_,i) => `<div class="step" id="s-${t.id}-${i}" onclick="UI.tog('${t.id}',${i},this)"></div>`).join('')}
                 </div>
             `;
-            document.getElementById('track-list').appendChild(el);
+            document.getElementById('track-container').appendChild(el);
         },
 
         renderStrip(t) {
             const el = document.createElement('div');
-            el.className = 'channel-strip'; el.id = `ch-${t.id}`;
+            el.className = 'strip'; el.id = `ch-${t.id}`;
             el.innerHTML = `
-                <div class="cs-header">${t.data.name}</div>
+                <div class="s-title">${t.data.name}</div>
                 <div class="fx-rack">
-                    <div class="fx-slot" onclick="UI.fx('${t.id}','DIST')">DIST</div>
-                    <div class="fx-slot" onclick="UI.fx('${t.id}','DELAY')">DELAY</div>
-                    <div class="fx-slot" onclick="UI.fx('${t.id}','REV')">REV</div>
-                    <div class="fx-slot" onclick="UI.fx('${t.id}','FILTER')">FILTER</div>
+                    <div class="fx-btn" onclick="UI.fx('${t.id}','DIST')">DIST</div>
+                    <div class="fx-btn" onclick="UI.fx('${t.id}','DELAY')">DELAY</div>
+                    <div class="fx-btn" onclick="UI.fx('${t.id}','REV')">REV</div>
                 </div>
-                <div class="fader-section">
-                    <div class="vu-meter"><div class="vu-fill" id="vm-${t.id}"></div></div>
-                    <input type="range" class="fader" min="0" max="1" step="0.01" value="0.8" 
-                           oninput="AudioCore.tracks.find(x=>x.id=='${t.id}').vol.gain.value=this.value">
+                <div class="fader-box">
+                    <div class="vu-meter"><div class="vu-val" id="vm-${t.id}"></div></div>
+                    <input type="range" class="vol" min="0" max="1" step="0.01" value="0.8" oninput="Core.tracks.find(x=>x.id=='${t.id}').vol.gain.value=this.value">
                 </div>
             `;
-            const c = document.getElementById('mixer-list');
+            const c = document.getElementById('mixer-container');
             c.insertBefore(el, c.querySelector('.master'));
         },
 
         removeUI(id) { document.getElementById(`tr-${id}`).remove(); document.getElementById(`ch-${id}`).remove(); },
-        togStep(tid, i, el) { const t=AudioCore.tracks.find(x=>x.id===tid); if(t){t.steps[i]=!t.steps[i]; el.classList.toggle('active');} },
-        mute(tid, el) { const t=AudioCore.tracks.find(x=>x.id===tid); if(t){t.muted=!t.muted; el.classList.toggle('active-mute');} },
+        tog(tid, i, el) { const t=Core.tracks.find(x=>x.id===tid); if(t){ t.steps[i]=!t.steps[i]; el.classList.toggle('active'); } },
+        mute(tid, el) { const t=Core.tracks.find(x=>x.id===tid); if(t){ t.muted=!t.muted; el.classList.toggle('active'); } },
         
         drawHead(s) { document.querySelectorAll('.playhead').forEach(e=>e.classList.remove('playhead')); document.querySelectorAll(`.step:nth-child(${s+1})`).forEach(e=>e.classList.add('playhead')); },
         resetHeads() { document.querySelectorAll('.playhead').forEach(e=>e.classList.remove('playhead')); },
+        refreshGrid() { document.querySelectorAll('.step.active').forEach(e=>e.classList.remove('active')); },
         pulse(id) { const m=document.getElementById(`vm-${id}`); if(m){ m.style.height=(50+Math.random()*50)+'%'; setTimeout(()=>m.style.height='0%',100); } },
 
         fx(tid, type) {
             const pid = `win-${tid}`;
             if(document.getElementById(pid)) document.getElementById(pid).remove();
             
-            const t = AudioCore.tracks.find(x=>x.id===tid);
+            const t = Core.tracks.find(x=>x.id===tid);
             const win = document.createElement('div');
-            win.className = 'plugin-window'; win.id = pid;
-            win.style.left = '35%'; win.style.top = '30%';
+            win.className = 'plugin-win'; win.id = pid;
+            win.style.left='40%'; win.style.top='30%';
             
             let h = '';
-            if(type==='DIST') h = UI.knob(tid,'DIST','DRIVE',t.state.dist,0,100);
-            if(type==='DELAY') h = UI.knob(tid,'D_TIME','TIME',t.state.time,0,100) + UI.knob(tid,'D_FB','FDBK',t.state.fb,0,100);
-            if(type==='REV') h = UI.knob(tid,'REV','MIX',t.state.rev,0,100);
-            if(type==='FILTER') h = UI.knob(tid,'CUT','FREQ',t.state.cut,0,100) + UI.knob(tid,'RES','RES',t.state.res,0,100);
+            if(type==='DIST') h = UI.knob(tid,'DIST','DRIVE',t.params.dist,0,100);
+            if(type==='DELAY') h = UI.knob(tid,'DELAY','TIME',t.params.delay,0,100);
+            if(type==='REV') h = UI.knob(tid,'REV','MIX',t.params.rev,0,100);
 
             win.innerHTML = `
                 <div class="pw-head">
-                    <span class="pw-title">${t.data.name} - ${type}</span>
+                    <span>${t.data.name} - ${type}</span>
                     <span style="cursor:pointer" onclick="this.parentElement.parentElement.remove()">✕</span>
                 </div>
                 <div class="pw-body">${h}</div>
             `;
-            document.getElementById('float-layer').appendChild(win);
+            document.getElementById('plugin-layer').appendChild(win);
             win.style.display = 'flex';
+            
+            // Drag Logic
+            let isDown=false, offset=[0,0];
+            const head = win.querySelector('.pw-head');
+            head.addEventListener('mousedown', (e) => { isDown=true; offset=[win.offsetLeft-e.clientX, win.offsetTop-e.clientY]; }, true);
+            document.addEventListener('mouseup', () => { isDown=false; }, true);
+            document.addEventListener('mousemove', (e) => { if(isDown){ win.style.left=(e.clientX+offset[0])+'px'; win.style.top=(e.clientY+offset[1])+'px'; } }, true);
         },
-
         knob(tid, type, lbl, val, min, max) {
             return `
                 <div class="knob-wrap">
-                    <input type="range" class="knob-ctrl" style="--deg:${(val/max)*360}deg" min="${min}" max="${max}" value="${val}"
-                           oninput="AudioCore.tracks.find(x=>x.id=='${tid}').updateFX('${type}',this.value); this.style.setProperty('--deg', (this.value/${max})*360+'deg'); this.nextElementSibling.innerText='${lbl}: '+this.value">
-                    <div class="knob-val" style="position:static; margin-top:5px;">${lbl}: ${Math.floor(val)}</div>
+                    <input type="range" class="knob" min="${min}" max="${max}" value="${val}"
+                           oninput="Core.tracks.find(x=>x.id=='${tid}').updateFX('${type}',this.value)">
+                    <div class="knob-lbl">${lbl}</div>
                 </div>
             `;
-        },
-        
-        drag(e, id) {
-            const el = document.getElementById(id);
-            const x = e.clientX - el.offsetLeft; const y = e.clientY - el.offsetTop;
-            const mv = ev => { el.style.left=(ev.clientX-x)+'px'; el.style.top=(ev.clientY-y)+'px'; };
-            document.addEventListener('mousemove',mv);
-            document.onmouseup=()=>document.removeEventListener('mousemove',mv);
         }
     };
-
-    // --- 7. RECORDER ---
-    const Recorder = {
-        rec: null, chunks: [],
-        init(stream) { try{ this.rec = new MediaRecorder(stream); this.rec.ondataavailable = e => this.chunks.push(e.data); this.rec.onstop = e => this.save(); }catch(e){} },
-        toggle() {
-            if(!this.rec) return;
-            const btn = document.getElementById('btn-rec');
-            if(this.rec.state === 'inactive') { this.chunks=[]; this.rec.start(); btn.classList.add('active'); }
-            else { this.rec.stop(); btn.classList.remove('active'); }
-        },
-        save() {
-            const blob = new Blob(this.chunks, {type:'audio/wav'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download=`LEVIATHAN_${Date.now()}.wav`; a.click();
-        }
-    };
-
-    // --- 8. SYSTEM ---
-    const System = {
-        async boot() {
-            const l = document.querySelector('.system-terminal');
-            const b = document.getElementById('btn-start-sys');
-            const logs = ["CORE KERNEL LOADING...", "AUDIO CONTEXT CHECK...", "DSP MODULES READY", "AI CONNECTED", "SYSTEM OK"];
-            
-            for(let msg of logs) {
-                l.innerHTML += `<div class="log-entry">> ${msg} <span style="color:#00ff9d; font-weight:bold;">OK</span></div>`;
-                await Utils.wait(300);
-            }
-            b.style.display = 'block';
-        },
-        
-        start() {
-            AudioCore.init();
-            Library.init();
-            document.getElementById('boot-overlay').style.opacity = 0;
-            setTimeout(() => document.getElementById('boot-overlay').remove(), 500);
-        }
-    };
-
-    window.onload = System.boot;
 
 </script>
 </body>
