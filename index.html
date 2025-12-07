@@ -3,445 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R0YPAD STUDIO | OMEGA EDITION v15.0 (GRANULAR)</title>
-    <meta name="description" content="Advanced Granular Synthesis & Algorithmic Reverb Workstation">
+    <title>R0YPAD STUDIO | PHOENIX v16.0 (STABLE CORE)</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@300;500;700;900&family=Orbitron:wght@900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Inter:wght@400;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+
     <style>
-        /* * ======================================================================================
-         * [SYSTEM] OMEGA CORE STYLESHEET (v15.0)
-         * ======================================================================================
-         * Bu CSS, GPU hızlandırmalı animasyonlar ve katmanlı derinlik efektleri içerir.
-         */
-
+        /* =========================================
+           CORE CSS (PHOENIX THEME)
+           ========================================= */
         :root {
-            /* Renk Paleti: OMEGA */
-            --void-base: #000000;
-            --void-depth: #050505;
-            --void-surface: #0a0a0c;
-            --void-light: #111115;
+            --bg-void: #050505;
+            --bg-panel: #0a0a0c;
+            --bg-slat: #111114;
             
-            --omega-gold: #ffcc00;
-            --omega-cyan: #00f3ff;
-            --omega-red: #ff003c;
-            --omega-violet: #bc13fe;
-            --omega-acid: #ccff00;
+            --phoenix-orange: #ff5500;
+            --phoenix-gold: #ffaa00;
+            --phoenix-red: #ff003c;
+            --phoenix-blue: #00f3ff;
             
-            --glass-panel: rgba(10, 10, 14, 0.96);
-            --border-dim: #222;
-            --border-mid: #444;
-            --border-lit: var(--omega-cyan);
+            --border: #333;
+            --glass: rgba(10,10,12,0.95);
             
-            --shadow-hologram: 0 0 20px rgba(0, 243, 255, 0.15);
-            --shadow-depth: 0 20px 50px #000;
-            
-            /* Layout */
-            --h-header: 80px;
-            --h-mixer: 420px;
-            --w-sidebar: 60px;
+            --h-head: 70px;
+            --h-mix: 300px;
         }
 
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-drag: none;
-            outline: none;
-            cursor: default;
-        }
-
-        /* Özel İmleç */
+        * { box-sizing: border-box; user-select: none; outline: none; }
+        
         body {
-            margin: 0; padding: 0;
-            background-color: var(--void-base);
-            color: #e0e0e0;
-            font-family: 'Inter', sans-serif;
-            height: 100vh; width: 100vw;
-            overflow: hidden;
-            display: grid;
-            grid-template-areas: 
-                "head head"
-                "side work"
-                "side mix";
-            grid-template-rows: var(--h-header) 1fr var(--h-mixer);
-            grid-template-columns: var(--w-sidebar) 1fr;
-            font-size: 11px;
+            margin: 0; padding: 0; background: var(--bg-void); color: #eee;
+            font-family: 'Inter', sans-serif; height: 100vh; width: 100vw;
+            overflow: hidden; display: grid;
+            grid-template-rows: var(--h-head) 1fr var(--h-mix);
         }
 
-        /* Scrollbar Engine */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-corner { background: #000; }
-        ::-webkit-scrollbar-track { background: #080808; border-left: 1px solid #222; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 0; border: 1px solid #000; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--omega-cyan); }
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--phoenix-orange); }
 
-        /* Arka Plan Grid */
-        #bg-grid {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-        }
-
-        /* * ======================================================================================
-         * [BOOT] SYSTEM INITIALIZATION UI
-         * ======================================================================================
-         */
-        #omega-boot {
+        /* =========================================
+           1. BOOT SCREEN (ZORUNLU BAŞLANGIÇ)
+           ========================================= */
+        #boot-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 99999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-
-        .omega-title {
-            font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 6rem;
-            color: #fff; letter-spacing: 20px; margin-bottom: 10px;
-            text-shadow: 0 0 50px var(--omega-cyan);
-            animation: bootPulse 3s infinite;
+        
+        .logo-big {
+            font-family: 'Orbitron'; font-size: 5rem; letter-spacing: 10px;
+            background: linear-gradient(to bottom, #fff, var(--phoenix-orange));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px; text-shadow: 0 0 50px var(--phoenix-orange);
         }
         
-        .omega-ver {
-            font-family: 'JetBrains Mono'; font-size: 14px; color: var(--omega-gold);
-            letter-spacing: 5px; margin-bottom: 60px;
+        .boot-status {
+            font-family: 'JetBrains Mono'; color: #666; font-size: 12px; margin-bottom: 40px;
         }
 
-        .term-window {
-            width: 800px; height: 300px; background: rgba(5,5,5,0.9);
-            border: 1px solid #333; border-left: 4px solid var(--omega-cyan);
-            padding: 20px; font-family: 'JetBrains Mono'; font-size: 11px;
-            color: var(--omega-cyan); overflow: hidden; position: relative;
-            box-shadow: 0 0 100px rgba(0, 243, 255, 0.05);
+        #btn-start-engine {
+            padding: 20px 60px; background: transparent; 
+            border: 2px solid var(--phoenix-orange); color: var(--phoenix-orange);
+            font-family: 'Orbitron'; font-size: 20px; cursor: pointer;
+            transition: 0.3s; letter-spacing: 2px;
         }
-        
-        .log-entry { display: block; margin-bottom: 4px; opacity: 0; animation: termType 0.05s forwards; }
-        .log-ok { color: var(--omega-acid); font-weight: bold; }
-        .log-warn { color: var(--omega-gold); }
-        .log-err { color: var(--omega-red); }
-
-        .loading-bar-wrap {
-            width: 800px; height: 2px; background: #222; margin-top: 0; position: relative;
-        }
-        .loading-bar-fill {
-            height: 100%; width: 0%; background: var(--omega-cyan);
-            box-shadow: 0 0 20px var(--omega-cyan); transition: width 0.1s linear;
+        #btn-start-engine:hover {
+            background: var(--phoenix-orange); color: #000; box-shadow: 0 0 50px var(--phoenix-orange);
         }
 
-        .btn-launch {
-            margin-top: 50px; padding: 25px 80px; background: transparent;
-            border: 2px solid var(--omega-cyan); color: var(--omega-cyan);
-            font-family: 'Orbitron'; font-size: 24px; letter-spacing: 5px; cursor: pointer;
-            transition: 0.3s; display: none; text-transform: uppercase;
-            position: relative; overflow: hidden;
-        }
-        .btn-launch::before {
-            content:''; position: absolute; top:0; left:-100%; width:100%; height:100%;
-            background: linear-gradient(90deg, transparent, rgba(0,243,255,0.5), transparent);
-            transition: 0.5s;
-        }
-        .btn-launch:hover::before { left: 100%; }
-        .btn-launch:hover { background: var(--omega-cyan); color: #000; box-shadow: 0 0 80px var(--omega-cyan); }
-
-        @keyframes bootPulse { 0%,100% { opacity:0.8; filter:blur(0px); } 50% { opacity:1; filter:blur(1px); } }
-        @keyframes termType { to { opacity:1; } }
-
-        /* * ======================================================================================
-         * [LAYOUT] HEADER & SIDEBAR
-         * ======================================================================================
-         */
+        /* =========================================
+           2. HEADER
+           ========================================= */
         header {
-            grid-area: head; background: var(--void-surface); border-bottom: 1px solid var(--border-dim);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
-            z-index: 100; box-shadow: 0 10px 50px #000;
+            background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 30px #000; z-index: 100;
         }
 
-        .brand-section { display: flex; align-items: center; gap: 20px; }
-        .logo-main { font-family: 'Orbitron'; font-size: 28px; color: #fff; letter-spacing: 2px; }
-        .logo-main span { color: var(--omega-cyan); }
-        .dsp-badge { 
-            font-family: 'JetBrains Mono'; font-size: 9px; color: #000; background: var(--omega-gold);
-            padding: 4px 8px; font-weight: bold; border-radius: 2px; letter-spacing: 1px;
-        }
+        .brand { font-family: 'Orbitron'; font-size: 24px; color: #fff; }
+        .brand span { color: var(--phoenix-orange); }
 
-        .global-transport {
-            display: flex; gap: 10px; background: #000; padding: 8px; border-radius: 6px; border: 1px solid #222;
+        .toolbar { display: flex; gap: 10px; align-items: center; }
+
+        .btn {
+            height: 36px; padding: 0 15px; border-radius: 4px; font-weight: 700; font-size: 11px;
+            cursor: pointer; border: 1px solid var(--border); background: var(--bg-slat); color: #ccc;
+            display: flex; align-items: center; gap: 6px; transition: 0.2s;
         }
+        .btn:hover { border-color: #666; color: #fff; }
         
-        .btn-tr {
-            width: 50px; height: 40px; border: none; background: #151518; color: #666;
-            border-radius: 4px; cursor: pointer; font-size: 16px; transition: 0.2s;
+        .btn-add { border-color: var(--phoenix-blue); color: var(--phoenix-blue); }
+        .btn-add:hover { background: var(--phoenix-blue); color: #000; }
+        
+        .btn-ai { border-color: var(--phoenix-gold); color: var(--phoenix-gold); }
+        .btn-ai:hover { background: var(--phoenix-gold); color: #000; }
+
+        .transport {
+            display: flex; background: #000; padding: 5px; border-radius: 4px; border: 1px solid var(--border); gap: 5px;
         }
+        .btn-tr { width: 40px; height: 30px; background: #111; border: none; color: #666; cursor: pointer; border-radius: 2px; font-size: 14px; }
         .btn-tr:hover { color: #fff; background: #222; }
-        .btn-play.active { background: var(--omega-acid); color: #000; box-shadow: 0 0 20px rgba(204,255,0,0.4); }
-        .btn-rec.active { background: var(--omega-red); color: #fff; animation: blink 1s infinite; }
+        .btn-play.active { color: #000; background: var(--phoenix-gold); }
+        .btn-stop:hover { color: var(--phoenix-red); }
 
-        .bpm-display {
-            display: flex; flex-direction: column; justify-content: center; align-items: center; width: 70px;
-            border-left: 1px solid #222; border-right: 1px solid #222;
-        }
-        .bpm-val {
-            background: none; border: none; color: var(--omega-cyan); font-family: 'JetBrains Mono';
-            font-size: 20px; font-weight: 800; width: 100%; text-align: center;
-        }
-        .bpm-lbl { font-size: 8px; color: #555; font-weight: bold; }
+        .bpm-in { background: none; border: none; color: var(--phoenix-blue); width: 40px; text-align: center; font-weight: bold; font-family: 'JetBrains Mono'; font-size: 14px; }
 
-        .sidebar {
-            grid-area: side; background: var(--void-surface); border-right: 1px solid #222;
-            display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 15px;
-            z-index: 90;
-        }
-        .side-tool {
-            width: 40px; height: 40px; border: 1px solid #333; background: #08080a;
-            color: #666; display: flex; align-items: center; justify-content: center;
-            border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 16px;
-        }
-        .side-tool:hover { border-color: var(--omega-cyan); color: #fff; }
-        .side-tool.active { background: var(--omega-cyan); color: #000; }
-
-        /* * ======================================================================================
-         * [WORKSPACE] TRACKS & SEQUENCER
-         * ======================================================================================
-         */
+        /* =========================================
+           3. SEQUENCER
+           ========================================= */
         .workspace {
-            grid-area: work; position: relative; overflow-y: auto; padding: 20px;
-            background: rgba(0,0,0,0.5);
+            position: relative; background: #08080a; overflow-y: auto; padding: 20px;
+            background-image: linear-gradient(#151515 1px, transparent 1px); background-size: 100% 60px;
         }
 
-        .track-list { display: flex; flex-direction: column; gap: 6px; padding-bottom: 100px; }
+        .track-list { display: flex; flex-direction: column; gap: 5px; padding-bottom: 100px; }
 
-        .track-unit {
-            display: flex; height: 72px; background: var(--void-light);
-            border: 1px solid #222; border-radius: 4px; position: relative;
-            transition: 0.1s;
+        .track-row {
+            display: flex; height: 55px; background: var(--bg-slat);
+            border: 1px solid var(--border); border-radius: 4px;
         }
-        .track-unit:hover { border-color: #444; background: #1a1a1e; }
-        .track-unit.active { border-left: 4px solid var(--omega-cyan); background: #1c1c22; }
+        .track-row.playing { border-left: 3px solid var(--phoenix-orange); background: #1a1a1d; }
 
-        .track-controls {
-            width: 260px; padding: 10px 15px; border-right: 1px solid #222;
+        .t-head {
+            width: 180px; padding: 0 15px; border-right: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
-            background: #0e0e10;
         }
-        
-        .tc-info { width: 100px; }
-        .tc-name { font-weight: 700; font-size: 13px; color: #fff; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-        .tc-type { font-size: 9px; color: var(--omega-violet); font-weight: bold; margin-top: 4px; }
+        .t-name { font-weight: bold; color: #fff; font-size: 12px; }
+        .t-btn { width: 20px; height: 20px; background: #000; border: 1px solid #333; color: #666; font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; }
+        .t-btn:hover { color: var(--phoenix-red); border-color: var(--phoenix-red); }
 
-        /* Granular Visualizer Mini */
-        .tc-scope { width: 80px; height: 40px; background: #000; border: 1px solid #333; border-radius: 2px; opacity: 0.8; }
-
-        .tc-btns { display: flex; gap: 4px; }
-        .mini-btn {
-            width: 22px; height: 22px; background: #18181a; border: 1px solid #333; color: #666;
-            font-size: 10px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border-radius: 3px; font-weight: bold;
-        }
-        .mini-btn:hover { color: #fff; border-color: #666; }
-        .mini-btn.mute.active { background: var(--omega-red); color: #fff; border-color: var(--omega-red); }
-        .mini-btn.solo.active { background: var(--omega-gold); color: #000; border-color: var(--omega-gold); }
-
-        .sequencer-lane { flex: 1; display: flex; align-items: center; padding: 0 10px; overflow-x: auto; }
-        .step-grid { display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; width: 100%; height: 100%; padding: 8px 0; }
-        
+        .t-grid { flex: 1; display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; padding: 5px; }
         .step {
-            background: #050505; border: 1px solid #222; border-radius: 2px; cursor: pointer; transition: 0.1s;
+            background: #000; border: 1px solid #222; border-radius: 2px; cursor: pointer;
         }
-        .step:nth-child(4n+1) { background: #0e0e10; }
-        .step:hover { border-color: #555; background: #222; }
-        .step.on { 
-            background: var(--omega-cyan); box-shadow: 0 0 12px var(--omega-cyan); border-color: var(--omega-cyan);
-        }
-        .step.playhead { background: #fff !important; z-index: 10; transform: scale(1.1); box-shadow: 0 0 15px #fff; }
+        .step:nth-child(4n+1) { background: #0c0c0e; }
+        .step:hover { border-color: #555; }
+        .step.active { background: var(--phoenix-orange); box-shadow: 0 0 10px var(--phoenix-orange); border-color: var(--phoenix-orange); }
+        .step.playhead { background: #fff !important; transform: scale(1.1); z-index: 10; }
 
-        /* * ======================================================================================
-         * [MIXER] ADVANCED CONSOLE
-         * ======================================================================================
-         */
-        .mixer-panel {
-            grid-area: mix; background: var(--void-surface); border-top: 1px solid var(--border-dim);
-            padding: 20px; display: flex; gap: 10px; overflow-x: auto; z-index: 50;
-            box-shadow: 0 -20px 80px rgba(0,0,0,0.8);
+        /* =========================================
+           4. MIXER
+           ========================================= */
+        .mixer {
+            background: var(--bg-panel); border-top: 1px solid var(--border);
+            padding: 15px; display: flex; gap: 10px; overflow-x: auto;
+            box-shadow: 0 -10px 50px #000; z-index: 50;
         }
 
         .strip {
-            width: 120px; height: 100%; background: var(--void-light);
-            border: 1px solid #222; border-radius: 6px;
+            width: 90px; height: 100%; background: var(--bg-slat);
+            border: 1px solid var(--border); border-radius: 4px;
             display: flex; flex-direction: column; padding: 10px; flex-shrink: 0;
         }
-        .strip:hover { border-color: #444; }
-        .strip.master { margin-left: auto; width: 160px; background: #0d0a12; border: 1px solid var(--omega-violet); }
+        .strip.master { margin-left: auto; width: 110px; border-color: var(--phoenix-gold); background: #0f0b05; }
 
-        .strip-head { text-align: center; font-size: 10px; font-weight: bold; color: #777; margin-bottom: 10px; white-space: nowrap; overflow: hidden; }
-        .master .strip-head { color: var(--omega-violet); letter-spacing: 2px; }
+        .s-title { text-align: center; font-size: 9px; font-weight: bold; color: #666; margin-bottom: 10px; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
+        .master .s-title { color: var(--phoenix-gold); }
 
-        .fx-rack { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .fx-insert {
-            font-size: 9px; background: #050505; color: #555; padding: 6px;
-            border: 1px solid #222; text-align: center; cursor: pointer; border-radius: 3px; transition: 0.2s;
+        .fx-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .fx-btn {
+            font-size: 8px; background: #000; color: #555; padding: 4px; text-align: center;
+            border: 1px solid #222; cursor: pointer; border-radius: 2px;
         }
-        .fx-insert:hover { color: #fff; border-color: #555; }
-        .fx-insert.active { color: var(--omega-cyan); border-color: var(--omega-cyan); background: rgba(0,243,255,0.1); }
+        .fx-btn:hover { color: #fff; border-color: #555; }
+        .fx-btn.on { color: var(--phoenix-blue); border-color: var(--phoenix-blue); background: rgba(0, 243, 255, 0.1); }
 
-        .pan-knob-area { display: flex; justify-content: center; margin-bottom: 10px; }
-        input[type=range].pan { width: 80%; cursor: ew-resize; height: 10px; }
-
-        .fader-area {
-            flex: 1; background: #08080a; border: 1px solid #1a1a1d; border-radius: 4px;
-            display: flex; justify-content: center; align-items: flex-end; position: relative;
-        }
+        .fader-box { flex: 1; display: flex; justify-content: center; position: relative; }
         
-        .meter-container { position: absolute; right: 10px; top: 10px; bottom: 10px; width: 6px; background: #000; border-radius: 3px; overflow: hidden; }
-        .meter-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(to top, var(--omega-acid), var(--omega-gold), var(--omega-red)); transition: height 0.05s linear; opacity: 0.8; }
+        input[type=range].vol {
+            -webkit-appearance: none; width: 150px; height: 20px; background: transparent;
+            transform: rotate(-90deg); margin-top: 65px; cursor: ns-resize;
+        }
+        input[type=range].vol::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 24px; background: #444;
+            border: 1px solid #000; border-radius: 2px; box-shadow: 0 2px 5px #000;
+        }
+        .master input[type=range].vol::-webkit-slider-thumb { background: var(--phoenix-gold); }
 
-        input[type=range].fader {
-            -webkit-appearance: none; width: 250px; height: 40px; background: transparent;
-            transform: rotate(-90deg); margin-bottom: 115px; cursor: ns-resize;
-        }
-        input[type=range].fader::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #222; border-radius: 2px; }
-        input[type=range].fader::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 30px; height: 40px; background: #333; margin-top: -18px;
-            border: 1px solid #000; border-radius: 4px; box-shadow: 0 4px 10px #000;
-            background-image: linear-gradient(90deg, transparent 45%, #666 45%, #666 55%, transparent 55%);
-        }
-        .master input[type=range].fader::-webkit-slider-thumb { background-color: #221829; border-color: var(--omega-violet); }
-
-        /* * ======================================================================================
-         * [PLUGINS] FLOATING RACK WINDOWS
-         * ======================================================================================
-         */
-        .plugin-window {
-            position: absolute; width: 380px; background: rgba(12, 12, 16, 0.98);
-            border: 1px solid #444; border-top: 3px solid var(--omega-cyan);
-            border-radius: 6px; box-shadow: 0 40px 120px #000; backdrop-filter: blur(10px);
-            display: none; z-index: 5000; flex-direction: column;
-        }
-        
-        .pw-header {
-            padding: 10px 15px; background: #1a1a1d; border-bottom: 1px solid #333; cursor: move;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .pw-title { font-family: 'Rajdhani'; font-weight: 700; color: #fff; letter-spacing: 1px; font-size: 14px; }
-        
-        .pw-content { padding: 25px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-
-        .control-knob { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .dial {
-            -webkit-appearance: none; width: 60px; height: 60px; border-radius: 50%;
-            background: conic-gradient(var(--omega-cyan) var(--v), #111 0deg);
-            position: relative; cursor: ns-resize; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .dial::after {
-            content:''; position: absolute; top:5px; left:5px; right:5px; bottom:5px;
-            background: #18181c; border-radius: 50%;
-        }
-        .dial-label { font-size: 9px; font-weight: bold; color: #888; text-transform: uppercase; }
-        .dial-val { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--omega-cyan); position: absolute; top: 24px; pointer-events: none; }
-
-        /* * ======================================================================================
-         * [MODALS] LIBRARY & AI
-         * ======================================================================================
-         */
-        .modal-overlay {
+        /* =========================================
+           5. MODALS & DEBUG
+           ========================================= */
+        .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 6000; display: none;
-            justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.9); z-index: 5000; display: none;
+            justify-content: center; align-items: center;
         }
-        .modal { width: 900px; height: 700px; background: #111; border: 1px solid #333; border-top: 4px solid var(--omega-gold); display: flex; flex-direction: column; box-shadow: 0 50px 100px #000; }
+        .modal { width: 600px; background: var(--bg-slat); border: 1px solid var(--border); border-top: 3px solid var(--phoenix-blue); padding: 20px; }
         
-        .modal-body { flex: 1; padding: 30px; overflow-y: auto; }
-        
-        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .lib-card {
-            background: #08080a; border: 1px solid #222; padding: 20px; border-radius: 6px;
-            cursor: pointer; text-align: center; transition: 0.2s; position: relative; overflow: hidden;
-        }
-        .lib-card:hover { border-color: var(--omega-gold); background: #151518; transform: translateY(-2px); }
-        .lc-title { font-weight: bold; color: #eee; font-size: 13px; margin-bottom: 5px; }
-        .lc-cat { font-size: 10px; color: #666; text-transform: uppercase; }
+        .lib-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-height: 400px; overflow-y: auto; }
+        .lib-item { background: #000; padding: 10px; border: 1px solid #333; text-align: center; cursor: pointer; font-size: 11px; }
+        .lib-item:hover { border-color: var(--phoenix-blue); color: #fff; }
 
-        /* AI Chat */
-        .ai-wrap { display: flex; flex-direction: column; height: 100%; }
-        #ai-input { flex: 1; background: #050505; border: 1px solid #333; color: #fff; padding: 20px; font-family: 'Inter'; font-size: 14px; resize: none; margin-bottom: 20px; }
-        #ai-input:focus { border-color: var(--omega-cyan); }
-        .btn-gen { width: 100%; padding: 20px; background: var(--omega-violet); border: none; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .btn-gen:hover { background: #d04aff; }
+        .debug-console {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 25px;
+            background: #000; border-top: 1px solid #222; color: var(--phoenix-gold);
+            font-family: 'JetBrains Mono'; font-size: 10px; display: flex; align-items: center; padding: 0 10px;
+            z-index: 9999;
+        }
+
+        /* Plugin Window */
+        .plugin-win {
+            position: absolute; width: 250px; background: rgba(10,10,10,0.95);
+            border: 1px solid #444; border-top: 2px solid var(--phoenix-blue);
+            top: 30%; left: 40%; display: none; flex-direction: column; z-index: 6000;
+            box-shadow: 0 20px 50px #000;
+        }
+        .pw-head { padding: 8px; background: #222; display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; cursor: move; }
+        .pw-body { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .knob-box { text-align: center; }
+        input[type=range].knob { width: 100%; cursor: pointer; }
 
     </style>
 </head>
 <body>
 
-    <div id="bg-grid"></div>
-
-    <div id="omega-boot">
-        <div class="omega-title">OMEGA</div>
-        <div class="omega-ver">GRANULAR AUDIO WORKSTATION v15.0</div>
-        
-        <div class="term-window" id="boot-term">
-            <div class="log-entry">> KERNEL INIT... <span class="log-ok">OK</span></div>
-        </div>
-        
-        <div class="loading-bar-wrap"><div class="loading-bar-fill" id="boot-load-bar"></div></div>
-        
-        <button class="btn-launch" id="btn-enter" onclick="System.start()">BAŞLAT</button>
+    <div id="boot-layer">
+        <div class="logo-big">PHOENIX</div>
+        <div class="boot-status">SES MOTORU BEKLEMEDE...</div>
+        <button id="btn-start-engine" onclick="Core.startEngine()">SİSTEMİ BAŞLAT</button>
     </div>
 
-    <div id="plugin-layer"></div>
+    <div class="debug-console" id="console-line">> SYSTEM READY. WAITING FOR USER INPUT...</div>
 
-    <div class="modal-overlay" id="mod-lib">
+    <div class="plugin-win" id="fx-window">
+        </div>
+
+    <div class="overlay" id="mod-lib">
         <div class="modal">
-            <div class="pw-header">
-                <span class="pw-title">OMEGA SOUND VAULT (PROCEDURAL)</span>
-                <span style="cursor:pointer" onclick="UI.modal('mod-lib', false)">✕</span>
-            </div>
-            <div class="modal-body">
-                <div class="lib-grid" id="lib-content"></div>
-            </div>
+            <h3 style="margin-top:0; color:#fff;">ENSTRÜMAN EKLE</h3>
+            <div class="lib-grid" id="lib-content"></div>
+            <button class="btn" style="margin-top:15px; width:100%; justify-content:center;" onclick="UI.toggle('mod-lib', false)">KAPAT</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="mod-ai">
-        <div class="modal" style="border-top-color:var(--omega-violet); height:500px;">
-            <div class="pw-header">
-                <span class="pw-title">OMEGA AI COMPOSER</span>
-                <span style="cursor:pointer" onclick="UI.modal('mod-ai', false)">✕</span>
-            </div>
-            <div class="modal-body">
-                <div class="ai-wrap">
-                    <p style="color:#aaa; font-size:12px;">Müzikal parametreleri (BPM, Gam, Ritim Yoğunluğu, Doku) doğal dil ile tanımlayın.</p>
-                    <textarea id="ai-in" placeholder="Örn: 140 BPM, karanlık atmosferik techno, granular pad sesleri ve agresif kick..."></textarea>
-                    <button class="btn-gen" onclick="AI.process()">OLUŞTUR</button>
-                    <div id="ai-status" style="margin-top:10px; color:var(--omega-cyan); font-family:'JetBrains Mono'; font-size:10px;"></div>
-                </div>
-            </div>
+    <div class="overlay" id="mod-ai">
+        <div class="modal">
+            <h3 style="margin-top:0; color:var(--phoenix-gold);">YAPAY ZEKA MİMAR</h3>
+            <textarea id="ai-in" style="width:100%; height:100px; background:#000; color:#fff; border:1px solid #333; padding:10px;" placeholder="Tarzınızı yazın (Trap, Techno, Hızlı, Yavaş)..."></textarea>
+            <button class="btn btn-ai" style="width:100%; justify-content:center; margin-top:10px; height:40px;" onclick="AI.generate()">OLUŞTUR</button>
         </div>
-    </div>
-
-    <div class="sidebar">
-        <div class="side-tool active" title="Sequencer View">SEQ</div>
-        <div class="side-tool" title="Piano Roll (Future)">KEY</div>
-        <div class="side-tool" title="Project Settings">SET</div>
     </div>
 
     <header>
-        <div class="brand-section">
-            <div class="logo-main">R0Y<span>PAD</span></div>
-            <div class="dsp-badge">OMEGA DSP</div>
-        </div>
-
-        <div style="display:flex; gap:15px;">
-            <button class="btn-tr" style="width:auto; padding:0 20px; font-size:11px; font-weight:bold; border:1px solid var(--omega-cyan); color:var(--omega-cyan);" onclick="UI.modal('mod-lib', true)">+ KANAL</button>
-            <button class="btn-tr" style="width:auto; padding:0 20px; font-size:11px; font-weight:bold; border:1px solid var(--omega-violet); color:var(--omega-violet);" onclick="UI.modal('mod-ai', true)">AI MİMAR</button>
-        </div>
-
-        <div class="global-transport">
-            <div class="bpm-display">
-                <span class="bpm-lbl">BPM</span>
-                <input type="number" class="bpm-val" id="bpm-val" value="130" onchange="Audio.setBpm(this.value)">
+        <div class="brand">R0Y<span>PAD</span></div>
+        
+        <div class="toolbar">
+            <button class="btn btn-add" onclick="UI.toggle('mod-lib', true)">+ KANAL</button>
+            <button class="btn btn-ai" onclick="UI.toggle('mod-ai', true)">YAPAY ZEKA</button>
+            <div style="width:1px; height:20px; background:#333;"></div>
+            <div class="transport">
+                <span style="font-size:10px; color:#666; font-weight:bold; padding-left:5px;">BPM</span>
+                <input type="number" class="bpm-in" id="bpm-val" value="130" onchange="Core.setBpm(this.value)">
+                <button class="btn-tr" onclick="Core.stop()">■</button>
+                <button class="btn-tr btn-play" id="btn-play" onclick="Core.toggle()">▶</button>
             </div>
-            <button class="btn-tr" onclick="Audio.stop()">■</button>
-            <button class="btn-tr btn-play" id="play-btn" onclick="Audio.toggle()">▶</button>
-            <button class="btn-tr btn-rec" id="rec-btn" onclick="Recorder.toggle()">●</button>
+            <button class="btn" onclick="Core.clear()">TEMİZLE</button>
         </div>
     </header>
 
@@ -450,145 +269,161 @@
             </div>
     </div>
 
-    <div class="mixer-panel" id="mixer-container">
+    <div class="mixer" id="mixer-container">
         <div class="strip master">
-            <div class="strip-head">MASTER</div>
-            <div class="fx-rack">
-                <div class="fx-insert active">LIMITER</div>
-                <div class="fx-insert active">SOFT CLIP</div>
-                <div class="fx-insert active">WIDE</div>
+            <div class="s-title">MASTER</div>
+            <div class="fx-list">
+                <div class="fx-btn on">LIMITER</div>
+                <div class="fx-btn on">COMP</div>
             </div>
-            <div class="fader-area">
-                <div class="meter-container"><div class="meter-bar" id="vu-master"></div></div>
-                <input type="range" class="fader" min="0" max="1.2" step="0.01" value="0.9" oninput="Audio.setMaster(this.value)">
+            <div class="fader-box">
+                <input type="range" class="vol" min="0" max="1.2" step="0.01" value="0.9" oninput="Core.setMaster(this.value)">
             </div>
         </div>
     </div>
 
 <script>
     /**
-     * R0YPAD STUDIO v15.0 - OMEGA ENGINE SOURCE CODE
-     * ==============================================
-     * Author: R0YC0LD AI
-     * System: Granular Synthesis & Algorithmic Reverb
+     * R0YPAD PHOENIX v16.0 - STABLE CORE
+     * ----------------------------------
+     * Logic:
+     * 1. AudioContext is created ONLY after user clicks "BASLAT".
+     * 2. Sounds are synthesized (Oscillators) so no loading errors.
+     * 3. Simple Scheduler for reliable timing.
      */
 
-    /* --- 1. MATHEMATICS & UTILS --- */
-    const MathUtils = {
-        clamp: (v, min, max) => Math.min(Math.max(v, min), max),
-        rand: (min, max) => Math.random() * (max - min) + min,
-        randInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
-        id: () => 'id_' + Math.random().toString(36).substr(2, 9),
-        
-        // Sigmoid Distortion Curve
-        makeDistCurve: (amount) => {
-            const k = amount; const n = 44100; const curve = new Float32Array(n); const deg = Math.PI / 180;
-            for (let i = 0; i < n; ++i) {
-                const x = i * 2 / n - 1;
-                curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
-            }
-            return curve;
-        },
-
-        // Algorithmic Reverb Impulse (Schroeder-ish approximation via Impulse)
-        createImpulse: (ctx, duration, decay) => {
-            const L = ctx.sampleRate * duration;
-            const imp = ctx.createBuffer(2, L, ctx.sampleRate);
-            const l = imp.getChannelData(0); const r = imp.getChannelData(1);
-            for(let i=0; i<L; i++) {
-                // Exponential Decay with random noise
-                let n = i/L;
-                let env = Math.pow(1-n, decay);
-                // Simple Decorrelation
-                l[i] = (Math.random() * 2 - 1) * env;
-                r[i] = (Math.random() * 2 - 1) * env;
-            }
-            return imp;
+    // --- 1. SYSTEM LOGGING ---
+    const Log = {
+        print: (msg) => {
+            const el = document.getElementById('console-line');
+            el.innerText = `> ${msg}`;
+            el.style.color = '#00f3ff';
+            setTimeout(() => el.style.color = '#ffaa00', 200);
+            console.log(`[SYS] ${msg}`);
         }
     };
 
-    /* --- 2. AUDIO KERNEL --- */
-    const Audio = {
-        ctx: null, master: null, limiter: null, analyser: null, dest: null,
-        tracks: [], isPlaying: false, step: 0, nextTime: 0, tempo: 130, lookahead: 25.0, timer: null,
+    // --- 2. UTILS ---
+    const Utils = {
+        id: () => 't_' + Math.random().toString(36).substr(2, 9),
+        rand: (min, max) => Math.random() * (max - min) + min,
+        // Basit Reverb Impulse
+        createImpulse: (ctx) => {
+            const len = ctx.sampleRate * 2; // 2 seconds
+            const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+            for(let i=0; i<len; i++) {
+                let dec = Math.pow(1 - i/len, 3);
+                buf.getChannelData(0)[i] = (Math.random()*2-1)*dec;
+                buf.getChannelData(1)[i] = (Math.random()*2-1)*dec;
+            }
+            return buf;
+        },
+        // Distortion Curve
+        makeDist: (amount) => {
+            const n = 44100, curve = new Float32Array(n);
+            for(let i=0; i<n; ++i) {
+                const x = i * 2 / n - 1;
+                curve[i] = (3 + amount) * x * 20 * (Math.PI / 180) / (Math.PI + amount * Math.abs(x));
+            }
+            return curve;
+        }
+    };
 
-        init() {
-            if(this.ctx) return;
-            const AC = window.AudioContext || window.webkitAudioContext;
-            this.ctx = new AC({ latencyHint: 'interactive' });
-            
-            this.master = this.ctx.createGain();
-            this.master.gain.value = 0.9;
+    // --- 3. CORE AUDIO ---
+    const Core = {
+        ctx: null, master: null, limiter: null,
+        tracks: [], isPlaying: false, step: 0, nextNoteTime: 0, tempo: 130, timerID: null,
 
-            // Master Chain: Limiter -> SoftClipper -> Analyser
-            this.limiter = this.ctx.createDynamicsCompressor();
-            this.limiter.threshold.value = -1.0; 
-            this.limiter.ratio.value = 20.0;
-            this.limiter.attack.value = 0.002;
+        startEngine() {
+            try {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AC();
+                
+                // Master Bus
+                this.master = this.ctx.createGain();
+                this.master.gain.value = 0.9;
+                
+                // Safety Limiter
+                this.limiter = this.ctx.createDynamicsCompressor();
+                this.limiter.threshold.value = -1.0;
+                this.limiter.ratio.value = 20.0;
 
-            this.analyser = this.ctx.createAnalyser();
-            this.analyser.fftSize = 256;
+                this.master.connect(this.limiter);
+                this.limiter.connect(this.ctx.destination);
 
-            this.dest = this.ctx.createMediaStreamDestination();
-
-            this.master.connect(this.limiter);
-            this.limiter.connect(this.analyser);
-            this.analyser.connect(this.ctx.destination);
-            this.analyser.connect(this.dest);
-
-            Recorder.init(this.dest.stream);
-            this.animate();
+                // UI Update
+                document.getElementById('boot-layer').style.display = 'none';
+                Log.print("AUDIO ENGINE STARTED SUCCESSFULLY.");
+                
+                // Default Tracks
+                Library.init(); // Init instruments
+                
+                // Add demo tracks
+                this.addTrack(Library.presets[0]); // Kick
+                this.addTrack(Library.presets[1]); // Snare
+                this.addTrack(Library.presets[2]); // Hat
+                
+            } catch (e) {
+                alert("Tarayıcı Ses Hatası: " + e);
+            }
         },
 
         toggle() {
-            if(!this.ctx) this.init();
+            if(!this.ctx) return;
             if(this.ctx.state === 'suspended') this.ctx.resume();
-            
+
             this.isPlaying = !this.isPlaying;
-            const btn = document.getElementById('play-btn');
+            const btn = document.getElementById('btn-play');
+            
             if(this.isPlaying) {
-                btn.classList.add('active'); btn.innerHTML = "||";
-                this.step = 0; this.nextTime = this.ctx.currentTime + 0.1;
+                btn.classList.add('active'); btn.innerText = "||";
+                this.step = 0;
+                this.nextNoteTime = this.ctx.currentTime + 0.1;
                 this.scheduler();
+                Log.print("PLAYBACK STARTED");
             } else {
-                btn.classList.remove('active'); btn.innerHTML = "▶";
-                clearTimeout(this.timer);
+                btn.classList.remove('active'); btn.innerText = "▶";
+                clearTimeout(this.timerID);
+                Log.print("PLAYBACK PAUSED");
             }
         },
 
         stop() {
-            this.isPlaying = false; clearTimeout(this.timer);
-            this.step = 0; UI.resetHeads();
-            document.getElementById('play-btn').classList.remove('active');
-            document.getElementById('play-btn').innerHTML = "▶";
+            this.isPlaying = false;
+            clearTimeout(this.timerID);
+            this.step = 0;
+            document.getElementById('btn-play').classList.remove('active');
+            document.getElementById('btn-play').innerText = "▶";
+            UI.resetHeads();
+            Log.print("STOPPED");
         },
 
         scheduler() {
-            while (this.nextTime < this.ctx.currentTime + 0.1) {
-                this.playStep(this.nextTime);
-                this.nextTime += 0.25 * (60.0 / this.tempo);
-                this.step++;
+            const secondsPerBeat = 60.0 / this.tempo;
+            const stepTime = 0.25 * secondsPerBeat; // 16th note
+
+            while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
+                this.playStep(this.step, this.nextNoteTime);
+                this.nextNoteTime += stepTime;
+                this.step = (this.step + 1) % 16;
             }
-            this.timer = setTimeout(() => this.scheduler(), this.lookahead);
+            this.timerID = setTimeout(() => this.scheduler(), 25);
         },
 
-        playStep(time) {
-            // Precise UI Sync
+        playStep(stepNum, time) {
+            // UI Sync
             const drawTime = (time - this.ctx.currentTime) * 1000;
-            
+            setTimeout(() => UI.drawHead(stepNum), Math.max(0, drawTime));
+
             this.tracks.forEach(tr => {
-                const s = this.step % 16;
-                setTimeout(() => UI.drawHead(tr.id, s), Math.max(0, drawTime));
-                
-                if (tr.steps[s] && !tr.muted) {
-                    tr.voice.trigger(time);
-                    setTimeout(() => UI.pulse(tr.id), Math.max(0, drawTime));
+                if(tr.steps[stepNum] && !tr.muted) {
+                    tr.synth.trigger(time);
                 }
             });
         },
 
-        addTrack(data) {
-            const t = new Track(this.ctx, this.master, data);
+        addTrack(preset) {
+            const t = new Track(this.ctx, this.master, preset);
             this.tracks.push(t);
             UI.renderTrack(t);
             UI.renderStrip(t);
@@ -600,391 +435,255 @@
             if(idx > -1) {
                 this.tracks[idx].kill();
                 this.tracks.splice(idx, 1);
-                UI.removeUI(id);
+                document.getElementById(`tr-${id}`).remove();
+                document.getElementById(`ch-${id}`).remove();
+                document.getElementById(`win-${id}`)?.remove();
             }
         },
 
-        clear() { this.tracks.forEach(t => t.steps.fill(false)); UI.refreshGrid(); },
-        setBpm(v) { this.tempo = MathUtils.clamp(parseInt(v), 40, 300); },
-        setMaster(v) { if(this.master) this.master.gain.value = v; },
+        clear() {
+            this.tracks.forEach(t => t.steps.fill(false));
+            document.querySelectorAll('.step.active').forEach(e => e.classList.remove('active'));
+            Log.print("PATTERN CLEARED");
+        },
 
-        animate() {
-            if(this.isPlaying) {
-                const arr = new Uint8Array(this.analyser.frequencyBinCount);
-                this.analyser.getByteFrequencyData(arr);
-                let sum = 0; for(let i=0;i<arr.length;i++) sum+=arr[i];
-                const h = Math.min(100, (sum/arr.length)*1.5);
-                document.getElementById('vu-master').style.height = h + '%';
-            }
-            
-            // Scope Animation per track
-            this.tracks.forEach(t => t.renderScope());
-            requestAnimationFrame(() => this.animate());
-        }
+        setBpm(v) { this.tempo = Math.max(40, Math.min(300, parseInt(v))); Log.print(`BPM SET TO ${this.tempo}`); },
+        setMaster(v) { if(this.master) this.master.gain.value = v; }
     };
 
-    /* --- 3. TRACK & FX ENGINE --- */
+    // --- 4. TRACK & SYNTH ---
     class Track {
-        constructor(ctx, dest, data) {
-            this.ctx = ctx; this.data = data; this.id = MathUtils.id();
-            this.steps = Array(16).fill(false); this.muted = false;
+        constructor(ctx, dest, preset) {
+            this.ctx = ctx; this.preset = preset;
+            this.id = Utils.id();
+            this.name = preset.name;
+            this.steps = Array(16).fill(false);
+            this.muted = false;
 
-            // Audio Graph
-            this.vol = ctx.createGain(); this.vol.gain.value = 0.8;
-            this.pan = ctx.createStereoPanner();
-            this.analyser = ctx.createAnalyser(); 
-            this.analyser.fftSize = 64; // Mini Scope
-
-            this.pan.connect(this.vol);
-            this.vol.connect(this.analyser);
+            // Audio Graph: Synth -> FX Chain -> Volume -> Master
+            this.vol = ctx.createGain();
+            this.vol.gain.value = 0.8;
             this.vol.connect(dest);
 
-            // FX Rack
+            // FX Nodes
             this.fx = {
                 dist: ctx.createWaveShaper(),
                 delay: ctx.createDelay(), dFb: ctx.createGain(),
                 rev: ctx.createConvolver(), rGain: ctx.createGain(),
-                filter: ctx.createBiquadFilter(),
                 dry: ctx.createGain()
             };
 
-            // FX Init
-            this.fx.dist.curve = MathUtils.makeDistCurve(0); this.fx.dist.oversample = '4x';
+            // FX Setup
+            this.fx.dist.curve = Utils.makeDist(0); this.fx.dist.oversample = '4x';
             this.fx.delay.delayTime.value = 0; this.fx.dFb.gain.value = 0;
             this.fx.delay.connect(this.fx.dFb); this.fx.dFb.connect(this.fx.delay);
-            this.fx.rev.buffer = MathUtils.createImpulse(ctx, 2, 2); this.fx.rGain.gain.value = 0;
-            this.fx.filter.type = 'lowpass'; this.fx.filter.frequency.value = 20000;
+            this.fx.rev.buffer = Utils.createImpulse(ctx); this.fx.rGain.gain.value = 0;
 
-            // Routing: Input -> Filter -> Dist -> (Dry + Delay + Rev) -> Pan
-            this.input = this.fx.filter;
-            this.fx.filter.connect(this.fx.dist);
-            
+            // Wiring
+            this.input = this.fx.dist;
             this.fx.dist.connect(this.fx.dry);
             this.fx.dist.connect(this.fx.delay);
             this.fx.dist.connect(this.fx.rev);
 
-            this.fx.dry.connect(this.pan);
-            this.fx.delay.connect(this.pan);
+            this.fx.dry.connect(this.vol);
+            this.fx.delay.connect(this.vol);
             this.fx.rev.connect(this.fx.rGain);
-            this.fx.rGain.connect(this.pan);
+            this.fx.rGain.connect(this.vol);
 
-            // Parameter State
-            this.state = { dist:0, dTime:0, dFb:0, rev:0, cut:100, res:0 };
-            
-            // Engines
-            this.voice = new GranularVoice(this);
+            this.params = { dist:0, delay:0, rev:0 };
+            this.synth = new Synth(this);
         }
 
         updateFX(type, val) {
-            const v = parseFloat(val);
-            if(type==='DIST') { this.state.dist=v; this.fx.dist.curve = MathUtils.makeDistCurve(v*4); }
-            if(type==='D_TIME') { this.state.dTime=v; this.fx.delay.delayTime.value = (v/100)*0.6; }
-            if(type==='D_FB') { this.state.dFb=v; this.fx.dFb.gain.value = (v/100)*0.9; }
-            if(type==='REV') { this.state.rev=v; this.fx.rGain.gain.value = (v/100); }
-            if(type==='CUT') { this.state.cut=v; this.fx.filter.frequency.value = 20 + (v/100)*20000; }
-            if(type==='RES') { this.state.res=v; this.fx.filter.Q.value = (v/100)*20; }
-        }
-
-        renderScope() {
-            const cvs = document.getElementById(`scope-${this.id}`);
-            if(!cvs) return;
-            const ctx = cvs.getContext('2d');
-            const data = new Uint8Array(this.analyser.frequencyBinCount);
-            this.analyser.getByteTimeDomainData(data);
-            
-            ctx.fillStyle = '#000'; ctx.fillRect(0,0,cvs.width,cvs.height);
-            ctx.lineWidth = 1; ctx.strokeStyle = '#00f3ff'; ctx.beginPath();
-            
-            const slice = cvs.width / data.length;
-            let x = 0;
-            for(let i=0; i<data.length; i++) {
-                const v = data[i] / 128.0;
-                const y = v * cvs.height/2;
-                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-                x += slice;
-            }
-            ctx.stroke();
+            if(type==='DIST') { this.params.dist=val; this.fx.dist.curve = Utils.makeDist(val*2); }
+            if(type==='DELAY') { this.params.delay=val; this.fx.delay.delayTime.value = (val/100)*0.5; this.fx.dFb.gain.value=(val/100)*0.6; }
+            if(type==='REV') { this.params.rev=val; this.fx.rGain.gain.value = (val/100); }
         }
 
         kill() { this.vol.disconnect(); }
     }
 
-    /* --- 4. GRANULAR VOICE ENGINE --- */
-    class GranularVoice {
+    class Synth {
         constructor(track) { this.t = track; this.ctx = track.ctx; }
         
         trigger(time) {
             const dest = this.t.input;
-            const p = this.t.data.params;
+            const p = this.t.preset.p;
             const c = this.ctx;
 
-            // Oscillator Stack (Granular Simulation via Multiple Osc)
             const osc = c.createOscillator();
             const gain = c.createGain();
-            
-            // Sub Osc
-            const sub = c.createOscillator();
-            const subG = c.createGain();
 
-            // Config
-            if(this.t.data.cat === 'KICK') {
+            if (this.t.preset.cat === 'KICK') {
                 osc.frequency.setValueAtTime(p.freq, time);
-                osc.frequency.exponentialRampToValueAtTime(10, time+0.5);
+                osc.frequency.exponentialRampToValueAtTime(10, time + 0.5);
                 gain.gain.setValueAtTime(1, time);
-                gain.gain.exponentialRampToValueAtTime(0.001, time+0.5);
-                
-                sub.type = 'square'; sub.frequency.value = 50;
-                subG.gain.setValueAtTime(0.3, time); subG.gain.linearRampToValueAtTime(0, time+0.05); // Click
-            }
-            else if(this.t.data.cat === 'SNARE') {
+                gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
+            } else if (this.t.preset.cat === 'SNARE') {
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(200, time);
-                gain.gain.setValueAtTime(0.5, time); gain.gain.exponentialRampToValueAtTime(0.001, time+0.1);
+                gain.gain.setValueAtTime(0.5, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
                 
-                // Noise Grain
-                const b = c.createBuffer(1, c.sampleRate*0.2, c.sampleRate);
+                // Noise
+                const b = c.createBuffer(1, c.sampleRate*0.1, c.sampleRate);
                 const d = b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
-                const n = c.createBufferSource(); n.buffer=b;
-                const ng = c.createGain();
-                n.connect(ng); ng.connect(dest); 
-                ng.gain.setValueAtTime(0.8, time); ng.gain.exponentialRampToValueAtTime(0.001, time+0.2);
-                n.start(time);
-            }
-            else { // Synth / Bass
-                osc.type = p.wave || 'sawtooth';
+                const n = c.createBufferSource(); n.buffer = b;
+                const ng = c.createGain(); ng.gain.value = 0.5;
+                n.connect(ng); ng.connect(dest); n.start(time);
+            } else { // Synth/Hat
+                osc.type = p.wave || 'square';
                 osc.frequency.setValueAtTime(p.freq, time);
-                // FM Mod
-                if(p.fm) {
-                    sub.type = 'sine'; sub.frequency.value = p.freq * 2;
-                    subG.gain.value = 500;
-                    sub.connect(subG); subG.connect(osc.frequency);
-                    sub.start(time); sub.stop(time+0.5);
-                }
-                
-                gain.gain.setValueAtTime(0, time);
-                gain.gain.linearRampToValueAtTime(0.4, time+0.02);
-                gain.gain.exponentialRampToValueAtTime(0.001, time+0.6);
+                gain.gain.setValueAtTime(0.3, time);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + (p.decay || 0.3));
             }
 
-            osc.connect(gain); gain.connect(dest);
-            sub.connect(subG); subG.connect(dest); // For kick click
-            
-            osc.start(time); osc.stop(time+0.6);
-            if(this.t.data.cat === 'KICK') { sub.start(time); sub.stop(time+0.1); }
+            osc.connect(gain);
+            gain.connect(dest);
+            osc.start(time);
+            osc.stop(time + 1);
         }
     }
 
-    /* --- 5. LIBRARY FACTORY --- */
+    // --- 5. LIBRARY & AI ---
     const Library = {
         presets: [],
         init() {
-            // Generate 1000+ Procedural Assets
-            for(let i=0; i<250; i++) this.presets.push({cat:'KICK', name:`Omega Kick ${i}`, params:{freq:MathUtils.rand(40,90)}});
-            for(let i=0; i<250; i++) this.presets.push({cat:'SNARE', name:`Omega Snare ${i}`, params:{freq:200}});
-            for(let i=0; i<250; i++) this.presets.push({cat:'HAT', name:`Omega Hat ${i}`, params:{freq:8000}});
-            for(let i=0; i<250; i++) this.presets.push({cat:'BASS', name:`Acid Bass ${i}`, params:{freq:MathUtils.rand(40,100), wave:'sawtooth', fm:true}});
+            for(let i=1;i<=5;i++) this.presets.push({cat:'KICK', name:`Phoenix Kick ${i}`, p:{freq:50+i*5}});
+            for(let i=1;i<=5;i++) this.presets.push({cat:'SNARE', name:`Phoenix Snare ${i}`, p:{freq:200}});
+            for(let i=1;i<=5;i++) this.presets.push({cat:'HAT', name:`HiHat ${i}`, p:{freq:8000+i*500, wave:'square', decay:0.05}});
+            for(let i=1;i<=5;i++) this.presets.push({cat:'BASS', name:`Acid Bass ${i}`, p:{freq:50+i*10, wave:'sawtooth', decay:0.4}});
             
             const g = document.getElementById('lib-content');
-            // Render first 50 to DOM for performance, real app would use virtual scroll
-            this.presets.slice(0, 100).forEach(p => {
-                const d = document.createElement('div');
-                d.className = 'lib-card';
-                d.innerHTML = `<div class="lc-title">${p.name}</div><div class="lc-cat">${p.cat}</div>`;
-                d.onclick = () => { Audio.addTrack(p); UI.modal('mod-lib', false); };
-                g.appendChild(d);
+            this.presets.forEach(p => {
+                const el = document.createElement('div');
+                el.className = 'lib-item';
+                el.innerText = `${p.name} (${p.cat})`;
+                el.onclick = () => { Core.addTrack(p); UI.toggle('mod-lib', false); };
+                g.appendChild(el);
             });
         }
     };
 
-    /* --- 6. AI COMPOSER --- */
     const AI = {
-        process() {
-            const p = document.getElementById('ai-in').value.toLowerCase();
-            const log = document.getElementById('ai-status');
-            log.innerText = "Neural Network Processing...";
-            
-            Audio.clear();
+        generate() {
+            const val = document.getElementById('ai-in').value.toLowerCase();
+            Core.clear();
+            Log.print("AI GENERATING...");
             
             let bpm = 130;
-            if(p.includes('fast') || p.includes('techno') || p.includes('hızlı')) bpm = 140;
-            if(p.includes('slow') || p.includes('lofi') || p.includes('yavaş')) bpm = 90;
+            if(val.includes('hızlı') || val.includes('techno')) bpm = 140;
+            if(val.includes('yavaş')) bpm = 90;
+            Core.setBpm(bpm); document.getElementById('bpm-val').value = bpm;
+
+            const k = Core.addTrack(Library.presets[0]); // Kick
+            const s = Core.addTrack(Library.presets[5]); // Snare
+            const h = Core.addTrack(Library.presets[10]); // Hat
             
-            Audio.setBpm(bpm); document.getElementById('bpm-val').value = bpm;
-
-            const k = Audio.addTrack(Library.presets.find(x=>x.cat==='KICK'));
-            const s = Audio.addTrack(Library.presets.find(x=>x.cat==='SNARE'));
-            const b = Audio.addTrack(Library.presets.find(x=>x.cat==='BASS'));
-            const h = Audio.addTrack(Library.presets.find(x=>x.cat==='HAT'));
-
-            // Algorithmic Patterns
-            for(let i=0;i<16;i++) {
-                if(i%4===0) k.steps[i]=true;
-                if(i===4||i===12) s.steps[i]=true;
-                if(i%2===0) h.steps[i]=true;
-                if(Math.random()>0.7) b.steps[i]=true;
+            for(let i=0; i<16; i++) {
+                if(i%4 === 0) k.steps[i] = true;
+                if(i===4 || i===12) s.steps[i] = true;
+                if(i%2 === 0) h.steps[i] = true;
             }
             
-            // FX Injection
-            b.updateFX('DIST', 30); b.updateFX('CUT', 40);
-            h.updateFX('D_TIME', 15); h.updateFX('D_FB', 40);
-
-            log.innerText = "Composition Ready.";
-            setTimeout(() => { UI.modal('mod-ai', false); Audio.toggle(); }, 1000);
+            UI.renderTrack(k); UI.renderTrack(s); UI.renderTrack(h); // Refresh UI
+            UI.toggle('mod-ai', false);
+            Core.toggle();
         }
     };
 
-    /* --- 7. RECORDER --- */
-    const Recorder = {
-        rec: null, chunks: [],
-        init(stream) {
-            try {
-                this.rec = new MediaRecorder(stream);
-                this.rec.ondataavailable = e => this.chunks.push(e.data);
-                this.rec.onstop = () => {
-                    const blob = new Blob(this.chunks, {'type':'audio/wav'});
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a'); a.href=url; a.download='OMEGA_Export.wav'; a.click();
-                };
-            } catch(e) {}
-        },
-        toggle() {
-            if(!this.rec) return;
-            const btn = document.getElementById('rec-btn');
-            if(this.rec.state === 'inactive') { this.chunks=[]; this.rec.start(); btn.classList.add('active'); }
-            else { this.rec.stop(); btn.classList.remove('active'); }
-        }
-    };
-
-    /* --- 8. UI MANAGER --- */
+    // --- 6. UI MANAGER ---
     const UI = {
-        modal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; },
+        toggle(id, show) { document.getElementById(id).style.display = show?'flex':'none'; },
         
         renderTrack(t) {
+            // Check if exists
+            if(document.getElementById(`tr-${t.id}`)) return; 
+
             const el = document.createElement('div');
-            el.className = 'track-unit'; el.id = `tr-${t.id}`;
+            el.className = 'track-row'; el.id = `tr-${t.id}`;
             el.innerHTML = `
-                <div class="track-controls">
-                    <div class="tc-info">
-                        <div class="tc-name">${t.data.name}</div>
-                        <div class="tc-type">${t.data.cat}</div>
-                    </div>
-                    <canvas class="tc-scope" id="scope-${t.id}" width="80" height="40"></canvas>
-                    <div class="tc-btns">
-                        <div class="mini-btn mute" onclick="UI.mute('${t.id}',this)">M</div>
-                        <div class="mini-btn solo" onclick="Audio.removeTrack('${t.id}')">X</div>
-                    </div>
+                <div class="t-head">
+                    <span class="t-name">${t.name}</span>
+                    <div class="t-btn" onclick="Core.removeTrack('${t.id}')">X</div>
                 </div>
-                <div class="sequencer-lane">
-                    <div class="step-grid">
-                        ${t.steps.map((_,i) => `<div class="step" id="s-${t.id}-${i}" onclick="UI.tog('${t.id}',${i},this)"></div>`).join('')}
-                    </div>
+                <div class="t-grid">
+                    ${t.steps.map((_, i) => `<div class="step" id="s-${t.id}-${i}" onclick="UI.step('${t.id}', ${i}, this)"></div>`).join('')}
                 </div>
             `;
             document.getElementById('track-container').appendChild(el);
         },
 
         renderStrip(t) {
+            if(document.getElementById(`ch-${t.id}`)) return;
+
             const el = document.createElement('div');
             el.className = 'strip'; el.id = `ch-${t.id}`;
             el.innerHTML = `
-                <div class="strip-head">${t.data.name}</div>
-                <div class="fx-rack">
-                    <div class="fx-insert" onclick="UI.fx('${t.id}','DIST')">DIST</div>
-                    <div class="fx-insert" onclick="UI.fx('${t.id}','DELAY')">DELAY</div>
-                    <div class="fx-insert" onclick="UI.fx('${t.id}','FILTER')">FILTER</div>
+                <div class="s-title">${t.name}</div>
+                <div class="fx-list">
+                    <div class="fx-btn" onclick="UI.openFX('${t.id}', 'DIST')">DIST</div>
+                    <div class="fx-btn" onclick="UI.openFX('${t.id}', 'DELAY')">DELAY</div>
+                    <div class="fx-btn" onclick="UI.openFX('${t.id}', 'REV')">REV</div>
                 </div>
-                <div class="fader-area">
-                    <div class="meter-container"><div class="meter-bar" id="vm-${t.id}"></div></div>
-                    <input type="range" class="fader" min="0" max="1" step="0.01" value="0.8" 
-                           oninput="Audio.tracks.find(x=>x.id=='${t.id}').vol.gain.value=this.value">
+                <div class="fader-box">
+                    <input type="range" class="vol" min="0" max="1" step="0.01" value="0.8" 
+                           oninput="Core.tracks.find(x=>x.id=='${t.id}').vol.gain.value=this.value">
                 </div>
             `;
             const c = document.getElementById('mixer-container');
             c.insertBefore(el, c.querySelector('.master'));
         },
 
-        removeUI(id) { document.getElementById(`tr-${id}`).remove(); document.getElementById(`ch-${id}`).remove(); },
-        tog(tid,i,el) { const t=Audio.tracks.find(x=>x.id===tid); if(t){t.steps[i]=!t.steps[i]; el.classList.toggle('on');} },
-        mute(tid,el) { const t=Audio.tracks.find(x=>x.id===tid); if(t){t.muted=!t.muted; el.classList.toggle('active');} },
-        
-        drawHead(tid, s) {
-            const tr = document.getElementById(`tr-${tid}`);
-            if(tr) {
-                tr.querySelectorAll('.playhead').forEach(e=>e.classList.remove('playhead'));
-                const st = document.getElementById(`s-${tid}-${s}`);
-                if(st) st.classList.add('playhead');
-            }
+        step(tid, i, el) {
+            const t = Core.tracks.find(x=>x.id===tid);
+            if(t) { t.steps[i] = !t.steps[i]; el.classList.toggle('active'); }
         },
-        resetHeads() { document.querySelectorAll('.playhead').forEach(e=>e.classList.remove('playhead')); },
-        pulse(id) { const m=document.getElementById(`vm-${id}`); if(m) { m.style.height=(60+Math.random()*40)+'%'; setTimeout(()=>m.style.height='0%',100); } },
-        refreshGrid() { document.querySelectorAll('.step.on').forEach(e=>e.classList.remove('on')); },
 
-        fx(tid, type) {
+        drawHead(s) {
+            document.querySelectorAll('.step.playhead').forEach(e => e.classList.remove('playhead'));
+            document.querySelectorAll(`.step:nth-child(${s+1})`).forEach(e => e.classList.add('playhead'));
+            document.querySelectorAll('.track-row').forEach(r => r.classList.remove('playing'));
+            // Optional: Highlight playing row logic
+        },
+        resetHeads() { document.querySelectorAll('.playhead').forEach(e => e.classList.remove('playhead')); },
+
+        // FX Window
+        openFX(tid, type) {
             const pid = `win-${tid}`;
             if(document.getElementById(pid)) document.getElementById(pid).remove();
-            const t = Audio.tracks.find(x=>x.id===tid);
             
-            const win = document.createElement('div');
-            win.className = 'plugin-window'; win.id = pid;
-            win.style.left = '35%'; win.style.top = '30%';
+            const t = Core.tracks.find(x=>x.id===tid);
+            const w = document.getElementById('fx-window');
+            w.id = pid; w.style.display = 'flex';
             
-            let h = '';
-            if(type==='DIST') h = UI.knob(tid,'DIST','DRIVE',t.state.dist,0,100);
-            if(type==='DELAY') h = UI.knob(tid,'D_TIME','TIME',t.state.dTime,0,100) + UI.knob(tid,'D_FB','FDBK',t.state.dFb,0,100);
-            if(type==='FILTER') h = UI.knob(tid,'CUT','FREQ',t.state.cut,0,100) + UI.knob(tid,'RES','RES',t.state.res,0,100);
+            let val = 0;
+            if(type==='DIST') val = t.params.dist;
+            if(type==='DELAY') val = t.params.delay;
+            if(type==='REV') val = t.params.rev;
 
-            win.innerHTML = `
-                <div class="pw-header">
-                    <span class="pw-title">${t.data.name} - ${type}</span>
-                    <span style="cursor:pointer" onclick="this.parentElement.parentElement.remove()">✕</span>
-                </div>
-                <div class="pw-content">${h}</div>
-            `;
-            document.getElementById('plugin-layer').appendChild(win);
-            win.style.display = 'flex';
-        },
-
-        knob(tid, type, lbl, val, min, max) {
-            return `
-                <div class="control-knob">
-                    <input type="range" class="dial" style="--v:${(val/max)*360}deg" min="${min}" max="${max}" value="${val}"
-                           oninput="Audio.tracks.find(x=>x.id=='${tid}').updateFX('${type}',this.value); this.style.setProperty('--v', (this.value/${max})*360+'deg'); this.nextElementSibling.innerText=this.value">
-                    <div class="dial-val">${Math.floor(val)}</div>
-                    <div class="dial-label">${lbl}</div>
+            w.innerHTML = `
+                <div class="pw-head"><span>${t.name} - ${type}</span><span style="cursor:pointer" onclick="this.parentElement.parentElement.style.display='none'">X</span></div>
+                <div class="pw-body">
+                    <div class="knob-box">
+                        <input type="range" class="knob" min="0" max="100" value="${val}" oninput="Core.tracks.find(x=>x.id=='${tid}').updateFX('${type}', this.value)">
+                        <span style="color:#aaa; font-size:10px;">AMOUNT</span>
+                    </div>
                 </div>
             `;
-        }
-    };
-
-    /* --- 9. BOOTSTRAP --- */
-    const System = {
-        async start() {
-            Audio.init();
-            Library.init();
-            document.getElementById('omega-boot').style.opacity = 0;
-            await MathUtils.wait(500);
-            document.getElementById('omega-boot').remove();
-        },
-        init() {
-            const logs = ["KERNEL INIT...", "CHECKING DRIVERS...", "LOADING GRANULAR ENGINE...", "COMPILING AI...", "SYSTEM READY"];
-            const term = document.querySelector('.term-window');
-            const bar = document.getElementById('boot-load-bar');
-            const btn = document.getElementById('btn-enter');
-            
-            let i = 0;
-            const t = setInterval(() => {
-                if(i < logs.length) {
-                    term.innerHTML += `<div class="log-entry">> ${logs[i]} <span class="log-ok">OK</span></div>`;
-                    bar.style.width = ((i+1)/logs.length)*100 + '%';
-                    i++;
-                } else {
-                    clearInterval(t);
-                    btn.style.display = 'block';
+            // Drag logic
+            let isDown = false, offset = [0,0];
+            w.querySelector('.pw-head').addEventListener('mousedown', function(e) {
+                isDown = true;
+                offset = [ w.offsetLeft - e.clientX, w.offsetTop - e.clientY ];
+            }, true);
+            document.addEventListener('mouseup', function() { isDown = false; }, true);
+            document.addEventListener('mousemove', function(e) {
+                if (isDown) {
+                    w.style.left = (e.clientX + offset[0]) + 'px';
+                    w.style.top  = (e.clientY + offset[1]) + 'px';
                 }
-            }, 400);
+            }, true);
         }
     };
-
-    window.onload = System.init;
 
 </script>
 </body>
