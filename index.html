@@ -3,682 +3,710 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS DAW - Pro Audio Workstation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>R0YPAD | Professional Web Audio Workstation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f111a;
-            --panel-bg: rgba(20, 24, 35, 0.85);
-            --accent-primary: #00f2ff;
-            --accent-secondary: #ff0055;
-            --text-main: #e0e6ed;
-            --text-dim: #6b7280;
-            --grid-line: #1f2937;
-            --knob-bg: #2d3748;
+            --bg-body: #121214;
+            --bg-panel: #1e1e24;
+            --bg-darker: #0d0d10;
+            --primary: #00ff9d; /* R0Y Green */
+            --secondary: #bd00ff; /* Synthwave Purple */
+            --danger: #ff2a6d;
+            --text-main: #e1e1e6;
+            --text-muted: #a8a8b3;
+            --knob-size: 40px;
         }
 
-        * { box-sizing: border-box; user-select: none; -webkit-user-drag: none; }
-
+        * { box-sizing: border-box; user-select: none; scrollbar-width: thin; }
+        
         body {
             margin: 0;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 0%, #1a2035 0%, var(--bg-dark) 70%);
+            background-color: var(--bg-body);
             color: var(--text-main);
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Roboto Mono', monospace;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: 60px 1fr 280px; /* Header, Sequencer, Mixer */
         }
 
-        /* --- HEADER & TOP BAR --- */
+        /* --- 1. HEADER --- */
         header {
-            height: 70px;
-            background: rgba(15, 17, 26, 0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: var(--bg-darker);
+            border-bottom: 2px solid var(--primary);
             display: flex;
             align-items: center;
-            padding: 0 30px;
             justify-content: space-between;
-            backdrop-filter: blur(10px);
-            z-index: 100;
+            padding: 0 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.1);
+            z-index: 10;
         }
 
-        .brand {
-            font-size: 28px;
-            font-weight: 700;
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
             letter-spacing: 2px;
             color: var(--text-main);
-            text-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
-        .brand span { color: var(--accent-primary); }
+        .logo span { color: var(--primary); }
 
-        .transport-controls {
+        .transport {
             display: flex;
             gap: 15px;
             align-items: center;
-            background: #161b25;
-            padding: 8px 20px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .btn-transport {
-            background: none;
-            border: none;
+        .btn {
+            background: #2a2a35;
+            border: 1px solid #3a3a45;
             color: var(--text-main);
-            font-size: 20px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .btn-transport:hover { background: rgba(255,255,255,0.1); color: var(--accent-primary); }
-        .btn-transport.play { color: #00ff88; }
-        .btn-transport.stop { color: #ff3366; }
-        .btn-transport:active { transform: scale(0.9); }
-
-        .bpm-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #0f111a;
-            padding: 5px 15px;
+            padding: 8px 16px;
             border-radius: 4px;
-            border: 1px solid #2d3748;
-        }
-
-        .bpm-display { font-family: 'Courier New', monospace; font-weight: bold; color: var(--accent-primary); width: 40px; text-align: right;}
-        
-        /* --- MAIN WORKSPACE --- */
-        .workspace {
-            display: flex;
-            flex: 1;
-            padding: 20px;
-            gap: 20px;
-            overflow: hidden;
-        }
-
-        /* --- SEQUENCER PANEL --- */
-        .sequencer-container {
-            flex: 3;
-            background: var(--panel-bg);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .track-header {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-dim);
-            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.2s;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            position: sticky;
-            top: 0;
-            background: var(--panel-bg);
-            z-index: 10;
+            font-size: 12px;
+        }
+        .btn:hover { background: #3a3a45; border-color: var(--text-muted); }
+        .btn:active { transform: translateY(1px); }
+        
+        .btn.play { border-color: var(--primary); color: var(--primary); }
+        .btn.play.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .btn.stop { border-color: var(--danger); color: var(--danger); }
+        
+        .lcd-display {
+            background: #000;
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            font-family: 'Orbitron', monospace;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* --- 2. SEQUENCER RACK (Middle) --- */
+        .rack-container {
+            padding: 20px;
+            overflow-y: auto;
+            background: radial-gradient(circle at center, #1a1a20 0%, #121214 100%);
         }
 
         .track-row {
             display: flex;
-            height: 70px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            transition: background 0.2s;
-        }
-
-        .track-row:hover { background: rgba(255,255,255,0.02); }
-
-        .track-controls {
-            width: 180px;
-            background: rgba(15, 17, 26, 0.5);
-            border-right: 1px solid rgba(255,255,255,0.05);
+            align-items: center;
+            margin-bottom: 8px;
+            background: var(--bg-panel);
             padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #333;
+            transition: border-color 0.2s;
+        }
+        .track-row:hover { border-left-color: var(--text-muted); }
+        .track-row.selected { border-left-color: var(--primary); background: #25252e; }
+
+        .track-info {
+            width: 120px;
+            font-weight: bold;
+            font-size: 14px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 5px;
         }
+        .track-type { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        .track-name { font-weight: 700; color: var(--text-main); font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px;}
-        .led { width: 6px; height: 6px; border-radius: 50%; background: #333; box-shadow: 0 0 2px #000; transition: 0.1s; }
-        .led.active { background: var(--accent-primary); box-shadow: 0 0 8px var(--accent-primary); }
-
-        .track-utils { display: flex; gap: 5px; align-items: center; }
-        
-        /* Custom Checkbox for Mute/Solo */
-        .util-btn {
-            font-size: 10px;
-            padding: 2px 6px;
-            background: #2d3748;
-            border: none;
-            color: #888;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .util-btn.active.mute { background: #ff3366; color: white; }
-        .util-btn.active.solo { background: #00ff88; color: #000; }
-
-        .vol-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 4px;
-            background: #1f2937;
-            border-radius: 2px;
-            outline: none;
-        }
-        .vol-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 10px;
-            height: 10px;
-            background: var(--text-main);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .step-grid {
-            flex: 1;
+        .steps-grid {
             display: grid;
             grid-template-columns: repeat(16, 1fr);
-            gap: 2px;
-            padding: 10px;
-            position: relative;
+            gap: 4px;
+            flex: 1;
+            margin-left: 20px;
         }
 
         .step {
-            background: #1a202c;
-            border-radius: 3px;
+            height: 40px;
+            background: #2a2a35;
+            border-radius: 2px;
             cursor: pointer;
             position: relative;
-            transition: all 0.15s ease;
         }
-
-        .step:hover { background: #2d3748; }
-        .step:nth-child(4n+1) { background: #232b3a; } /* Beat markers */
-
+        .step:nth-child(4n+1) { background: #323240; } /* Beat markers */
+        
         .step.active {
-            background: var(--accent-primary);
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+            background: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary);
         }
+        .step.active.kick { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .step.active.snare { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
         
-        .step.current {
-            border: 1px solid rgba(255,255,255,0.8);
-            z-index: 2;
-        }
-        
-        .step.active.current {
-            background: #fff;
-            box-shadow: 0 0 15px #fff;
+        .step.playing { border: 2px solid white; z-index: 2; }
+
+        /* --- 3. MIXER & FX PANEL (Bottom) --- */
+        .mixer-panel {
+            background: #151518;
+            border-top: 1px solid #333;
+            display: flex;
+            overflow-x: auto;
+            padding: 15px;
+            gap: 10px;
         }
 
-        /* --- VISUALIZER PANEL --- */
-        .side-panel {
-            flex: 1;
+        .channel-strip {
+            min-width: 100px;
+            background: #1e1e24;
+            border-radius: 4px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-        }
-
-        .visualizer-box {
-            background: #000;
-            border: 1px solid #333;
-            border-radius: 8px;
-            height: 150px;
+            align-items: center;
+            border: 1px solid #2a2a35;
             position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
         
-        canvas { width: 100%; height: 100%; display: block; }
+        .channel-strip.master { border: 1px solid var(--primary); background: #1a221f; }
 
-        .info-panel {
-            flex: 1;
-            background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            font-size: 14px;
-            color: #888;
+        .channel-name { font-size: 12px; margin-bottom: 10px; font-weight: bold; color: var(--text-muted); }
+        
+        /* Knobs (CSS Only) */
+        .knob-container {
+            margin: 5px 0;
+            text-align: center;
+        }
+        .knob-label { font-size: 9px; color: #666; margin-bottom: 2px; display: block; }
+        
+        input[type=range].fader {
+            -webkit-appearance: none; 
+            width: 120px; /* Döndürülecek */
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            outline: none;
+            transform: rotate(-90deg);
+            margin: 60px 0; /* Rotation boşluğu */
         }
         
-        .save-load-area { margin-top: 20px; display: flex; gap: 10px; }
-        .btn-secondary {
-            flex: 1;
-            background: transparent;
-            border: 1px solid var(--accent-primary);
-            color: var(--accent-primary);
-            padding: 8px;
-            border-radius: 4px;
+        input[type=range].fader::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 20px;
+            background: var(--text-main);
+            border-radius: 2px;
             cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-            font-weight: 600;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
-        .btn-secondary:hover { background: rgba(0, 242, 255, 0.1); }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f111a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #444; }
+        /* Tiny Knobs for EQ/FX */
+        .fx-rack {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            background: #00000030;
+            padding: 5px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        
+        .fx-row { display: flex; justify-content: space-between; align-items: center; }
+        .fx-name { font-size: 9px; color: var(--secondary); }
+        
+        input[type=range].mini-knob {
+            width: 60px;
+            height: 2px;
+        }
 
+        .meter {
+            width: 6px;
+            height: 100px;
+            background: #000;
+            margin-left: 5px;
+            position: absolute;
+            right: 10px;
+            bottom: 40px;
+            border-radius: 3px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        .meter-fill {
+            width: 100%;
+            background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+            height: 0%;
+            transition: height 0.05s;
+        }
+
+        /* Visualizer Overlay */
+        #visualizer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 280px;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">NEXUS<span>DAW</span></div>
+        <div class="logo">R0Y<span>PAD</span> <small style="font-size:10px; color:#666;">STUDIO EDITION</small></div>
         
-        <div class="transport-controls">
-            <button class="btn-transport stop" id="stopBtn" title="Stop">■</button>
-            <button class="btn-transport play" id="playBtn" title="Play">▶</button>
-            <div style="width: 1px; height: 20px; background: #333; margin: 0 10px;"></div>
-            <div class="bpm-control">
-                <span style="font-size: 12px; color: #666;">BPM</span>
-                <input type="range" id="bpmSlider" min="60" max="200" value="128" style="width: 80px;">
-                <span class="bpm-display" id="bpmVal">128</span>
+        <div class="transport">
+            <button class="btn" id="clearBtn">TEMİZLE</button>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <span style="font-size:9px; color:#666;">BPM</span>
+                <input type="number" id="bpmInput" class="lcd-display" value="130" min="60" max="200">
             </div>
+            <button class="btn stop" id="stopBtn">■ STOP</button>
+            <button class="btn play" id="playBtn">▶ PLAY</button>
         </div>
         
-        <div style="width: 100px;"></div> </header>
+        <div style="font-size: 10px; color: #555;">v2.0.4 BUILD</div>
+    </header>
 
-    <div class="workspace">
-        <div class="sequencer-container" id="sequencerTracks">
-            <div class="track-header">
-                <span>Instruments</span>
-                <span>1 — 16 Steps</span>
-            </div>
-            </div>
-
-        <div class="side-panel">
-            <div class="visualizer-box">
-                <canvas id="visualizerCanvas"></canvas>
-            </div>
-            
-            <div class="info-panel">
-                <h3 style="color:white; margin-top:0;">MASTER CHANNEL</h3>
-                <p>Output Level: <span id="masterLevel">0</span> dB</p>
-                <p>Active Voices: <span id="activeVoices">0</span></p>
-                <hr style="border-color: #333">
-                <p style="font-size: 12px; line-height: 1.5;">
-                    Nexus DAW, Web Audio API kullanarak tarayıcı içinde gerçek zamanlı ses sentezi yapar. Sample kullanmaz, her ses matematiksel olarak anlık üretilir.
-                </p>
-
-                <div class="save-load-area">
-                    <button class="btn-secondary" id="saveBtn">PROJEYİ KAYDET</button>
-                    <button class="btn-secondary" id="loadBtn">YÜKLE</button>
-                </div>
-            </div>
+    <div class="rack-container" id="rackContainer">
         </div>
-    </div>
+
+    <canvas id="visualizer"></canvas>
+    <div class="mixer-panel" id="mixerPanel">
+        </div>
 
 <script>
     /**
-     * NEXUS DAW CORE ENGINE
-     * High-performance audio scheduling & synthesis
+     * R0YPAD AUDIO ENGINE V2
+     * Features: Per-Channel FX Chain, EQ, Drive, Master Bus
      */
-
-    // --- AUDIO CONTEXT & MASTER CHAIN ---
+    
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const ctx = new AudioContext();
-    const masterGain = ctx.createGain();
-    const analyser = ctx.createAnalyser();
+
+    // --- EFFECT UNITS (Sananal Pluginler) --- //
+
+    // 1. Distortion Effect
+    function makeDistortionCurve(amount) {
+        const k = typeof amount === 'number' ? amount : 50,
+            n_samples = 44100,
+            curve = new Float32Array(n_samples),
+            deg = Math.PI / 180;
+        for (let i = 0; i < n_samples; ++i) {
+            let x = i * 2 / n_samples - 1;
+            curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+        }
+        return curve;
+    }
+
+    // 2. Simple Delay (Echo)
+    class SimpleDelay {
+        constructor(context) {
+            this.input = context.createGain();
+            this.delay = context.createDelay();
+            this.feedback = context.createGain();
+            this.output = context.createGain();
+            this.wet = context.createGain();
+
+            this.delay.delayTime.value = 0.3; // 300ms
+            this.feedback.gain.value = 0.4;
+            this.wet.gain.value = 0.0; // Default off
+
+            // Routing: Input -> Output (Dry) & Input -> Delay -> Feedback -> Delay -> Output (Wet)
+            this.input.connect(this.output); // Dry signal
+            this.input.connect(this.delay);
+            this.delay.connect(this.feedback);
+            this.feedback.connect(this.delay);
+            this.delay.connect(this.wet);
+            this.wet.connect(this.output);
+        }
+    }
+
+    // --- CHANNEL STRIP CLASS --- //
+    class ChannelStrip {
+        constructor(name, type, color, index) {
+            this.name = name;
+            this.type = type; // kick, snare, synth, etc.
+            this.color = color;
+            this.index = index;
+            this.steps = new Array(16).fill(false);
+            
+            // Audio Chain: Source -> Drive -> EQ -> Volume -> Pan -> DelaySend -> Master
+            this.gainNode = ctx.createGain(); // Volume Fader
+            this.panNode = ctx.createStereoPanner();
+            
+            // EQ
+            this.lowShelf = ctx.createBiquadFilter();
+            this.lowShelf.type = "lowshelf";
+            this.lowShelf.frequency.value = 320;
+            
+            this.highShelf = ctx.createBiquadFilter();
+            this.highShelf.type = "highshelf";
+            this.highShelf.frequency.value = 3200;
+
+            // Distortion (Drive)
+            this.shaper = ctx.createWaveShaper();
+            this.shaper.curve = makeDistortionCurve(0); // Init 0
+            
+            // Delay Unit
+            this.delayUnit = new SimpleDelay(ctx);
+
+            // Connect Chain
+            // Note: Source connects to shaper in play function
+            this.shaper.connect(this.lowShelf);
+            this.lowShelf.connect(this.highShelf);
+            this.highShelf.connect(this.delayUnit.input);
+            this.delayUnit.output.connect(this.gainNode);
+            this.gainNode.connect(this.panNode);
+            this.panNode.connect(masterLimiter); // To Master
+
+            // Default Values
+            this.gainNode.gain.value = 0.7;
+        }
+
+        playSound(time) {
+            const osc = ctx.createOscillator();
+            const env = ctx.createGain();
+            
+            // Sound Synthesis Definitions
+            if (this.type === 'kick') {
+                osc.frequency.setValueAtTime(150, time);
+                osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
+                env.gain.setValueAtTime(1, time);
+                env.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+                osc.connect(env);
+            } 
+            else if (this.type === 'snare') {
+                // Noise buffer for snare
+                const bSize = ctx.sampleRate * 0.2;
+                const buffer = ctx.createBuffer(1, bSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for(let i=0; i<bSize; i++) data[i] = Math.random() * 2 - 1;
+                
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                const noiseFilt = ctx.createBiquadFilter();
+                noiseFilt.type = 'highpass';
+                noiseFilt.frequency.value = 1000;
+                noise.connect(noiseFilt);
+                noiseFilt.connect(env);
+                
+                env.gain.setValueAtTime(1, time);
+                env.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+                noise.start(time);
+            }
+            else if (this.type === 'hat') {
+                // Metalic Square arrays
+                osc.type = 'square';
+                // Bandpass
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 10000;
+                osc.connect(filter);
+                filter.connect(env);
+                
+                osc.frequency.setValueAtTime(8000, time);
+                env.gain.setValueAtTime(0.3, time); // Lower vol
+                env.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+            }
+            else if (this.type === 'bass') {
+                osc.type = 'sawtooth';
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(600, time);
+                filter.frequency.exponentialRampToValueAtTime(100, time + 0.2);
+                osc.connect(filter);
+                filter.connect(env);
+                
+                osc.frequency.setValueAtTime(55, time);
+                env.gain.setValueAtTime(0.6, time);
+                env.gain.linearRampToValueAtTime(0, time + 0.4);
+            }
+            else if (this.type === 'synth') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, time); // A4
+                // Simple arpeggio logic simulation could go here
+                if(currentStep % 4 === 0) osc.frequency.setValueAtTime(330, time); // E4
+                
+                env.gain.setValueAtTime(0.4, time);
+                env.gain.linearRampToValueAtTime(0, time + 0.3);
+                osc.connect(env);
+            }
+            else if (this.type === 'clap') {
+                 // Noise burst
+                const bSize = ctx.sampleRate * 0.15;
+                const buffer = ctx.createBuffer(1, bSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for(let i=0; i<bSize; i++) data[i] = Math.random() * 2 - 1;
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                
+                env.gain.setValueAtTime(0.5, time);
+                env.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+                noise.connect(env);
+                noise.start(time);
+            }
+
+            // Connect Envelope to Channel Strip Input (Distortion/Shaper)
+            if(this.type === 'snare' || this.type === 'clap') {
+                // BufferSources don't use osc.start/stop the same way, handled above
+            } else {
+                osc.start(time);
+                osc.stop(time + (this.type==='bass'?0.5:0.2));
+            }
+            
+            // Visual Meter Trigger
+            setTimeout(() => {
+                const meter = document.getElementById(`meter-${this.index}`);
+                if(meter) {
+                    meter.style.height = (this.gainNode.gain.value * 100) + '%';
+                    setTimeout(() => meter.style.height = '0%', 150);
+                }
+            }, (time - ctx.currentTime) * 1000);
+
+            env.connect(this.shaper);
+        }
+    }
+
+    // --- MASTER BUS ---
+    const masterLimiter = ctx.createDynamicsCompressor();
+    masterLimiter.threshold.value = -10;
+    masterLimiter.ratio.value = 12;
     
-    masterGain.gain.value = 0.5; // Master volume
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.8;
+    
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+
+    masterLimiter.connect(masterGain);
     masterGain.connect(analyser);
     analyser.connect(ctx.destination);
-    
-    analyser.fftSize = 256;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
 
-    // --- SYNTHESIZER ENGINE (Ses Tasarımı) ---
-    const Synth = {
-        playKick: (time, vol) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(masterGain);
+    // --- INITIALIZATION ---
+    const tracksData = [
+        { name: 'KICK 808', type: 'kick', color: 'danger' },
+        { name: 'SNARE TRAP', type: 'snare', color: 'primary' },
+        { name: 'HI-HAT CLSD', type: 'hat', color: 'secondary' },
+        { name: 'CLAP', type: 'clap', color: 'secondary' },
+        { name: 'BASS LINE', type: 'bass', color: 'danger' },
+        { name: 'LEAD SYNTH', type: 'synth', color: 'primary' }
+    ];
 
-            osc.frequency.setValueAtTime(150, time);
-            osc.frequency.exponentialRampToValueAtTime(0.001, time + 0.5);
-            gain.gain.setValueAtTime(vol, time);
-            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
+    const channels = tracksData.map((t, i) => new ChannelStrip(t.name, t.type, t.color, i));
 
-            osc.start(time);
-            osc.stop(time + 0.5);
-        },
-        playSnare: (time, vol) => {
-            // Noise
-            const bufferSize = ctx.sampleRate * 0.5; // 0.5 sec
-            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    // --- UI BUILDER ---
+    const rackContainer = document.getElementById('rackContainer');
+    const mixerPanel = document.getElementById('mixerPanel');
 
-            const noise = ctx.createBufferSource();
-            noise.buffer = buffer;
-            const noiseFilter = ctx.createBiquadFilter();
-            noiseFilter.type = 'highpass';
-            noiseFilter.frequency.value = 1000;
-            const noiseGain = ctx.createGain();
+    function initUI() {
+        // Build Rack
+        channels.forEach((ch, idx) => {
+            // 1. Sequencer Row
+            const row = document.createElement('div');
+            row.className = `track-row ${idx === 0 ? 'selected' : ''}`;
+            row.onclick = () => {
+                 document.querySelectorAll('.track-row').forEach(r => r.classList.remove('selected'));
+                 row.classList.add('selected');
+                 // Scroll mixer to channel? (Optional)
+            };
 
-            noise.connect(noiseFilter);
-            noiseFilter.connect(noiseGain);
-            noiseGain.connect(masterGain);
-
-            noiseGain.gain.setValueAtTime(vol, time);
-            noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
-            noise.start(time);
-            noise.stop(time + 0.2);
-
-            // Tone
-            const osc = ctx.createOscillator();
-            const oscGain = ctx.createGain();
-            osc.type = 'triangle';
-            osc.connect(oscGain);
-            oscGain.connect(masterGain);
+            const info = document.createElement('div');
+            info.className = 'track-info';
+            info.innerHTML = `<span>${ch.name}</span><span class="track-type">${ch.type.toUpperCase()}</span>`;
             
-            osc.frequency.setValueAtTime(200, time);
-            oscGain.gain.setValueAtTime(vol * 0.5, time);
-            oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
-            osc.start(time);
-            osc.stop(time + 0.1);
-        },
-        playHiHat: (time, vol) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'square';
-            
-            // Bandpass filter for metallic sound
-            const filter = ctx.createBiquadFilter();
-            filter.type = 'highpass';
-            filter.frequency.value = 7000;
+            const grid = document.createElement('div');
+            grid.className = 'steps-grid';
 
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(masterGain);
+            ch.steps.forEach((isActive, stepIdx) => {
+                const step = document.createElement('div');
+                step.className = `step step-col-${stepIdx} ${isActive ? 'active ' + ch.color : ''}`;
+                step.onclick = (e) => {
+                    e.stopPropagation();
+                    ch.steps[stepIdx] = !ch.steps[stepIdx];
+                    step.className = `step step-col-${stepIdx} ${ch.steps[stepIdx] ? 'active ' + ch.color : ''}`;
+                };
+                grid.appendChild(step);
+            });
 
-            // Rastgele hafif pitch değişimi (insansı his)
-            const randomFreq = 800 + Math.random() * 200;
-            osc.frequency.setValueAtTime(randomFreq, time);
-            osc.frequency.exponentialRampToValueAtTime(randomFreq/2, time + 0.05);
+            row.appendChild(info);
+            row.appendChild(grid);
+            rackContainer.appendChild(row);
 
-            gain.gain.setValueAtTime(vol * 0.6, time);
-            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+            // 2. Mixer Channel
+            const strip = document.createElement('div');
+            strip.className = 'channel-strip';
+            strip.innerHTML = `
+                <div class="channel-name">${ch.name.split(' ')[0]}</div>
+                
+                <div class="fx-rack">
+                    <div class="fx-row">
+                        <span class="fx-name">DRIVE</span>
+                        <input type="range" class="mini-knob" min="0" max="100" value="0" 
+                            oninput="updateDrive(${idx}, this.value)">
+                    </div>
+                    <div class="fx-row">
+                        <span class="fx-name">DELAY</span>
+                        <input type="range" class="mini-knob" min="0" max="1" step="0.1" value="0" 
+                            oninput="updateDelay(${idx}, this.value)">
+                    </div>
+                    <div class="fx-row">
+                        <span class="fx-name">HIGH</span>
+                        <input type="range" class="mini-knob" min="-10" max="10" value="0" 
+                            oninput="updateEQ(${idx}, 'high', this.value)">
+                    </div>
+                    <div class="fx-row">
+                        <span class="fx-name">LOW</span>
+                        <input type="range" class="mini-knob" min="-10" max="10" value="0" 
+                            oninput="updateEQ(${idx}, 'low', this.value)">
+                    </div>
+                </div>
 
-            osc.start(time);
-            osc.stop(time + 0.05);
-        },
-        playBass: (time, vol) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sawtooth';
-            
-            const filter = ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(400, time);
-            filter.frequency.linearRampToValueAtTime(100, time + 0.2);
+                <div class="knob-container">
+                    <span class="knob-label">PAN</span>
+                    <input type="range" min="-1" max="1" step="0.1" value="0" style="width:50px"
+                        oninput="updatePan(${idx}, this.value)">
+                </div>
 
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(masterGain);
+                <div style="position:relative; height: 140px; display:flex; justify-content:center;">
+                    <input type="range" class="fader" min="0" max="1" step="0.01" value="0.7" 
+                        oninput="updateVol(${idx}, this.value)">
+                    <div class="meter"><div class="meter-fill" id="meter-${idx}"></div></div>
+                </div>
+                
+                <div class="knob-label">${idx + 1}</div>
+            `;
+            mixerPanel.appendChild(strip);
+        });
 
-            osc.frequency.setValueAtTime(55, time); // A1 note
-            gain.gain.setValueAtTime(vol * 0.8, time);
-            gain.gain.linearRampToValueAtTime(0.01, time + 0.3);
+        // Add Master Channel
+        const masterStrip = document.createElement('div');
+        masterStrip.className = 'channel-strip master';
+        masterStrip.innerHTML = `
+            <div class="channel-name" style="color:var(--primary)">MASTER</div>
+            <div style="height: 90px;"></div> <div style="position:relative; height: 140px; display:flex; justify-content:center;">
+                <input type="range" class="fader" min="0" max="1.2" step="0.01" value="0.8" 
+                    oninput="masterGain.gain.value = this.value">
+            </div>
+        `;
+        mixerPanel.appendChild(masterStrip);
+    }
 
-            osc.start(time);
-            osc.stop(time + 0.3);
-        }
+    // --- MIXER LOGIC ---
+    window.updateVol = (idx, val) => channels[idx].gainNode.gain.value = val;
+    window.updatePan = (idx, val) => channels[idx].panNode.pan.value = val;
+    window.updateDrive = (idx, val) => channels[idx].shaper.curve = makeDistortionCurve(parseInt(val));
+    window.updateEQ = (idx, type, val) => {
+        if(type === 'high') channels[idx].highShelf.gain.value = val;
+        else channels[idx].lowShelf.gain.value = val;
     };
+    window.updateDelay = (idx, val) => channels[idx].delayUnit.wet.gain.value = val;
 
-    // --- STATE MANAGEMENT ---
-    const config = {
-        bpm: 128,
-        tracks: [
-            { name: "KICK DRUM", type: "kick", steps: new Array(16).fill(false), vol: 1, mute: false, solo: false },
-            { name: "SNARE", type: "snare", steps: new Array(16).fill(false), vol: 0.8, mute: false, solo: false },
-            { name: "HI-HATS", type: "hat", steps: new Array(16).fill(false), vol: 0.6, mute: false, solo: false },
-            { name: "BASS SYNTH", type: "bass", steps: new Array(16).fill(false), vol: 0.7, mute: false, solo: false }
-        ]
-    };
 
-    // Initialize default pattern
-    config.tracks[0].steps[0] = true; config.tracks[0].steps[4] = true; 
-    config.tracks[0].steps[8] = true; config.tracks[0].steps[12] = true;
-    config.tracks[2].steps[2] = true; config.tracks[2].steps[6] = true;
-    config.tracks[2].steps[10] = true; config.tracks[2].steps[14] = true;
-
-    // --- SEQUENCER LOGIC ---
+    // --- SEQUENCER ENGINE ---
     let isPlaying = false;
     let currentStep = 0;
     let nextNoteTime = 0.0;
+    let tempo = 130;
     let timerID;
-    const lookahead = 25.0;
-    const scheduleAheadTime = 0.1;
 
     function nextNote() {
-        const secondsPerBeat = 60.0 / config.bpm;
-        const secondsPer16th = secondsPerBeat / 4;
-        nextNoteTime += secondsPer16th;
+        const secondsPerBeat = 60.0 / tempo;
+        nextNoteTime += 0.25 * secondsPerBeat;
         currentStep = (currentStep + 1) % 16;
     }
 
     function scheduleNote(stepNumber, time) {
-        // UI Sync
-        const drawTime = (time - ctx.currentTime) * 1000;
-        setTimeout(() => updateStepUI(stepNumber), Math.max(0, drawTime));
+        // Visual Sync
+        setTimeout(() => {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('playing'));
+            document.querySelectorAll(`.step-col-${stepNumber}`).forEach(s => s.classList.add('playing'));
+        }, (time - ctx.currentTime) * 1000);
 
-        // Audio Playback
-        const isAnySolo = config.tracks.some(t => t.solo);
-
-        config.tracks.forEach((track, index) => {
-            if (track.steps[stepNumber]) {
-                const shouldPlay = isAnySolo ? track.solo : !track.mute;
-                
-                if (shouldPlay) {
-                    // Flash LED effect
-                    setTimeout(() => flashLed(index), Math.max(0, drawTime));
-                    
-                    // Trigger Sound
-                    switch(track.type) {
-                        case 'kick': Synth.playKick(time, track.vol); break;
-                        case 'snare': Synth.playSnare(time, track.vol); break;
-                        case 'hat': Synth.playHiHat(time, track.vol); break;
-                        case 'bass': Synth.playBass(time, track.vol); break;
-                    }
-                }
+        // Audio Trigger
+        channels.forEach(ch => {
+            if (ch.steps[stepNumber]) {
+                ch.playSound(time);
             }
         });
     }
 
     function scheduler() {
-        while (nextNoteTime < ctx.currentTime + scheduleAheadTime) {
+        while (nextNoteTime < ctx.currentTime + 0.1) {
             scheduleNote(currentStep, nextNoteTime);
             nextNote();
         }
-        timerID = setTimeout(scheduler, lookahead);
+        timerID = setTimeout(scheduler, 25);
     }
 
-    // --- UI UPDATES ---
-    function updateStepUI(step) {
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('current'));
-        document.querySelectorAll(`.step-col-${step}`).forEach(s => s.classList.add('current'));
-    }
-
-    function flashLed(trackIndex) {
-        const leds = document.querySelectorAll('.led');
-        if(leds[trackIndex]) {
-            leds[trackIndex].classList.add('active');
-            setTimeout(() => leds[trackIndex].classList.remove('active'), 100);
+    // --- CONTROLS ---
+    document.getElementById('playBtn').addEventListener('click', function() {
+        if(ctx.state === 'suspended') ctx.resume();
+        
+        if (!isPlaying) {
+            isPlaying = true;
+            this.classList.add('active');
+            currentStep = 0;
+            nextNoteTime = ctx.currentTime + 0.05;
+            scheduler();
         }
-    }
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', function() {
+        isPlaying = false;
+        document.getElementById('playBtn').classList.remove('active');
+        clearTimeout(timerID);
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('playing'));
+    });
+    
+    document.getElementById('bpmInput').addEventListener('change', (e) => tempo = e.target.value);
+    
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        channels.forEach(ch => {
+            ch.steps.fill(false);
+            // Re-render grids? Simplest is reload, but lets manually clear visual classes
+            document.querySelectorAll('.step').forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('danger');
+                s.classList.remove('primary');
+                s.classList.remove('secondary');
+            });
+        });
+    });
 
     // --- VISUALIZER ---
-    const canvas = document.getElementById('visualizerCanvas');
-    const canvasCtx = canvas.getContext('2d');
+    const vCanvas = document.getElementById('visualizer');
+    const vCtx = vCanvas.getContext('2d');
     
-    function drawVisualizer() {
-        requestAnimationFrame(drawVisualizer);
+    function draw() {
+        requestAnimationFrame(draw);
+        
+        vCanvas.width = window.innerWidth;
+        vCanvas.height = 300;
+        
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
         analyser.getByteFrequencyData(dataArray);
 
-        canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // Trail effect
-        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-        const barWidth = (canvas.width / bufferLength) * 2.5;
+        vCtx.clearRect(0, 0, vCanvas.width, vCanvas.height);
+        
+        const barWidth = (vCanvas.width / bufferLength) * 2.5;
         let barHeight;
         let x = 0;
 
         for(let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] / 2;
-            
-            // Gradient color based on height
-            const r = barHeight + (25 * (i/bufferLength));
-            const g = 250 * (i/bufferLength);
-            const b = 50;
-
-            canvasCtx.fillStyle = `rgb(${r},${g},${b})`;
-            canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-
+            barHeight = dataArray[i];
+            vCtx.fillStyle = `rgba(0, 255, 157, ${barHeight/255})`;
+            vCtx.fillRect(x, vCanvas.height - barHeight, barWidth, barHeight);
             x += barWidth + 1;
         }
     }
-    
-    // Resize canvas
-    function resizeCanvas() {
-        canvas.width = canvas.parentElement.offsetWidth;
-        canvas.height = canvas.parentElement.offsetHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    drawVisualizer();
 
-    // --- RENDER TRACKS ---
-    const sequencerContainer = document.getElementById('sequencerTracks');
-
-    function renderInterface() {
-        // Clear except header
-        const header = sequencerContainer.querySelector('.track-header');
-        sequencerContainer.innerHTML = '';
-        sequencerContainer.appendChild(header);
-
-        config.tracks.forEach((track, tIndex) => {
-            const row = document.createElement('div');
-            row.className = 'track-row';
-            
-            // Controls
-            const controls = document.createElement('div');
-            controls.className = 'track-controls';
-            
-            controls.innerHTML = `
-                <div class="track-name">
-                    <div class="led"></div> ${track.name}
-                </div>
-                <div class="track-utils">
-                    <button class="util-btn mute ${track.mute ? 'active':''}" onclick="toggleMute(${tIndex})">M</button>
-                    <button class="util-btn solo ${track.solo ? 'active':''}" onclick="toggleSolo(${tIndex})">S</button>
-                    <input type="range" class="vol-slider" min="0" max="1" step="0.01" value="${track.vol}" oninput="updateVol(${tIndex}, this.value)">
-                </div>
-            `;
-            
-            // Steps
-            const grid = document.createElement('div');
-            grid.className = 'step-grid';
-            
-            track.steps.forEach((isActive, sIndex) => {
-                const step = document.createElement('div');
-                step.className = `step step-col-${sIndex} ${isActive ? 'active' : ''}`;
-                step.onclick = () => {
-                    track.steps[sIndex] = !track.steps[sIndex];
-                    renderInterface(); // Re-render to show update (Basit yöntem)
-                };
-                grid.appendChild(step);
-            });
-
-            row.appendChild(controls);
-            row.appendChild(grid);
-            sequencerContainer.appendChild(row);
-        });
-    }
-
-    // --- CONTROL FUNCTIONS ---
-    window.toggleMute = (idx) => { config.tracks[idx].mute = !config.tracks[idx].mute; renderInterface(); };
-    window.toggleSolo = (idx) => { 
-        // Exclusive solo logic (DAW style)
-        const wasSolo = config.tracks[idx].solo;
-        config.tracks.forEach(t => t.solo = false); // Clear all
-        if (!wasSolo) config.tracks[idx].solo = true;
-        renderInterface(); 
-    };
-    window.updateVol = (idx, val) => { config.tracks[idx].vol = parseFloat(val); };
-
-    // --- EVENT LISTENERS ---
-    const playBtn = document.getElementById('playBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const bpmSlider = document.getElementById('bpmSlider');
-    const bpmVal = document.getElementById('bpmVal');
-
-    playBtn.addEventListener('click', () => {
-        if(ctx.state === 'suspended') ctx.resume();
-        if(isPlaying) return;
-        
-        isPlaying = true;
-        currentStep = 0;
-        nextNoteTime = ctx.currentTime + 0.05;
-        scheduler();
-        playBtn.style.color = '#00ff88';
-        playBtn.style.textShadow = '0 0 10px #00ff88';
-    });
-
-    stopBtn.addEventListener('click', () => {
-        isPlaying = false;
-        clearTimeout(timerID);
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('current'));
-        playBtn.style.color = '';
-        playBtn.style.textShadow = '';
-    });
-
-    bpmSlider.addEventListener('input', (e) => {
-        config.bpm = parseInt(e.target.value);
-        bpmVal.innerText = config.bpm;
-    });
-
-    // Save/Load Logic
-    document.getElementById('saveBtn').addEventListener('click', () => {
-        localStorage.setItem('nexusProject', JSON.stringify(config));
-        alert('Proje Nexus Belleğine Kaydedildi!');
-    });
-
-    document.getElementById('loadBtn').addEventListener('click', () => {
-        const saved = localStorage.getItem('nexusProject');
-        if(saved) {
-            const data = JSON.parse(saved);
-            config.bpm = data.bpm;
-            config.tracks = data.tracks;
-            bpmSlider.value = config.bpm;
-            bpmVal.innerText = config.bpm;
-            renderInterface();
-            alert('Proje Yüklendi!');
-        } else {
-            alert('Kayıtlı proje bulunamadı.');
-        }
-    });
-
-    // Initial Render
-    renderInterface();
+    // Start
+    initUI();
+    draw();
 
 </script>
 </body>
