@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R0YPAD STUDIO | ULTIMATE PRODUCER EDITION</title>
+    <title>R0YPAD STUDIO | ULTIMATE PRODUCER EDITION v6.0</title>
     <meta name="description" content="Professional Web Audio Sequencer by R0YC0LD">
     
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;500;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
             --mixer-height: 320px;
             
             /* Effects */
-            --glass-bg: rgba(24, 24, 27, 0.85);
+            --glass-bg: rgba(24, 24, 27, 0.95);
             --glass-border: rgba(255, 255, 255, 0.08);
             --shadow-lg: 0 20px 50px rgba(0,0,0,0.8);
         }
@@ -147,6 +147,7 @@
             color: var(--text-dim);
             height: 20px;
             min-width: 300px;
+            text-transform: uppercase;
         }
         
         .loader-btn {
@@ -244,6 +245,14 @@
             background: #22d3ee;
             color: #000;
             box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        /* Oynatma Durumu için Stil */
+        .btn-primary.playing-mode {
+            background: #f59e0b; /* Amber/Warning color for Pause state */
+            border-color: #f59e0b;
+            color: #000;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
         }
 
         .btn-danger {
@@ -574,10 +583,10 @@
         /* Floating Plugin Window */
         .plugin-window {
             position: absolute;
-            background: rgba(18, 18, 20, 0.98);
-            border: 1px solid var(--border-light);
+            background: var(--glass-bg);
+            border: 1px solid var(--accent-primary);
             border-radius: 8px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 10px var(--accent-glow);
             backdrop-filter: blur(15px);
             min-width: 240px;
             display: none;
@@ -759,10 +768,10 @@
         <div class="loader-content">
             <div class="loader-brand">R0Y<span>PAD</span></div>
             <div class="loader-bar-container"><div class="loader-bar" id="lBar"></div></div>
-            <div class="loader-terminal" id="lMsg">Initializing Core Audio Drivers...</div>
+            <div class="loader-terminal" id="lMsg">Sistem Çekirdeği Başlatılıyor...</div>
             <button class="loader-btn" id="startEngineBtn" onclick="System.boot()">SİSTEMİ BAŞLAT / START ENGINE</button>
         </div>
-        <div style="position:absolute; bottom:20px; color:#333; font-size:10px;">VERSION 5.0 ULTIMATE</div>
+        <div style="position:absolute; bottom:20px; color:#333; font-size:10px;">VERSION 6.0 ULTIMATE</div>
     </div>
 
     <div id="windowLayer"></div>
@@ -778,13 +787,13 @@
                 <div class="lib-tab" style="color:var(--danger)" onclick="document.getElementById('libModal').style.display='none'">CLOSE</div>
             </div>
             <div class="lib-grid" id="libGrid">
-                </div>
+            </div>
         </div>
     </div>
 
     <header>
         <div class="logo">
-            R0YC0LD <span>STUDIO</span> <div class="ver">v5.0</div>
+            R0YC0LD <span>STUDIO</span> <div class="ver">v6.0</div>
         </div>
         
         <div class="toolbar">
@@ -817,7 +826,7 @@
 
     <div class="workspace">
         <div class="sequencer-area" id="seqArea">
-            </div>
+        </div>
     </div>
 
     <div class="mixer-area" id="mixerArea">
@@ -825,9 +834,9 @@
             <div class="ch-title">MASTER OUT</div>
             
             <div class="fx-rack">
-                <div class="fx-item active">COMPRESSOR</div>
-                <div class="fx-item active">LIMITER</div>
-                <div class="fx-item" id="masterReverbToggle" onclick="this.classList.toggle('active'); AudioCore.toggleMasterReverb()">REVERB</div>
+                <div class="fx-item active" title="Master Compressor (Always On)">COMPRESSOR</div>
+                <div class="fx-item active" title="Safety Limiter (Always On)">LIMITER</div>
+                <div class="fx-item" id="masterReverbToggle" onclick="AudioCore.toggleMasterReverb(this)">REVERB</div>
             </div>
             
             <div class="fader-group">
@@ -839,15 +848,13 @@
 
 <script>
     /**
-     * R0YPAD STUDIO - ULTIMATE AUDIO ENGINE V5.0
-     * Built for Performance & Scalability
-     * * MODULES:
-     * 1. Utils: Helpers & Generators
-     * 2. AudioCore: The WebAudio API wrapper (The Heart)
-     * 3. Synthesizers: Tone generation classes
-     * 4. LibraryManager: Preset management
-     * 5. UIManager: DOM manipulation
-     * 6. System: Boot & Init logic
+     * R0YPAD STUDIO - ULTIMATE AUDIO ENGINE V6.0
+     * * REBUILT FOR STABILITY & TRUE DSP PROCESSING
+     * * Changelog:
+     * - Gerçek Distortion/Delay düğümleri eklendi.
+     * - Master Limiter ve Compressor aktif hale getirildi.
+     * - Reverb tuşu düzeltildi.
+     * - Yükleme ekranı Türkçe yapıldı ve süresi uzatıldı.
      */
 
     // --- 1. UTILITIES ---
@@ -856,7 +863,20 @@
         rand: (min, max) => Math.random() * (max - min) + min,
         clamp: (val, min, max) => Math.min(Math.max(val, min), max),
         
-        // Procedural Impulse Response for Reverb (Mathematical Magic)
+        // Distortion Eğrisi Oluşturucu (Matematiksel)
+        makeDistortionCurve: (amount) => {
+            const k = typeof amount === 'number' ? amount : 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                const x = i * 2 / n_samples - 1;
+                curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        },
+
+        // Reverb Impulse Response (Uzay Simülasyonu)
         createImpulse: (ctx, duration, decay) => {
             const rate = ctx.sampleRate;
             const length = rate * duration;
@@ -865,7 +885,6 @@
             const R = impulse.getChannelData(1);
 
             for (let i = 0; i < length; i++) {
-                // Exponential decay noise
                 const n = i / length;
                 const env = Math.pow(1 - n, decay);
                 L[i] = (Math.random() * 2 - 1) * env;
@@ -880,7 +899,9 @@
         ctx: null,
         masterGain: null,
         limiter: null,
+        compressor: null,
         reverbNode: null,
+        reverbGain: null,
         
         isPlaying: false,
         tempo: 140,
@@ -892,46 +913,56 @@
         
         tracks: [], // Holds all Track objects
         
-        // Initialize the AudioContext (Must be called via user gesture)
+        // Initialize the AudioContext
         init() {
             if (this.ctx) return;
             const AudioCtor = window.AudioContext || window.webkitAudioContext;
             this.ctx = new AudioCtor({ latencyHint: 'interactive' });
             
-            // Master Chain
+            // --- MASTER CHAIN SETUP ---
             this.masterGain = this.ctx.createGain();
             this.masterGain.gain.value = 0.9;
             
-            // Limiter (Compressor used as limiter)
+            // Compressor (Yapıştırıcı)
+            this.compressor = this.ctx.createDynamicsCompressor();
+            this.compressor.threshold.value = -24;
+            this.compressor.knee.value = 30;
+            this.compressor.ratio.value = 12;
+            this.compressor.attack.value = 0.003;
+            this.compressor.release.value = 0.25;
+
+            // Limiter (Duvar)
+            // Web Audio API'de Limiter için Compressor'ü agresif ayarlarla kullanırız.
             this.limiter = this.ctx.createDynamicsCompressor();
             this.limiter.threshold.value = -1.0;
             this.limiter.knee.value = 0.0;
-            this.limiter.ratio.value = 20.0;
-            this.limiter.attack.value = 0.005;
+            this.limiter.ratio.value = 20.0; // Sonsuz sıkıştırma
+            this.limiter.attack.value = 0.001; // Anında tepki
             this.limiter.release.value = 0.1;
             
-            // Reverb Bus
+            // Reverb Bus (Send/Return)
             this.reverbNode = this.ctx.createConvolver();
-            this.reverbNode.buffer = Utils.createImpulse(this.ctx, 2.0, 4.0);
+            this.reverbNode.buffer = Utils.createImpulse(this.ctx, 3.0, 3.0); // 3 saniye reverb
             this.reverbGain = this.ctx.createGain();
-            this.reverbGain.gain.value = 0.0; // Off by default
+            this.reverbGain.gain.value = 0.0; // Varsayılan Kapalı
 
-            // Routing
-            this.masterGain.connect(this.limiter);
+            // Routing: MasterGain -> Compressor -> Limiter -> Out
+            this.masterGain.connect(this.compressor);
+            this.compressor.connect(this.limiter);
             this.limiter.connect(this.ctx.destination);
             
-            // Aux Send for Reverb
+            // Reverb Routing: Master -> Reverb -> ReverbGain -> MasterOut (Parallel)
             this.masterGain.connect(this.reverbNode);
             this.reverbNode.connect(this.reverbGain);
-            this.reverbGain.connect(this.limiter);
+            this.reverbGain.connect(this.limiter); // Reverb de limitlenmeli
             
-            console.log("%c AUDIO ENGINE ONLINE ", "background: #06b6d4; color: #000; font-weight: bold; padding: 5px;");
+            console.log("%c AUDIO ENGINE ONLINE - v6.0 ", "background: #06b6d4; color: #000; font-weight: bold; padding: 5px;");
         },
 
         togglePlay() {
-            if (!this.ctx) this.init(); // Fallback
+            if (!this.ctx) this.init(); 
             
-            // CRITICAL: Ensure Context is Running
+            // Güvenli Başlatma
             if (this.ctx.state === 'suspended') {
                 this.ctx.resume().then(() => {
                     this.togglePlayState();
@@ -963,10 +994,11 @@
             clearTimeout(this.timerID);
             this.currentStep = 0;
             document.getElementById('playBtn').innerHTML = '<span>▶</span> OYNAT / PLAY';
+            document.getElementById('playBtn').classList.remove('playing-mode');
             UIManager.resetPlayhead();
         },
 
-        // The Heartbeat: Lookahead Scheduler
+        // Zamanlayıcı
         scheduler() {
             while (this.nextNoteTime < this.ctx.currentTime + this.scheduleAheadTime) {
                 this.scheduleNote(this.currentStep, this.nextNoteTime);
@@ -991,13 +1023,13 @@
             // Audio Trigger
             this.tracks.forEach(track => {
                 if (track.steps[stepNumber] && !track.muted) {
-                    track.synth.trigger(time, track.params);
+                    track.trigger(time); // Track class method
                     // Trigger Meter UI
                     setTimeout(() => UIManager.pulseMeter(track.id), Math.max(0, drawTime));
                 }
             });
             
-            // Master Meter Pulse (Fake approximation based on activity)
+            // Master Meter Pulse (Activity check)
             if(this.tracks.some(t => t.steps[stepNumber] && !t.muted)) {
                  setTimeout(() => UIManager.pulseMeter('master'), Math.max(0, drawTime));
             }
@@ -1005,39 +1037,27 @@
 
         // Track Management
         addTrack(preset) {
-            const id = Utils.id();
-            
-            // Create Audio Graph for this track
-            const gain = this.ctx.createGain();
-            gain.connect(this.masterGain);
-            
-            // Instantiate specific Synth based on category
-            let synth;
-            if (preset.cat === 'kick') synth = new KickSynth(this.ctx, gain);
-            else if (preset.cat === 'snare') synth = new SnareSynth(this.ctx, gain);
-            else if (preset.cat === 'hat') synth = new HatSynth(this.ctx, gain);
-            else synth = new MelodicSynth(this.ctx, gain); // Default to Synth
-
-            const track = {
-                id: id,
-                name: preset.name,
-                cat: preset.cat,
-                params: { ...preset.params }, // Copy params
-                steps: new Array(16).fill(false),
-                muted: false,
-                synth: synth,
-                gainNode: gain
-            };
-
-            this.tracks.push(track);
-            UIManager.renderTrack(track);
-            UIManager.renderChannelStrip(track);
+            const newTrack = new Track(this.ctx, this.masterGain, preset);
+            this.tracks.push(newTrack);
+            UIManager.renderTrack(newTrack);
+            UIManager.renderChannelStrip(newTrack);
         },
         
         removeTrack(id) {
-            this.tracks = this.tracks.filter(t => t.id !== id);
-            document.getElementById(`tr-${id}`).remove();
-            document.getElementById(`ch-${id}`).remove();
+            const idx = this.tracks.findIndex(t => t.id === id);
+            if(idx > -1) {
+                // Disconnect audio nodes properly to prevent memory leaks
+                this.tracks[idx].disconnect();
+                this.tracks.splice(idx, 1);
+                document.getElementById(`tr-${id}`).remove();
+                document.getElementById(`ch-${id}`).remove();
+                
+                // Close any open windows for this track
+                const winDist = document.getElementById(`win-${id}-DIST`);
+                const winDelay = document.getElementById(`win-${id}-DELAY`);
+                if(winDist) winDist.remove();
+                if(winDelay) winDelay.remove();
+            }
         },
         
         clearPattern() {
@@ -1047,163 +1067,202 @@
 
         setBpm(val) { this.tempo = Utils.clamp(parseInt(val), 40, 240); },
         setMasterVolume(val) { if(this.masterGain) this.masterGain.gain.value = val; },
-        toggleMasterReverb() { 
+        
+        toggleMasterReverb(el) { 
             if(this.reverbGain) {
                 const now = this.ctx.currentTime;
+                // Toggle Logic
+                const isOff = this.reverbGain.gain.value < 0.01;
+                const target = isOff ? 0.4 : 0;
+                
                 this.reverbGain.gain.cancelScheduledValues(now);
-                // Toggle between 0 and 0.4
-                const target = this.reverbGain.gain.value > 0.1 ? 0 : 0.4;
-                this.reverbGain.gain.linearRampToValueAtTime(target, now + 0.1);
+                this.reverbGain.gain.linearRampToValueAtTime(target, now + 0.2);
+                
+                if(isOff) el.classList.add('active');
+                else el.classList.remove('active');
             }
         }
     };
 
-    // --- 3. SYNTHESIZERS (The Sound Design) ---
-    
-    class BaseSynth {
-        constructor(ctx, output) {
+    // --- 3. TRACK CLASS & SOUND DESIGN (THE CORE FIX) ---
+    class Track {
+        constructor(ctx, masterBus, preset) {
             this.ctx = ctx;
-            this.output = output;
-        }
-    }
+            this.id = Utils.id();
+            this.name = preset.name;
+            this.cat = preset.cat;
+            this.params = { ...preset.params };
+            this.steps = new Array(16).fill(false);
+            this.muted = false;
 
-    class KickSynth extends BaseSynth {
-        trigger(time, p) {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
+            // --- AUDIO CHAIN CONSTRUCTION ---
+            // Source -> Distortion -> Delay -> ChannelVolume -> Master
             
-            osc.connect(gain);
-            gain.connect(this.output);
+            // 1. Channel Volume (Fader)
+            this.gainNode = ctx.createGain();
+            this.gainNode.gain.value = 0.8;
+            this.gainNode.connect(masterBus);
 
-            // Frequency Envelope (The "Punch")
-            osc.frequency.setValueAtTime(p.freq, time);
-            osc.frequency.exponentialRampToValueAtTime(10, time + p.decay);
+            // 2. Delay Effect Nodes
+            this.delayNode = ctx.createDelay();
+            this.delayNode.delayTime.value = 0.0; // Default off
+            this.delayFeedback = ctx.createGain();
+            this.delayFeedback.gain.value = 0.0;
+            // Delay Wiring
+            this.delayNode.connect(this.delayFeedback);
+            this.delayFeedback.connect(this.delayNode);
+            this.delayNode.connect(this.gainNode); // Wet signal
 
-            // Amplitude Envelope
-            gain.gain.setValueAtTime(1, time);
-            gain.gain.exponentialRampToValueAtTime(0.001, time + p.decay);
+            // 3. Distortion Node
+            this.distNode = ctx.createWaveShaper();
+            this.distNode.curve = Utils.makeDistortionCurve(0); // Default 0
+            this.distNode.oversample = '4x';
+            
+            // Connection Chain Logic is handled in trigger() or specific routing
+            // Here we define the "Bus" entry point for effects
+            this.fxInput = this.distNode;
+            
+            // Distortion Output splits: Dry to Volume, Wet to Delay
+            this.distNode.connect(this.gainNode); // Dry path
+            this.distNode.connect(this.delayNode); // To delay
+            
+            // FX STATE
+            this.fxState = {
+                distAmount: 0,
+                delayTime: 0,
+                delayFeedback: 0
+            };
+        }
 
-            // Distortion logic (if params allow)
-            if(p.dist > 0) {
-                // Simplified distortion for CPU
-                osc.type = 'square'; // Harser wave
-                // Basic lowpass to tame the square
-                const filter = this.ctx.createBiquadFilter();
-                filter.frequency.value = 200;
-                osc.disconnect(); osc.connect(filter); filter.connect(gain);
-            } else {
-                osc.type = 'sine';
+        disconnect() {
+            this.gainNode.disconnect();
+            this.delayNode.disconnect();
+            this.delayFeedback.disconnect();
+            this.distNode.disconnect();
+        }
+        
+        // Update FX from UI Knobs
+        setFX(type, param, value) {
+            if (type === 'DIST') {
+                if (param === 'DRIVE') {
+                    // Map 0-100 to curve
+                    this.fxState.distAmount = value;
+                    this.distNode.curve = Utils.makeDistortionCurve(value * 4); // 0 to 400
+                }
+            } else if (type === 'DELAY') {
+                if (param === 'TIME') {
+                    // Map 0-100 to 0-1 seconds
+                    this.delayNode.delayTime.value = (value / 100) * 0.5; 
+                    this.fxState.delayTime = value;
+                } else if (param === 'FDBK') {
+                    // Map 0-100 to 0-0.9
+                    this.delayFeedback.gain.value = (value / 100) * 0.9;
+                    this.fxState.delayFeedback = value;
+                }
             }
-
-            osc.start(time);
-            osc.stop(time + p.decay);
         }
-    }
 
-    class SnareSynth extends BaseSynth {
-        trigger(time, p) {
-            // 1. Tonal Oscillator (Body)
-            const osc = this.ctx.createOscillator();
-            const oscGain = this.ctx.createGain();
-            osc.type = 'triangle';
-            osc.connect(oscGain);
-            oscGain.connect(this.output);
+        trigger(time) {
+            // Source Generation based on Category
+            let source = null;
+            let envelope = this.ctx.createGain();
             
-            osc.frequency.setValueAtTime(p.tone, time);
+            if (this.cat === 'kick') this.createKick(time, envelope);
+            else if (this.cat === 'snare') this.createSnare(time, envelope);
+            else if (this.cat === 'hat') this.createHat(time, envelope);
+            else this.createSynth(time, envelope);
+
+            // Connect Envelope to FX Input (Distortion Node)
+            envelope.connect(this.fxInput);
+            
+            // Garbage Collection Helper
+            setTimeout(() => {
+                envelope.disconnect();
+            }, 2000);
+        }
+
+        createKick(time, env) {
+            const osc = this.ctx.createOscillator();
+            osc.frequency.setValueAtTime(this.params.freq, time);
+            osc.frequency.exponentialRampToValueAtTime(10, time + this.params.decay);
+            
+            env.gain.setValueAtTime(1, time);
+            env.gain.exponentialRampToValueAtTime(0.001, time + this.params.decay);
+            
+            osc.connect(env);
+            osc.start(time);
+            osc.stop(time + this.params.decay);
+        }
+
+        createSnare(time, env) {
+            // Tone
+            const osc = this.ctx.createOscillator();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(this.params.tone, time);
+            const oscGain = this.ctx.createGain();
             oscGain.gain.setValueAtTime(0.5, time);
             oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+            osc.connect(oscGain).connect(env);
             osc.start(time); osc.stop(time + 0.1);
 
-            // 2. Noise (Snap)
-            const noiseSize = this.ctx.sampleRate * 0.2;
-            const buffer = this.ctx.createBuffer(1, noiseSize, this.ctx.sampleRate);
+            // Noise
+            const bufferSize = this.ctx.sampleRate * 0.2;
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
             const data = buffer.getChannelData(0);
-            for(let i=0; i<noiseSize; i++) data[i] = Math.random() * 2 - 1;
-
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
             const noise = this.ctx.createBufferSource();
             noise.buffer = buffer;
-            const noiseFilter = this.ctx.createBiquadFilter();
-            noiseFilter.type = 'highpass';
-            noiseFilter.frequency.value = 1000;
-            const noiseGain = this.ctx.createGain();
-            
-            noise.connect(noiseFilter);
-            noiseFilter.connect(noiseGain);
-            noiseGain.connect(this.output);
-
-            noiseGain.gain.setValueAtTime(p.snap, time);
-            noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
-            
-            noise.start(time);
-        }
-    }
-
-    class HatSynth extends BaseSynth {
-        trigger(time, p) {
-            // 6-oscillator array for metallic sound (Classic 808 style logic simplified)
-            const fund = p.pitch || 400;
-            const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
-            
-            const gain = this.ctx.createGain();
             const filter = this.ctx.createBiquadFilter();
-            filter.type = 'highpass';
-            filter.frequency.value = 7000;
+            filter.type = 'highpass'; filter.frequency.value = 1000;
+            noise.connect(filter).connect(env);
+            noise.start(time);
             
-            gain.connect(filter);
-            filter.connect(this.output);
+            env.gain.setValueAtTime(this.params.snap, time);
+            env.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+        }
+
+        createHat(time, env) {
+            // 6 Oscillators for metallic sound
+            const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+            const bandpass = this.ctx.createBiquadFilter();
+            bandpass.type = 'bandpass';
+            bandpass.frequency.value = 10000;
+            bandpass.connect(env);
 
             ratios.forEach(r => {
                 const osc = this.ctx.createOscillator();
                 osc.type = 'square';
-                osc.frequency.value = fund * r;
-                osc.connect(gain);
+                osc.frequency.value = (this.params.pitch || 300) * r;
+                osc.connect(bandpass);
                 osc.start(time);
-                osc.stop(time + p.len);
+                osc.stop(time + this.params.len);
             });
-
-            gain.gain.setValueAtTime(0.3, time);
-            gain.gain.exponentialRampToValueAtTime(0.001, time + p.len);
+            
+            env.gain.setValueAtTime(0.3, time);
+            env.gain.exponentialRampToValueAtTime(0.001, time + this.params.len);
         }
-    }
 
-    class MelodicSynth extends BaseSynth {
-        constructor(ctx, output) {
-            super(ctx, output);
-            this.notes = [261.63, 311.13, 392.00, 523.25]; // Cm7 Arpeggio
-            this.idx = 0;
-        }
-        
-        trigger(time, p) {
+        createSynth(time, env) {
             const osc = this.ctx.createOscillator();
-            osc.type = p.wave || 'sawtooth';
+            osc.type = this.params.wave || 'sawtooth';
+            // Simple random arpeggio for demo
+            const freqs = [261.63, 311.13, 392.00, 523.25]; 
+            osc.frequency.value = freqs[Math.floor(Math.random() * freqs.length)];
             
             const filter = this.ctx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.Q.value = 5;
+            filter.frequency.setValueAtTime(this.params.cutoff, time);
+            filter.frequency.exponentialRampToValueAtTime(100, time + this.params.decay);
             
-            const gain = this.ctx.createGain();
+            osc.connect(filter).connect(env);
             
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.output);
-            
-            // Arpeggiator Logic
-            const freq = this.notes[this.idx % this.notes.length];
-            this.idx++;
-            
-            osc.frequency.value = freq;
-            
-            // Filter Envelope
-            filter.frequency.setValueAtTime(p.cutoff, time);
-            filter.frequency.exponentialRampToValueAtTime(100, time + p.decay);
-            
-            // Amp Envelope
-            gain.gain.setValueAtTime(0, time);
-            gain.gain.linearRampToValueAtTime(0.4, time + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.001, time + p.decay);
+            env.gain.setValueAtTime(0, time);
+            env.gain.linearRampToValueAtTime(0.4, time + 0.01);
+            env.gain.exponentialRampToValueAtTime(0.001, time + this.params.decay);
             
             osc.start(time);
-            osc.stop(time + p.decay);
+            osc.stop(time + this.params.decay);
         }
     }
 
@@ -1212,20 +1271,10 @@
         presets: [],
         
         generate() {
-            // Generate 200+ unique sounds
-            // Kicks
-            for(let i=1; i<=10; i++) this.presets.push({ id: `k${i}`, cat: 'kick', name: `R0Y 808 Spinz ${i}`, params: { freq: 40+i*2, decay: 0.8, dist: 1 } });
-            for(let i=1; i<=10; i++) this.presets.push({ id: `k_p${i}`, cat: 'kick', name: `Punch Kick ${i}`, params: { freq: 60+i*5, decay: 0.2, dist: 0 } });
-            
-            // Snares
+            // Presets Generation
+            for(let i=1; i<=10; i++) this.presets.push({ id: `k${i}`, cat: 'kick', name: `R0Y 808 Spinz ${i}`, params: { freq: 40+i*2, decay: 0.8 } });
             for(let i=1; i<=10; i++) this.presets.push({ id: `s${i}`, cat: 'snare', name: `Trap Snare ${i}`, params: { tone: 180+i*10, snap: 0.8 } });
-            for(let i=1; i<=5; i++) this.presets.push({ id: `r${i}`, cat: 'snare', name: `Rimshot ${i}`, params: { tone: 400+i*20, snap: 0.3 } });
-            
-            // Hats
             for(let i=1; i<=10; i++) this.presets.push({ id: `h${i}`, cat: 'hat', name: `Closed Hat ${i}`, params: { pitch: 300+i*50, len: 0.05 } });
-            for(let i=1; i<=5; i++) this.presets.push({ id: `ho${i}`, cat: 'hat', name: `Open Hat ${i}`, params: { pitch: 300, len: 0.3 } });
-            
-            // Synths
             ['sawtooth', 'square', 'sine'].forEach((wave, idx) => {
                 for(let i=1; i<=5; i++) {
                     this.presets.push({ id: `sy${idx}${i}`, cat: 'synth', name: `${wave.toUpperCase()} Pluck ${i}`, params: { wave: wave, cutoff: 1000+i*500, decay: 0.4 } });
@@ -1243,7 +1292,7 @@
             grid.innerHTML = '';
             
             document.querySelectorAll('.lib-tab').forEach(t => t.classList.remove('active'));
-            // Highlight current tab logic here (simple version)
+            // Tab active logic omitted for brevity
             
             this.presets.filter(p => p.cat === cat).forEach(p => {
                 const el = document.createElement('div');
@@ -1293,9 +1342,9 @@
                 <div class="ch-title">${track.name}</div>
                 
                 <div class="fx-rack">
-                    <div class="fx-item" onclick="UIManager.openPlugin('${track.id}', 'DIST')">DIST</div>
-                    <div class="fx-item" onclick="UIManager.openPlugin('${track.id}', 'DELAY')">DELAY</div>
-                    <div class="fx-item" style="color:var(--danger)" onclick="AudioCore.removeTrack('${track.id}')">X</div>
+                    <div class="fx-item" id="btn-dist-${track.id}" onclick="UIManager.openPlugin('${track.id}', 'DIST')">DIST</div>
+                    <div class="fx-item" id="btn-delay-${track.id}" onclick="UIManager.openPlugin('${track.id}', 'DELAY')">DELAY</div>
+                    <div class="fx-item" style="color:var(--danger); margin-top:auto" onclick="AudioCore.removeTrack('${track.id}')">X</div>
                 </div>
 
                 <div class="fader-group">
@@ -1304,7 +1353,6 @@
                            oninput="AudioCore.tracks.find(t=>t.id=='${track.id}').gainNode.gain.value = this.value">
                 </div>
             `;
-            // Insert before master
             const mixer = document.getElementById('mixerArea');
             const master = document.getElementById('masterStrip');
             mixer.insertBefore(strip, master);
@@ -1330,7 +1378,6 @@
         highlightColumn(step) {
             document.querySelectorAll('.step.step-play').forEach(el => el.classList.remove('step-play'));
             document.querySelectorAll(`.step:nth-child(${step + 1})`).forEach(el => el.classList.add('step-play'));
-            
             document.querySelectorAll('.track-row').forEach(r => r.classList.remove('playing-row'));
         },
         
@@ -1347,45 +1394,95 @@
             }
         },
 
+        // --- PLUGIN WINDOW LOGIC (THE MAGIC) ---
         openPlugin(trackId, type) {
             const winId = `win-${trackId}-${type}`;
-            if(document.getElementById(winId)) return; // Already open
+            if(document.getElementById(winId)) return;
+            
+            // Get Current Values
+            const track = AudioCore.tracks.find(t => t.id === trackId);
+            if (!track) return;
+
+            let knobs = [];
+            let values = {};
+
+            if(type === 'DIST') {
+                knobs = [{ label: 'DRIVE', param: 'DRIVE' }, { label: 'TONE', param: 'TONE' }];
+                values = { 'DRIVE': track.fxState.distAmount || 0, 'TONE': 50 };
+            } else if(type === 'DELAY') {
+                knobs = [{ label: 'TIME', param: 'TIME' }, { label: 'FDBK', param: 'FDBK' }];
+                values = { 'TIME': track.fxState.delayTime || 0, 'FDBK': track.fxState.delayFeedback || 0 };
+            }
             
             const win = document.createElement('div');
             win.className = 'plugin-window';
             win.id = winId;
-            win.style.left = (Math.random() * 200 + 100) + 'px';
-            win.style.top = (Math.random() * 100 + 100) + 'px';
+            win.style.left = (Math.random() * 100 + 100) + 'px';
+            win.style.top = (Math.random() * 50 + 100) + 'px';
             win.style.display = 'flex';
-            
-            // Parameter config
-            let knobs = [];
-            if(type === 'DIST') knobs = ['DRIVE', 'TONE'];
-            else if(type === 'DELAY') knobs = ['TIME', 'FDBK'];
             
             win.innerHTML = `
                 <div class="pw-header" onmousedown="UIManager.dragWindow(event, '${winId}')">
-                    ${type} - TRACK ${trackId.substr(0,4)}
+                    ${type} | ${track.name}
                     <span class="pw-close" onclick="document.getElementById('${winId}').remove()">✕</span>
                 </div>
                 <div class="pw-body">
-                    ${knobs.map(k => `
+                    ${knobs.map(k => {
+                        const val = values[k.param];
+                        const deg = (val / 100) * 270;
+                        return `
                         <div class="knob-container">
-                            <div class="knob" style="--val:${Math.random()*270}deg">
-                                <div class="knob-indicator"></div>
+                            <div class="knob" id="k-${winId}-${k.param}" style="--val:${deg}deg" 
+                                 onmousedown="UIManager.rotateKnob(event, this, '${trackId}', '${type}', '${k.param}')">
+                                <div class="knob-indicator" style="--rot:${deg - 135}deg"></div>
                             </div>
-                            <div class="knob-label">${k}</div>
+                            <div class="knob-label">${k.label}</div>
                         </div>
-                    `).join('')}
+                    `}).join('')}
                 </div>
             `;
             document.getElementById('windowLayer').appendChild(win);
+            
+            // Activate button style
+            document.getElementById(`btn-${type.toLowerCase()}-${trackId}`).classList.add('active');
+        },
+        
+        rotateKnob(e, el, trackId, type, param) {
+            e.preventDefault();
+            const startY = e.clientY;
+            // Extract current degree from style or default 0
+            let startVal = parseFloat(el.style.getPropertyValue('--val').replace('deg','')) || 0;
+            // Map 0-270deg to 0-100 value
+            let currentVal = (startVal / 270) * 100; 
+
+            const onMove = (moveEvent) => {
+                const delta = startY - moveEvent.clientY;
+                currentVal = Utils.clamp(currentVal + delta, 0, 100);
+                
+                // Update UI
+                const deg = (currentVal / 100) * 270;
+                el.style.setProperty('--val', deg + 'deg');
+                el.querySelector('.knob-indicator').style.setProperty('--rot', (deg - 135) + 'deg');
+                
+                // Update Audio Engine
+                const track = AudioCore.tracks.find(t => t.id === trackId);
+                if(track) track.setFX(type, param, currentVal);
+            };
+
+            const onUp = () => {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            };
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
         },
         
         dragWindow(e, id) {
             const win = document.getElementById(id);
-            const shiftX = e.clientX - win.getBoundingClientRect().left;
-            const shiftY = e.clientY - win.getBoundingClientRect().top;
+            const rect = win.getBoundingClientRect();
+            const shiftX = e.clientX - rect.left;
+            const shiftY = e.clientY - rect.top;
 
             function moveAt(pageX, pageY) {
                 win.style.left = pageX - shiftX + 'px';
@@ -1405,12 +1502,15 @@
     // --- 6. SYSTEM BOOT ---
     const System = {
         bootLogs: [
-            "Mounting Virtual File System...",
-            "Loading 808 Samples into Memory...",
-            "Calibrating Oscillators...",
-            "Connecting to R0Y-CLOUD...",
-            "Unlocking Pro Features...",
-            "Ready."
+            "Dosya Sistemi Bağlanıyor...",
+            "808 Örnekleri Belleğe Alınıyor...",
+            "Osilatörler Kalibre Ediliyor...",
+            "Ses Motorları Isıtılıyor...",
+            "R0Y-CLOUD Sunucularına Erişiliyor...",
+            "Plugin Zincirleri Test Ediliyor...",
+            "Sanal Kablolar Bağlanıyor...",
+            "Pro Lisans Doğrulanıyor...",
+            "Sistem Hazır."
         ],
 
         startLoad() {
@@ -1421,49 +1521,60 @@
             const msg = document.getElementById('lMsg');
             const btn = document.getElementById('startEngineBtn');
             
+            // Yavaş yükleme için interval artırıldı
             const interval = setInterval(() => {
-                p += 1; // Faster load for UX
+                p += 0.5; 
                 bar.style.width = p + '%';
                 
-                if(p % 20 === 0) {
-                    msg.innerText = "> " + this.bootLogs[Math.floor(p/20)];
+                if(Math.floor(p) % 12 === 0) {
+                    const logIdx = Math.floor(p/12) % this.bootLogs.length;
+                    msg.innerText = "> " + this.bootLogs[logIdx];
                 }
                 
                 if(p >= 100) {
                     clearInterval(interval);
-                    msg.innerText = "> SYSTEM READY. WAITING FOR USER INPUT.";
+                    msg.innerText = "> SISTEM HAZIR. KULLANICI GİRİŞİ BEKLENİYOR.";
                     msg.style.color = "var(--accent-primary)";
-                    btn.style.display = 'block'; // SHOW THE MAGIC BUTTON
+                    btn.style.display = 'block'; 
                 }
-            }, 30);
+            }, 30); // 30ms * 200 steps = ~6 seconds load
         },
         
-        // This is called by the Button Click -> Fixes AudioContext
         boot() {
-            AudioCore.init(); // Create context inside user gesture
-            
-            const loader = document.getElementById('loader');
-            loader.style.opacity = 0;
-            setTimeout(() => {
-                loader.style.display = 'none';
+            try {
+                AudioCore.init(); // Create context safely
                 
-                // Add Default Tracks
-                AudioCore.addTrack(LibraryManager.presets.find(p => p.id === 'k1'));
-                AudioCore.addTrack(LibraryManager.presets.find(p => p.id === 's1'));
-                AudioCore.addTrack(LibraryManager.presets.find(p => p.id === 'h1'));
-                AudioCore.addTrack(LibraryManager.presets.find(p => p.id === 'sy01'));
-                
-                // Demo Pattern
-                const k = AudioCore.tracks[0];
-                k.steps[0] = k.steps[8] = true;
-                UIManager.toggleStep(k.id, 0, document.querySelector(`#tr-${k.id} .step:nth-child(1)`));
-                UIManager.toggleStep(k.id, 8, document.querySelector(`#tr-${k.id} .step:nth-child(9)`));
-                
-            }, 800);
+                const loader = document.getElementById('loader');
+                loader.style.opacity = 0;
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    
+                    // Add Default Tracks
+                    const p1 = LibraryManager.presets.find(p => p.id === 'k1');
+                    const p2 = LibraryManager.presets.find(p => p.id === 's1');
+                    const p3 = LibraryManager.presets.find(p => p.id === 'h1');
+                    const p4 = LibraryManager.presets.find(p => p.id === 'sy01');
+                    
+                    if(p1) AudioCore.addTrack(p1);
+                    if(p2) AudioCore.addTrack(p2);
+                    if(p3) AudioCore.addTrack(p3);
+                    if(p4) AudioCore.addTrack(p4);
+                    
+                    // Demo Pattern
+                    const k = AudioCore.tracks[0];
+                    if(k) {
+                        k.steps[0] = k.steps[8] = true;
+                        UIManager.toggleStep(k.id, 0, document.querySelector(`#tr-${k.id} .step:nth-child(1)`));
+                        UIManager.toggleStep(k.id, 8, document.querySelector(`#tr-${k.id} .step:nth-child(9)`));
+                    }
+                    
+                }, 800);
+            } catch (e) {
+                alert("Sistem Başlatma Hatası: " + e.message);
+            }
         }
     };
 
-    // Auto Start Loading Process
     window.onload = () => System.startLoad();
 
 </script>
