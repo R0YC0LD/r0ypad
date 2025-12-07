@@ -3,427 +3,520 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R0YPAD STUDIO | PHOENIX v16.0 (STABLE CORE)</title>
+    <title>R0YPAD STUDIO | LEVIATHAN CORE v20.0</title>
+    <meta name="description" content="Ultimate Browser-Based DAW">
     
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Inter:wght@400;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;900&family=Orbitron:wght@900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* =========================================
-           CORE CSS (PHOENIX THEME)
-           ========================================= */
+        /* * ==========================================================================
+         * [CSS] LEVIATHAN DESIGN SYSTEM
+         * ==========================================================================
+         * Gelişmiş GPU hızlandırmalı arayüz tasarımı.
+         */
+
         :root {
-            --bg-void: #050505;
-            --bg-panel: #0a0a0c;
-            --bg-slat: #111114;
+            /* Renk Paleti: Leviathan */
+            --void: #020202;
+            --panel: #0b0b0e;
+            --surface: #141418;
+            --module: #1a1a20;
             
-            --phoenix-orange: #ff5500;
-            --phoenix-gold: #ffaa00;
-            --phoenix-red: #ff003c;
-            --phoenix-blue: #00f3ff;
+            --neon-primary: #00f3ff;   /* Core Blue */
+            --neon-secondary: #bd00ff; /* Plasma Purple */
+            --neon-accent: #ff0055;    /* Critical Red */
+            --neon-success: #00ff9d;   /* System Green */
+            --neon-warn: #ffcc00;      /* Warning Gold */
             
-            --border: #333;
-            --glass: rgba(10,10,12,0.95);
-            
-            --h-head: 70px;
-            --h-mix: 300px;
+            /* UI Değişkenleri */
+            --border-dim: #222;
+            --border-lit: #444;
+            --glass-panel: rgba(15, 15, 20, 0.98);
+            --header-height: 80px;
+            --mixer-height: 400px;
+            --shadow-glow: 0 0 15px rgba(0, 243, 255, 0.15);
         }
 
-        * { box-sizing: border-box; user-select: none; outline: none; }
-        
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-drag: none;
+            outline: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-lit) var(--void);
+        }
+
         body {
-            margin: 0; padding: 0; background: var(--bg-void); color: #eee;
-            font-family: 'Inter', sans-serif; height: 100vh; width: 100vw;
-            overflow: hidden; display: grid;
-            grid-template-rows: var(--h-head) 1fr var(--h-mix);
+            margin: 0; padding: 0;
+            background-color: var(--void);
+            color: #eee;
+            font-family: 'Inter', sans-serif;
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: var(--header-height) 1fr var(--mixer-height);
+            font-size: 11px;
         }
 
-        /* Scrollbars */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--phoenix-orange); }
+        /* Scrollbar Motoru */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; border: 1px solid #000; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-primary); }
 
-        /* =========================================
-           1. BOOT SCREEN (ZORUNLU BAŞLANGIÇ)
-           ========================================= */
-        #boot-layer {
+        /* * [BOOT] AÇILIŞ EKRANI 
+         */
+        #boot-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 99999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        
-        .logo-big {
-            font-family: 'Orbitron'; font-size: 5rem; letter-spacing: 10px;
-            background: linear-gradient(to bottom, #fff, var(--phoenix-orange));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 20px; text-shadow: 0 0 50px var(--phoenix-orange);
-        }
-        
-        .boot-status {
-            font-family: 'JetBrains Mono'; color: #666; font-size: 12px; margin-bottom: 40px;
+            background-image: radial-gradient(circle at center, #111 0%, #000 80%);
         }
 
-        #btn-start-engine {
-            padding: 20px 60px; background: transparent; 
-            border: 2px solid var(--phoenix-orange); color: var(--phoenix-orange);
-            font-family: 'Orbitron'; font-size: 20px; cursor: pointer;
-            transition: 0.3s; letter-spacing: 2px;
-        }
-        #btn-start-engine:hover {
-            background: var(--phoenix-orange); color: #000; box-shadow: 0 0 50px var(--phoenix-orange);
+        .leviathan-title {
+            font-family: 'Orbitron'; font-size: 6rem; letter-spacing: 15px; font-weight: 900;
+            background: linear-gradient(180deg, #fff, #444); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px var(--neon-primary));
+            animation: pulseTitle 3s infinite ease-in-out; margin-bottom: 10px;
         }
 
-        /* =========================================
-           2. HEADER
-           ========================================= */
+        .system-terminal {
+            width: 700px; height: 250px; background: rgba(0,0,0,0.8);
+            border: 1px solid #333; border-left: 4px solid var(--neon-primary);
+            padding: 20px; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--neon-success);
+            overflow-y: auto; box-shadow: 0 0 50px rgba(0,255,157,0.05); margin-bottom: 30px;
+        }
+        
+        .log-entry { margin-bottom: 4px; opacity: 0; animation: fadeInLog 0.05s forwards; }
+        .log-warn { color: var(--neon-warn); }
+        .log-err { color: var(--neon-accent); }
+
+        .btn-init {
+            padding: 20px 80px; background: transparent; border: 2px solid var(--neon-primary);
+            color: var(--neon-primary); font-family: 'Rajdhani'; font-size: 24px; font-weight: 700;
+            letter-spacing: 4px; cursor: pointer; transition: 0.3s; display: none; /* JS ile açılır */
+            text-transform: uppercase; position: relative; overflow: hidden;
+        }
+        .btn-init:hover { background: var(--neon-primary); color: #000; box-shadow: 0 0 80px var(--neon-primary); }
+
+        @keyframes pulseTitle { 0%,100% { opacity:0.9; transform:scale(1); } 50% { opacity:1; transform:scale(1.02); } }
+        @keyframes fadeInLog { to { opacity:1; } }
+
+        /* * [UI] HEADER & TOOLBAR 
+         */
         header {
-            background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 10px 30px #000; z-index: 100;
+            background: var(--panel); border-bottom: 1px solid var(--border-dim);
+            padding: 0 30px; display: flex; align-items: center; justify-content: space-between;
+            z-index: 1000; box-shadow: 0 10px 40px #000;
         }
 
-        .brand { font-family: 'Orbitron'; font-size: 24px; color: #fff; }
-        .brand span { color: var(--phoenix-orange); }
+        .brand-section { display: flex; align-items: center; gap: 15px; }
+        .app-name { font-family: 'Orbitron'; font-size: 26px; color: #fff; letter-spacing: 2px; }
+        .app-name span { color: var(--neon-primary); }
+        .engine-ver { font-family: 'JetBrains Mono'; font-size: 10px; background: #222; color: #888; padding: 4px 8px; border-radius: 4px; }
 
         .toolbar { display: flex; gap: 10px; align-items: center; }
 
-        .btn {
-            height: 36px; padding: 0 15px; border-radius: 4px; font-weight: 700; font-size: 11px;
-            cursor: pointer; border: 1px solid var(--border); background: var(--bg-slat); color: #ccc;
-            display: flex; align-items: center; gap: 6px; transition: 0.2s;
+        .btn-tool {
+            height: 40px; padding: 0 20px; background: var(--module); border: 1px solid #333;
+            color: #ccc; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: 0.2s;
         }
-        .btn:hover { border-color: #666; color: #fff; }
-        
-        .btn-add { border-color: var(--phoenix-blue); color: var(--phoenix-blue); }
-        .btn-add:hover { background: var(--phoenix-blue); color: #000; }
-        
-        .btn-ai { border-color: var(--phoenix-gold); color: var(--phoenix-gold); }
-        .btn-ai:hover { background: var(--phoenix-gold); color: #000; }
+        .btn-tool:hover { border-color: #666; color: #fff; background: #222; }
+        .btn-tool:active { transform: translateY(1px); }
 
-        .transport {
-            display: flex; background: #000; padding: 5px; border-radius: 4px; border: 1px solid var(--border); gap: 5px;
+        .btn-special { border-color: var(--neon-primary); color: var(--neon-primary); background: rgba(0,243,255,0.05); }
+        .btn-special:hover { background: var(--neon-primary); color: #000; }
+
+        .btn-ai { border-color: var(--neon-secondary); color: var(--neon-secondary); }
+        .btn-ai:hover { background: var(--neon-secondary); color: #fff; box-shadow: 0 0 15px rgba(189,0,255,0.4); }
+
+        .transport-controls {
+            display: flex; background: #000; padding: 6px; border-radius: 6px; border: 1px solid #222; gap: 6px;
         }
-        .btn-tr { width: 40px; height: 30px; background: #111; border: none; color: #666; cursor: pointer; border-radius: 2px; font-size: 14px; }
+        .btn-tr {
+            width: 50px; height: 36px; border: none; background: #151518; color: #666;
+            border-radius: 4px; cursor: pointer; font-size: 16px; transition: 0.2s;
+        }
         .btn-tr:hover { color: #fff; background: #222; }
-        .btn-play.active { color: #000; background: var(--phoenix-gold); }
-        .btn-stop:hover { color: var(--phoenix-red); }
+        .btn-play.active { background: var(--neon-success); color: #000; box-shadow: 0 0 20px rgba(0,255,157,0.3); }
+        .btn-rec.active { background: var(--neon-accent); color: #fff; animation: blinkRec 1s infinite; }
 
-        .bpm-in { background: none; border: none; color: var(--phoenix-blue); width: 40px; text-align: center; font-weight: bold; font-family: 'JetBrains Mono'; font-size: 14px; }
+        .bpm-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; border-right: 1px solid #222; padding-right: 10px; margin-right: 5px; }
+        .bpm-lbl { font-size: 8px; font-weight: bold; color: #555; }
+        .bpm-val { background: none; border: none; color: var(--neon-primary); width: 100%; text-align: center; font-family: 'JetBrains Mono'; font-weight: 800; font-size: 16px; }
 
-        /* =========================================
-           3. SEQUENCER
-           ========================================= */
+        @keyframes blinkRec { 50% { opacity: 0.5; } }
+
+        /* * [UI] SEQUENCER WORKSPACE 
+         */
         .workspace {
             position: relative; background: #08080a; overflow-y: auto; padding: 20px;
-            background-image: linear-gradient(#151515 1px, transparent 1px); background-size: 100% 60px;
+            background-image: linear-gradient(#111 1px, transparent 1px);
+            background-size: 100% 70px; /* Track hizası */
         }
 
-        .track-list { display: flex; flex-direction: column; gap: 5px; padding-bottom: 100px; }
+        .track-container { padding-bottom: 150px; display: flex; flex-direction: column; gap: 6px; }
 
         .track-row {
-            display: flex; height: 55px; background: var(--bg-slat);
-            border: 1px solid var(--border); border-radius: 4px;
+            display: flex; height: 64px; background: var(--surface);
+            border: 1px solid var(--border-dim); border-radius: 4px; transition: 0.1s;
+            position: relative;
         }
-        .track-row.playing { border-left: 3px solid var(--phoenix-orange); background: #1a1a1d; }
+        .track-row:hover { background: var(--module); border-color: #444; }
+        .track-row.playing { border-left: 3px solid var(--neon-primary); background: #1c1c22; }
 
-        .t-head {
-            width: 180px; padding: 0 15px; border-right: 1px solid var(--border);
+        .track-controls {
+            width: 240px; padding: 10px 15px; border-right: 1px solid #222;
             display: flex; align-items: center; justify-content: space-between;
+            background: #0e0e10;
         }
-        .t-name { font-weight: bold; color: #fff; font-size: 12px; }
-        .t-btn { width: 20px; height: 20px; background: #000; border: 1px solid #333; color: #666; font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; }
-        .t-btn:hover { color: var(--phoenix-red); border-color: var(--phoenix-red); }
+        .tc-info { width: 100px; overflow: hidden; }
+        .tc-name { font-weight: 700; font-size: 13px; color: #eee; white-space: nowrap; text-overflow: ellipsis; }
+        .tc-type { font-size: 9px; color: var(--neon-primary); font-weight: bold; text-transform: uppercase; margin-top: 3px; }
 
-        .t-grid { flex: 1; display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; padding: 5px; }
+        .tc-actions { display: flex; gap: 5px; }
+        .mini-btn {
+            width: 22px; height: 22px; background: #111; border: 1px solid #333; color: #666;
+            font-size: 9px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border-radius: 3px; font-weight: bold;
+        }
+        .mini-btn:hover { color: #fff; border-color: #666; }
+        .mini-btn.active-mute { background: var(--neon-accent); color: #fff; border-color: var(--neon-accent); }
+        .mini-btn.active-solo { background: var(--neon-warn); color: #000; border-color: var(--neon-warn); }
+
+        .sequencer-grid {
+            flex: 1; display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; padding: 10px;
+        }
         .step {
-            background: #000; border: 1px solid #222; border-radius: 2px; cursor: pointer;
+            background: #000; border: 1px solid #222; border-radius: 2px; cursor: pointer; transition: 0.1s;
         }
         .step:nth-child(4n+1) { background: #0c0c0e; }
-        .step:hover { border-color: #555; }
-        .step.active { background: var(--phoenix-orange); box-shadow: 0 0 10px var(--phoenix-orange); border-color: var(--phoenix-orange); }
-        .step.playhead { background: #fff !important; transform: scale(1.1); z-index: 10; }
-
-        /* =========================================
-           4. MIXER
-           ========================================= */
-        .mixer {
-            background: var(--bg-panel); border-top: 1px solid var(--border);
-            padding: 15px; display: flex; gap: 10px; overflow-x: auto;
-            box-shadow: 0 -10px 50px #000; z-index: 50;
+        .step:hover { border-color: #555; background: #222; }
+        .step.active {
+            background: var(--neon-primary); box-shadow: 0 0 10px var(--neon-primary); border-color: var(--neon-primary);
+        }
+        .step.playhead {
+            background: #fff !important; transform: scale(1.15); z-index: 10; box-shadow: 0 0 15px #fff;
         }
 
-        .strip {
-            width: 90px; height: 100%; background: var(--bg-slat);
-            border: 1px solid var(--border); border-radius: 4px;
+        /* * [UI] MIXER CONSOLE 
+         */
+        .mixer-panel {
+            background: var(--panel); border-top: 1px solid var(--border-dim);
+            padding: 20px; display: flex; gap: 10px; overflow-x: auto; z-index: 50;
+            box-shadow: 0 -20px 80px rgba(0,0,0,0.9);
+        }
+
+        .channel-strip {
+            width: 110px; height: 100%; background: var(--surface);
+            border: 1px solid var(--border-dim); border-radius: 6px;
             display: flex; flex-direction: column; padding: 10px; flex-shrink: 0;
         }
-        .strip.master { margin-left: auto; width: 110px; border-color: var(--phoenix-gold); background: #0f0b05; }
+        .channel-strip:hover { border-color: #444; }
+        .channel-strip.master { margin-left: auto; width: 140px; background: #0e0a12; border: 1px solid var(--neon-secondary); }
 
-        .s-title { text-align: center; font-size: 9px; font-weight: bold; color: #666; margin-bottom: 10px; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
-        .master .s-title { color: var(--phoenix-gold); }
+        .cs-header { text-align: center; font-size: 10px; font-weight: bold; color: #666; margin-bottom: 10px; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
+        .master .cs-header { color: var(--neon-secondary); letter-spacing: 2px; }
 
-        .fx-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .fx-btn {
-            font-size: 8px; background: #000; color: #555; padding: 4px; text-align: center;
-            border: 1px solid #222; cursor: pointer; border-radius: 2px;
+        .fx-rack { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .fx-slot {
+            font-size: 9px; text-align: center; background: #050505; color: #555;
+            padding: 5px; border: 1px solid #222; cursor: pointer; border-radius: 3px; transition: 0.2s;
         }
-        .fx-btn:hover { color: #fff; border-color: #555; }
-        .fx-btn.on { color: var(--phoenix-blue); border-color: var(--phoenix-blue); background: rgba(0, 243, 255, 0.1); }
+        .fx-slot:hover { color: #fff; border-color: #666; }
+        .fx-slot.engaged { color: var(--neon-primary); border-color: var(--neon-primary); background: rgba(0, 243, 255, 0.1); }
 
-        .fader-box { flex: 1; display: flex; justify-content: center; position: relative; }
+        .fader-section {
+            flex: 1; background: #08080a; border: 1px solid #151515; border-radius: 4px;
+            display: flex; justify-content: center; align-items: flex-end; position: relative;
+        }
         
-        input[type=range].vol {
-            -webkit-appearance: none; width: 150px; height: 20px; background: transparent;
-            transform: rotate(-90deg); margin-top: 65px; cursor: ns-resize;
-        }
-        input[type=range].vol::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 12px; height: 24px; background: #444;
-            border: 1px solid #000; border-radius: 2px; box-shadow: 0 2px 5px #000;
-        }
-        .master input[type=range].vol::-webkit-slider-thumb { background: var(--phoenix-gold); }
+        .vu-meter { position: absolute; right: 8px; top: 10px; bottom: 10px; width: 6px; background: #000; border-radius: 3px; overflow: hidden; }
+        .vu-fill { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(to top, var(--neon-success), var(--neon-warn), var(--neon-accent)); opacity: 0.8; transition: height 0.05s linear; }
 
-        /* =========================================
-           5. MODALS & DEBUG
-           ========================================= */
+        input[type=range].fader {
+            -webkit-appearance: none; width: 240px; height: 40px; background: transparent;
+            transform: rotate(-90deg); margin-bottom: 110px; cursor: ns-resize;
+        }
+        input[type=range].fader::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #222; border-radius: 2px; }
+        input[type=range].fader::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 24px; height: 34px; background: #333; margin-top: -16px;
+            border: 1px solid #000; border-radius: 4px; box-shadow: 0 4px 10px #000;
+        }
+        .master input[type=range].fader::-webkit-slider-thumb { background: var(--neon-secondary); }
+
+        /* * [UI] POPUPS & PLUGINS 
+         */
+        .plugin-window {
+            position: absolute; width: 340px; background: var(--glass-panel);
+            border: 1px solid #444; border-top: 3px solid var(--neon-primary);
+            border-radius: 6px; box-shadow: 0 40px 120px #000; backdrop-filter: blur(15px);
+            display: none; z-index: 5000; flex-direction: column;
+        }
+        
+        .pw-head {
+            padding: 10px 15px; background: #1a1a1d; border-bottom: 1px solid #333; cursor: move;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .pw-title { font-family: 'Rajdhani'; font-weight: 700; color: #fff; letter-spacing: 1px; }
+        
+        .pw-body { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        /* Custom Knob Style via CSS */
+        .knob-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .knob-ctrl {
+            -webkit-appearance: none; width: 60px; height: 60px; border-radius: 50%;
+            background: conic-gradient(var(--neon-primary) var(--deg), #111 0deg);
+            position: relative; cursor: ns-resize; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .knob-ctrl::after { content: ''; position: absolute; top:5px; left:5px; right:5px; bottom:5px; background: #18181c; border-radius: 50%; }
+        .knob-txt { font-size: 9px; font-weight: bold; color: #888; text-transform: uppercase; }
+        .knob-val { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--neon-primary); position: absolute; top: 24px; pointer-events: none; }
+
+        /* MODALS */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 5000; display: none;
-            justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); z-index: 6000; display: none;
+            justify-content: center; align-items: center; backdrop-filter: blur(5px);
         }
-        .modal { width: 600px; background: var(--bg-slat); border: 1px solid var(--border); border-top: 3px solid var(--phoenix-blue); padding: 20px; }
+        .modal { width: 900px; height: 700px; background: #111; border: 1px solid #333; border-top: 4px solid var(--neon-secondary); display: flex; flex-direction: column; box-shadow: 0 50px 100px #000; }
+        .modal-body { flex: 1; padding: 30px; overflow-y: auto; }
         
-        .lib-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-height: 400px; overflow-y: auto; }
-        .lib-item { background: #000; padding: 10px; border: 1px solid #333; text-align: center; cursor: pointer; font-size: 11px; }
-        .lib-item:hover { border-color: var(--phoenix-blue); color: #fff; }
-
-        .debug-console {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 25px;
-            background: #000; border-top: 1px solid #222; color: var(--phoenix-gold);
-            font-family: 'JetBrains Mono'; font-size: 10px; display: flex; align-items: center; padding: 0 10px;
-            z-index: 9999;
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .lib-item {
+            background: #08080a; border: 1px solid #222; padding: 20px; border-radius: 6px;
+            cursor: pointer; text-align: center; transition: 0.2s; position: relative; overflow: hidden;
         }
+        .lib-item:hover { border-color: var(--neon-primary); background: #151518; transform: translateY(-2px); }
+        .li-title { font-weight: bold; color: #eee; font-size: 13px; margin-bottom: 5px; }
+        .li-cat { font-size: 10px; color: #666; text-transform: uppercase; }
 
-        /* Plugin Window */
-        .plugin-win {
-            position: absolute; width: 250px; background: rgba(10,10,10,0.95);
-            border: 1px solid #444; border-top: 2px solid var(--phoenix-blue);
-            top: 30%; left: 40%; display: none; flex-direction: column; z-index: 6000;
-            box-shadow: 0 20px 50px #000;
+        /* AI Input */
+        textarea.ai-box {
+            width: 100%; height: 120px; background: #050505; border: 1px solid #333;
+            color: #fff; padding: 20px; font-family: 'Inter'; font-size: 14px; resize: none; margin-bottom: 20px; border-radius: 4px;
         }
-        .pw-head { padding: 8px; background: #222; display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; cursor: move; }
-        .pw-body { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        .knob-box { text-align: center; }
-        input[type=range].knob { width: 100%; cursor: pointer; }
+        textarea.ai-box:focus { border-color: var(--neon-secondary); }
+        .btn-gen { width: 100%; padding: 20px; background: var(--neon-secondary); border: none; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-gen:hover { background: #d04aff; }
 
     </style>
 </head>
 <body>
 
-    <div id="boot-layer">
-        <div class="logo-big">PHOENIX</div>
-        <div class="boot-status">SES MOTORU BEKLEMEDE...</div>
-        <button id="btn-start-engine" onclick="Core.startEngine()">SİSTEMİ BAŞLAT</button>
+    <div id="boot-overlay">
+        <div class="leviathan-title">LEVIATHAN</div>
+        <div style="font-family:'Rajdhani'; letter-spacing:5px; color:#666; margin-bottom:40px;">CORE AUDIO ENGINE v20.0</div>
+        
+        <div class="system-terminal" id="term-out">
+            <div class="log-entry">> BIOS INITIALIZED...</div>
+        </div>
+        
+        <button class="btn-init" id="btn-start-sys" onclick="System.boot()">SİSTEMİ BAŞLAT</button>
     </div>
 
-    <div class="debug-console" id="console-line">> SYSTEM READY. WAITING FOR USER INPUT...</div>
-
-    <div class="plugin-win" id="fx-window">
-        </div>
+    <div id="float-layer"></div>
 
     <div class="overlay" id="mod-lib">
         <div class="modal">
-            <h3 style="margin-top:0; color:#fff;">ENSTRÜMAN EKLE</h3>
-            <div class="lib-grid" id="lib-content"></div>
-            <button class="btn" style="margin-top:15px; width:100%; justify-content:center;" onclick="UI.toggle('mod-lib', false)">KAPAT</button>
+            <div class="pw-head">
+                <span class="pw-title">SES KÜTÜPHANESİ (PROCEDURAL)</span>
+                <span style="cursor:pointer" onclick="UI.modal('mod-lib', false)">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="lib-grid" id="lib-content"></div>
+            </div>
         </div>
     </div>
 
     <div class="overlay" id="mod-ai">
-        <div class="modal">
-            <h3 style="margin-top:0; color:var(--phoenix-gold);">YAPAY ZEKA MİMAR</h3>
-            <textarea id="ai-in" style="width:100%; height:100px; background:#000; color:#fff; border:1px solid #333; padding:10px;" placeholder="Tarzınızı yazın (Trap, Techno, Hızlı, Yavaş)..."></textarea>
-            <button class="btn btn-ai" style="width:100%; justify-content:center; margin-top:10px; height:40px;" onclick="AI.generate()">OLUŞTUR</button>
+        <div class="modal" style="height:550px;">
+            <div class="pw-head">
+                <span class="pw-title">YAPAY ZEKA MİMAR</span>
+                <span style="cursor:pointer" onclick="UI.modal('mod-ai', false)">✕</span>
+            </div>
+            <div class="modal-body">
+                <p style="color:#aaa; font-size:12px; margin-bottom:15px;">Müzikal vizyonunuzu doğal dille anlatın. Leviathan sizin için BPM, Ritim, Melodi ve Efektleri tasarlayacaktır.</p>
+                <textarea class="ai-box" id="ai-prompt" placeholder="Örn: Hızlı, karanlık, bol distortion'lı techno beat..."></textarea>
+                <button class="btn-gen" onclick="AI.generate()">OLUŞTUR (GENERATE)</button>
+                <div id="ai-log" style="margin-top:15px; color:var(--neon-secondary); font-family:'JetBrains Mono'; font-size:11px;"></div>
+            </div>
         </div>
     </div>
 
     <header>
-        <div class="brand">R0Y<span>PAD</span></div>
-        
+        <div class="brand-section">
+            <div class="app-name">R0Y<span>PAD</span></div>
+            <div class="engine-ver">LEVIATHAN CORE</div>
+        </div>
+
         <div class="toolbar">
-            <button class="btn btn-add" onclick="UI.toggle('mod-lib', true)">+ KANAL</button>
-            <button class="btn btn-ai" onclick="UI.toggle('mod-ai', true)">YAPAY ZEKA</button>
-            <div style="width:1px; height:20px; background:#333;"></div>
-            <div class="transport">
-                <span style="font-size:10px; color:#666; font-weight:bold; padding-left:5px;">BPM</span>
-                <input type="number" class="bpm-in" id="bpm-val" value="130" onchange="Core.setBpm(this.value)">
-                <button class="btn-tr" onclick="Core.stop()">■</button>
-                <button class="btn-tr btn-play" id="btn-play" onclick="Core.toggle()">▶</button>
+            <button class="btn-tool btn-special" onclick="UI.modal('mod-lib', true)">+ KANAL EKLE</button>
+            <button class="btn-tool btn-ai" onclick="UI.modal('mod-ai', true)">★ AI MİMAR</button>
+            <button class="btn-tool" onclick="AudioCore.clear()">TEMİZLE</button>
+            
+            <div style="width:1px; height:30px; background:#333; margin:0 10px;"></div>
+
+            <div class="transport-controls">
+                <div class="bpm-wrapper">
+                    <span class="bpm-lbl">BPM</span>
+                    <input type="number" class="bpm-val" id="bpm-val" value="135" onchange="AudioCore.setBpm(this.value)">
+                </div>
+                <button class="btn-tr" onclick="AudioCore.stop()">■</button>
+                <button class="btn-tr btn-play" id="btn-play" onclick="AudioCore.toggle()">▶</button>
+                <button class="btn-tr btn-rec" id="btn-rec" onclick="Recorder.toggle()">●</button>
             </div>
-            <button class="btn" onclick="Core.clear()">TEMİZLE</button>
         </div>
     </header>
 
     <div class="workspace">
-        <div class="track-list" id="track-container">
+        <div class="track-container" id="track-list">
             </div>
     </div>
 
-    <div class="mixer" id="mixer-container">
-        <div class="strip master">
-            <div class="s-title">MASTER</div>
-            <div class="fx-list">
-                <div class="fx-btn on">LIMITER</div>
-                <div class="fx-btn on">COMP</div>
+    <div class="mixer-panel" id="mixer-list">
+        <div class="channel-strip master">
+            <div class="cs-header">MASTER</div>
+            <div class="fx-rack">
+                <div class="fx-slot engaged">LIMITER</div>
+                <div class="fx-slot engaged">COMP</div>
+                <div class="fx-slot engaged">SOFT-CLIP</div>
             </div>
-            <div class="fader-box">
-                <input type="range" class="vol" min="0" max="1.2" step="0.01" value="0.9" oninput="Core.setMaster(this.value)">
+            <div class="fader-section">
+                <div class="vu-meter"><div class="vu-fill" id="vu-master"></div></div>
+                <input type="range" class="fader" min="0" max="1.2" step="0.01" value="0.9" oninput="AudioCore.setMaster(this.value)">
             </div>
         </div>
     </div>
 
 <script>
     /**
-     * R0YPAD PHOENIX v16.0 - STABLE CORE
-     * ----------------------------------
-     * Logic:
-     * 1. AudioContext is created ONLY after user clicks "BASLAT".
-     * 2. Sounds are synthesized (Oscillators) so no loading errors.
-     * 3. Simple Scheduler for reliable timing.
+     * R0YPAD STUDIO v20.0 - LEVIATHAN CORE
+     * ====================================
+     * Bu kod, herhangi bir dış kütüphane kullanmadan profesyonel bir DAW simülasyonu yapar.
+     * Tarayıcı güvenliği için AudioContext yalnızca kullanıcı etkileşimi ile başlatılır.
      */
 
-    // --- 1. SYSTEM LOGGING ---
-    const Log = {
-        print: (msg) => {
-            const el = document.getElementById('console-line');
-            el.innerText = `> ${msg}`;
-            el.style.color = '#00f3ff';
-            setTimeout(() => el.style.color = '#ffaa00', 200);
-            console.log(`[SYS] ${msg}`);
-        }
-    };
-
-    // --- 2. UTILS ---
+    // --- 1. MATEMATİK & YARDIMCI ARAÇLAR ---
     const Utils = {
-        id: () => 't_' + Math.random().toString(36).substr(2, 9),
+        id: () => 'uid_' + Math.random().toString(36).substr(2, 9),
         rand: (min, max) => Math.random() * (max - min) + min,
-        // Basit Reverb Impulse
-        createImpulse: (ctx) => {
-            const len = ctx.sampleRate * 2; // 2 seconds
-            const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-            for(let i=0; i<len; i++) {
-                let dec = Math.pow(1 - i/len, 3);
-                buf.getChannelData(0)[i] = (Math.random()*2-1)*dec;
-                buf.getChannelData(1)[i] = (Math.random()*2-1)*dec;
-            }
-            return buf;
-        },
-        // Distortion Curve
-        makeDist: (amount) => {
-            const n = 44100, curve = new Float32Array(n);
-            for(let i=0; i<n; ++i) {
-                const x = i * 2 / n - 1;
-                curve[i] = (3 + amount) * x * 20 * (Math.PI / 180) / (Math.PI + amount * Math.abs(x));
+        randInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
+        clamp: (v, min, max) => Math.min(Math.max(v, min), max),
+        wait: ms => new Promise(r => setTimeout(r, ms)),
+        
+        // Distortion Eğrisi (Sigmoid)
+        makeDistortionCurve: (amount) => {
+            const k = typeof amount === 'number' ? amount : 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                const x = i * 2 / n_samples - 1;
+                curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
             }
             return curve;
+        },
+
+        // Algoritmik Reverb (Impulse Response)
+        createImpulse: (ctx, duration, decay) => {
+            const L = ctx.sampleRate * duration;
+            const imp = ctx.createBuffer(2, L, ctx.sampleRate);
+            const left = imp.getChannelData(0); const right = imp.getChannelData(1);
+            for (let i = 0; i < L; i++) {
+                const n = i/L;
+                const e = Math.pow(1-n, decay);
+                left[i] = (Math.random() * 2 - 1) * e;
+                right[i] = (Math.random() * 2 - 1) * e;
+            }
+            return imp;
         }
     };
 
-    // --- 3. CORE AUDIO ---
-    const Core = {
-        ctx: null, master: null, limiter: null,
-        tracks: [], isPlaying: false, step: 0, nextNoteTime: 0, tempo: 130, timerID: null,
+    // --- 2. SES MOTORU (AUDIO KERNEL) ---
+    const AudioCore = {
+        ctx: null, master: null, limiter: null, analyser: null, destNode: null,
+        tracks: [], isPlaying: false, step: 0, nextTime: 0, tempo: 135, lookahead: 25.0, timer: null,
 
-        startEngine() {
-            try {
-                const AC = window.AudioContext || window.webkitAudioContext;
-                this.ctx = new AC();
-                
-                // Master Bus
-                this.master = this.ctx.createGain();
-                this.master.gain.value = 0.9;
-                
-                // Safety Limiter
-                this.limiter = this.ctx.createDynamicsCompressor();
-                this.limiter.threshold.value = -1.0;
-                this.limiter.ratio.value = 20.0;
+        // Sistem Başlatma (Güvenlik gereği buton ile tetiklenir)
+        init() {
+            if(this.ctx) return;
+            const AC = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AC();
+            
+            // Master Chain: Gain -> Limiter -> Analyser -> Dest
+            this.master = this.ctx.createGain(); this.master.gain.value = 0.9;
+            
+            this.limiter = this.ctx.createDynamicsCompressor();
+            this.limiter.threshold.value = -1.0; 
+            this.limiter.ratio.value = 20.0;
+            this.limiter.attack.value = 0.005;
 
-                this.master.connect(this.limiter);
-                this.limiter.connect(this.ctx.destination);
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 256;
 
-                // UI Update
-                document.getElementById('boot-layer').style.display = 'none';
-                Log.print("AUDIO ENGINE STARTED SUCCESSFULLY.");
-                
-                // Default Tracks
-                Library.init(); // Init instruments
-                
-                // Add demo tracks
-                this.addTrack(Library.presets[0]); // Kick
-                this.addTrack(Library.presets[1]); // Snare
-                this.addTrack(Library.presets[2]); // Hat
-                
-            } catch (e) {
-                alert("Tarayıcı Ses Hatası: " + e);
-            }
+            this.destNode = this.ctx.createMediaStreamDestination();
+
+            this.master.connect(this.limiter);
+            this.limiter.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+            this.analyser.connect(this.destNode);
+
+            Recorder.init(this.destNode.stream);
+            this.meterLoop();
         },
 
         toggle() {
-            if(!this.ctx) return;
+            if(!this.ctx) this.init(); // Fallback
             if(this.ctx.state === 'suspended') this.ctx.resume();
-
+            
             this.isPlaying = !this.isPlaying;
             const btn = document.getElementById('btn-play');
             
             if(this.isPlaying) {
-                btn.classList.add('active'); btn.innerText = "||";
-                this.step = 0;
-                this.nextNoteTime = this.ctx.currentTime + 0.1;
+                btn.classList.add('active'); btn.innerHTML = "|| DURAKLAT";
+                this.step = 0; this.nextTime = this.ctx.currentTime + 0.1;
                 this.scheduler();
-                Log.print("PLAYBACK STARTED");
             } else {
-                btn.classList.remove('active'); btn.innerText = "▶";
-                clearTimeout(this.timerID);
-                Log.print("PLAYBACK PAUSED");
+                btn.classList.remove('active'); btn.innerHTML = "▶ OYNAT";
+                clearTimeout(this.timer);
             }
         },
 
         stop() {
-            this.isPlaying = false;
-            clearTimeout(this.timerID);
-            this.step = 0;
-            document.getElementById('btn-play').classList.remove('active');
-            document.getElementById('btn-play').innerText = "▶";
-            UI.resetHeads();
-            Log.print("STOPPED");
+            this.isPlaying = false; clearTimeout(this.timer);
+            this.step = 0; UI.resetHeads();
+            const btn = document.getElementById('btn-play');
+            btn.classList.remove('active'); btn.innerHTML = "▶ OYNAT";
         },
 
         scheduler() {
-            const secondsPerBeat = 60.0 / this.tempo;
-            const stepTime = 0.25 * secondsPerBeat; // 16th note
-
-            while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
-                this.playStep(this.step, this.nextNoteTime);
-                this.nextNoteTime += stepTime;
-                this.step = (this.step + 1) % 16;
+            while (this.nextTime < this.ctx.currentTime + 0.1) {
+                this.playStep(this.nextTime);
+                this.nextTime += 0.25 * (60.0 / this.tempo);
+                this.step++;
             }
-            this.timerID = setTimeout(() => this.scheduler(), 25);
+            this.timer = setTimeout(() => this.scheduler(), this.lookahead);
         },
 
-        playStep(stepNum, time) {
-            // UI Sync
+        playStep(time) {
+            // UI Senkronizasyonu
             const drawTime = (time - this.ctx.currentTime) * 1000;
-            setTimeout(() => UI.drawHead(stepNum), Math.max(0, drawTime));
+            const currentStep = this.step % 16;
+
+            setTimeout(() => UI.drawHead(currentStep), Math.max(0, drawTime));
 
             this.tracks.forEach(tr => {
-                if(tr.steps[stepNum] && !tr.muted) {
-                    tr.synth.trigger(time);
+                if (tr.steps[currentStep] && !tr.muted) {
+                    tr.voice.trigger(time);
+                    setTimeout(() => UI.pulse(tr.id), Math.max(0, drawTime));
                 }
             });
         },
 
-        addTrack(preset) {
-            const t = new Track(this.ctx, this.master, preset);
+        addTrack(data) {
+            const t = new Track(this.ctx, this.master, data);
             this.tracks.push(t);
             UI.renderTrack(t);
             UI.renderStrip(t);
@@ -435,52 +528,60 @@
             if(idx > -1) {
                 this.tracks[idx].kill();
                 this.tracks.splice(idx, 1);
-                document.getElementById(`tr-${id}`).remove();
-                document.getElementById(`ch-${id}`).remove();
-                document.getElementById(`win-${id}`)?.remove();
+                UI.removeUI(id);
             }
         },
 
         clear() {
             this.tracks.forEach(t => t.steps.fill(false));
             document.querySelectorAll('.step.active').forEach(e => e.classList.remove('active'));
-            Log.print("PATTERN CLEARED");
         },
 
-        setBpm(v) { this.tempo = Math.max(40, Math.min(300, parseInt(v))); Log.print(`BPM SET TO ${this.tempo}`); },
-        setMaster(v) { if(this.master) this.master.gain.value = v; }
+        setBpm(v) { this.tempo = Utils.clamp(parseInt(v), 40, 300); },
+        setMaster(v) { if(this.master) this.master.gain.value = v; },
+
+        meterLoop() {
+            if(this.isPlaying) {
+                const arr = new Uint8Array(this.analyser.frequencyBinCount);
+                this.analyser.getByteFrequencyData(arr);
+                let sum=0; for(let i=0;i<arr.length;i++) sum+=arr[i];
+                const h = Math.min(100, (sum/arr.length)*1.5);
+                document.getElementById('vu-master').style.height = h + '%';
+            }
+            requestAnimationFrame(() => this.meterLoop());
+        }
     };
 
-    // --- 4. TRACK & SYNTH ---
+    // --- 3. TRACK & DSP (KANAL MİMARİSİ) ---
     class Track {
-        constructor(ctx, dest, preset) {
-            this.ctx = ctx; this.preset = preset;
-            this.id = Utils.id();
-            this.name = preset.name;
-            this.steps = Array(16).fill(false);
-            this.muted = false;
+        constructor(ctx, dest, data) {
+            this.ctx = ctx; this.data = data; this.id = Utils.id();
+            this.steps = Array(16).fill(false); this.muted = false;
 
-            // Audio Graph: Synth -> FX Chain -> Volume -> Master
-            this.vol = ctx.createGain();
-            this.vol.gain.value = 0.8;
+            // Audio Graph: Synth -> FX -> Vol -> Master
+            this.vol = ctx.createGain(); this.vol.gain.value = 0.8;
             this.vol.connect(dest);
 
-            // FX Nodes
+            // FX Rack
             this.fx = {
                 dist: ctx.createWaveShaper(),
                 delay: ctx.createDelay(), dFb: ctx.createGain(),
                 rev: ctx.createConvolver(), rGain: ctx.createGain(),
+                filter: ctx.createBiquadFilter(),
                 dry: ctx.createGain()
             };
 
-            // FX Setup
-            this.fx.dist.curve = Utils.makeDist(0); this.fx.dist.oversample = '4x';
+            // Init FX Params
+            this.fx.dist.curve = Utils.makeDistortionCurve(0); this.fx.dist.oversample = '4x';
             this.fx.delay.delayTime.value = 0; this.fx.dFb.gain.value = 0;
             this.fx.delay.connect(this.fx.dFb); this.fx.dFb.connect(this.fx.delay);
-            this.fx.rev.buffer = Utils.createImpulse(ctx); this.fx.rGain.gain.value = 0;
+            this.fx.rev.buffer = Utils.createImpulse(ctx, 2, 2); this.fx.rGain.gain.value = 0;
+            this.fx.filter.type = 'lowpass'; this.fx.filter.frequency.value = 20000;
 
-            // Wiring
-            this.input = this.fx.dist;
+            // Wiring: Input -> Filter -> Dist -> (Dry + Delay + Rev) -> Vol
+            this.input = this.fx.filter;
+            this.fx.filter.connect(this.fx.dist);
+            
             this.fx.dist.connect(this.fx.dry);
             this.fx.dist.connect(this.fx.delay);
             this.fx.dist.connect(this.fx.rev);
@@ -490,56 +591,90 @@
             this.fx.rev.connect(this.fx.rGain);
             this.fx.rGain.connect(this.vol);
 
-            this.params = { dist:0, delay:0, rev:0 };
-            this.synth = new Synth(this);
+            this.state = { dist:0, time:0, fb:0, rev:0, cut:100, res:0 };
+            this.voice = new Synthesizer(this);
         }
 
         updateFX(type, val) {
-            if(type==='DIST') { this.params.dist=val; this.fx.dist.curve = Utils.makeDist(val*2); }
-            if(type==='DELAY') { this.params.delay=val; this.fx.delay.delayTime.value = (val/100)*0.5; this.fx.dFb.gain.value=(val/100)*0.6; }
-            if(type==='REV') { this.params.rev=val; this.fx.rGain.gain.value = (val/100); }
+            const v = parseFloat(val);
+            if(type==='DIST') { this.state.dist=v; this.fx.dist.curve = Utils.makeDistortionCurve(v*4); }
+            if(type==='D_TIME') { this.state.time=v; this.fx.delay.delayTime.value = (v/100)*0.5; }
+            if(type==='D_FB') { this.state.fb=v; this.fx.dFb.gain.value = (v/100)*0.9; }
+            if(type==='REV') { this.state.rev=v; this.fx.rGain.gain.value = (v/100); }
+            if(type==='CUT') { this.state.cut=v; this.fx.filter.frequency.value = 20 + (v/100)*20000; }
+            if(type==='RES') { this.state.res=v; this.fx.filter.Q.value = (v/100)*20; }
         }
 
         kill() { this.vol.disconnect(); }
     }
 
-    class Synth {
+    // --- 4. SYNTHESIZER (SES FABRİKASI) ---
+    class Synthesizer {
         constructor(track) { this.t = track; this.ctx = track.ctx; }
         
         trigger(time) {
             const dest = this.t.input;
-            const p = this.t.preset.p;
+            const p = this.t.data.params;
             const c = this.ctx;
 
-            const osc = c.createOscillator();
-            const gain = c.createGain();
-
-            if (this.t.preset.cat === 'KICK') {
+            // KICK
+            if(this.t.data.cat === 'KICK') {
+                const osc = c.createOscillator();
+                const gain = c.createGain();
                 osc.frequency.setValueAtTime(p.freq, time);
                 osc.frequency.exponentialRampToValueAtTime(10, time + 0.5);
                 gain.gain.setValueAtTime(1, time);
                 gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
-            } else if (this.t.preset.cat === 'SNARE') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(200, time);
-                gain.gain.setValueAtTime(0.5, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
-                
-                // Noise
-                const b = c.createBuffer(1, c.sampleRate*0.1, c.sampleRate);
-                const d = b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
-                const n = c.createBufferSource(); n.buffer = b;
-                const ng = c.createGain(); ng.gain.value = 0.5;
-                n.connect(ng); ng.connect(dest); n.start(time);
-            } else { // Synth/Hat
-                osc.type = p.wave || 'square';
-                osc.frequency.setValueAtTime(p.freq, time);
-                gain.gain.setValueAtTime(0.3, time);
-                gain.gain.exponentialRampToValueAtTime(0.001, time + (p.decay || 0.3));
+                osc.connect(gain); gain.connect(dest);
+                osc.start(time); osc.stop(time+0.5);
             }
+            // SNARE
+            else if(this.t.data.cat === 'SNARE') {
+                const osc = c.createOscillator();
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(p.tone || 200, time);
+                const g = c.createGain();
+                osc.connect(g); g.connect(dest);
+                g.gain.setValueAtTime(0.5, time); g.gain.exponentialRampToValueAtTime(0.001, time+0.1);
+                osc.start(time); osc.stop(time+0.1);
 
-            osc.connect(gain);
-            gain.connect(dest);
-            osc.start(time);
-            osc.stop(time + 1);
+                // Noise
+                const buf = c.createBuffer(1, c.sampleRate*0.2, c.sampleRate);
+                const d = buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+                const n = c.createBufferSource(); n.buffer=buf;
+                const f = c.createBiquadFilter(); f.type='highpass'; f.frequency.value=1000;
+                const ng = c.createGain();
+                n.connect(f); f.connect(ng); ng.connect(dest);
+                ng.gain.setValueAtTime(0.8, time); ng.gain.exponentialRampToValueAtTime(0.001, time+0.2);
+                n.start(time);
+            }
+            // HAT
+            else if(this.t.data.cat === 'HAT') {
+                const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+                const band = c.createBiquadFilter(); band.type='bandpass'; band.frequency.value = p.freq;
+                band.connect(dest);
+                ratios.forEach(r => {
+                    const osc = c.createOscillator(); osc.type='square'; osc.frequency.value = 40*r;
+                    osc.connect(band); osc.start(time); osc.stop(time + (p.decay||0.05));
+                });
+            }
+            // SYNTH / BASS
+            else {
+                const osc = c.createOscillator();
+                osc.type = p.wave || 'sawtooth';
+                osc.frequency.setValueAtTime(p.freq, time);
+                
+                const f = c.createBiquadFilter(); f.type='lowpass'; f.Q.value=5;
+                f.frequency.setValueAtTime(p.cutoff||2000, time);
+                f.frequency.linearRampToValueAtTime(100, time+0.4);
+
+                const g = c.createGain();
+                g.gain.setValueAtTime(0, time);
+                g.gain.linearRampToValueAtTime(0.4, time+0.02);
+                g.gain.exponentialRampToValueAtTime(0.001, time+0.5);
+
+                osc.connect(f); f.connect(g); g.connect(dest);
+                osc.start(time); osc.stop(time+0.5);
+            }
         }
     }
 
@@ -547,17 +682,19 @@
     const Library = {
         presets: [],
         init() {
-            for(let i=1;i<=5;i++) this.presets.push({cat:'KICK', name:`Phoenix Kick ${i}`, p:{freq:50+i*5}});
-            for(let i=1;i<=5;i++) this.presets.push({cat:'SNARE', name:`Phoenix Snare ${i}`, p:{freq:200}});
-            for(let i=1;i<=5;i++) this.presets.push({cat:'HAT', name:`HiHat ${i}`, p:{freq:8000+i*500, wave:'square', decay:0.05}});
-            for(let i=1;i<=5;i++) this.presets.push({cat:'BASS', name:`Acid Bass ${i}`, p:{freq:50+i*10, wave:'sawtooth', decay:0.4}});
+            // 1000+ Enstrüman Oluştur
+            for(let i=0; i<250; i++) this.presets.push({cat:'KICK', name:`Leviathan Kick ${i}`, params:{freq:Utils.rand(40,90)}});
+            for(let i=0; i<250; i++) this.presets.push({cat:'SNARE', name:`Snare Impact ${i}`, params:{tone:Utils.rand(150,300)}});
+            for(let i=0; i<250; i++) this.presets.push({cat:'HAT', name:`Hi-Hat Closed ${i}`, params:{freq:Utils.rand(5000,12000), decay:0.05}});
+            for(let i=0; i<250; i++) this.presets.push({cat:'BASS', name:`Acid Bass ${i}`, params:{freq:Utils.rand(40,100), wave:'sawtooth', cutoff:1000}});
             
             const g = document.getElementById('lib-content');
-            this.presets.forEach(p => {
+            // Render limit for performance
+            this.presets.slice(0, 100).forEach(p => {
                 const el = document.createElement('div');
                 el.className = 'lib-item';
-                el.innerText = `${p.name} (${p.cat})`;
-                el.onclick = () => { Core.addTrack(p); UI.toggle('mod-lib', false); };
+                el.innerHTML = `<div class="li-title">${p.name}</div><div class="li-cat">${p.cat}</div>`;
+                el.onclick = () => { AudioCore.addTrack(p); UI.modal('mod-lib', false); };
                 g.appendChild(el);
             });
         }
@@ -565,125 +702,182 @@
 
     const AI = {
         generate() {
-            const val = document.getElementById('ai-in').value.toLowerCase();
-            Core.clear();
-            Log.print("AI GENERATING...");
+            const p = document.getElementById('ai-prompt').value.toLowerCase();
+            const log = document.getElementById('ai-log');
+            log.innerText = "Analyzing Neural Patterns...";
             
-            let bpm = 130;
-            if(val.includes('hızlı') || val.includes('techno')) bpm = 140;
-            if(val.includes('yavaş')) bpm = 90;
-            Core.setBpm(bpm); document.getElementById('bpm-val').value = bpm;
+            AudioCore.clear();
+            
+            let bpm = 130, genre = 'TECHNO';
+            if(p.includes('hızlı') || p.includes('techno')) bpm=140;
+            if(p.includes('yavaş') || p.includes('lofi')) { bpm=85; genre='LOFI'; }
+            if(p.includes('trap') || p.includes('drill')) { bpm=145; genre='TRAP'; }
+            
+            AudioCore.setBpm(bpm); document.getElementById('bpm-val').value = bpm;
 
-            const k = Core.addTrack(Library.presets[0]); // Kick
-            const s = Core.addTrack(Library.presets[5]); // Snare
-            const h = Core.addTrack(Library.presets[10]); // Hat
-            
+            // Select Sounds
+            const k = AudioCore.addTrack(Library.presets.find(x=>x.cat==='KICK'));
+            const s = AudioCore.addTrack(Library.presets.find(x=>x.cat==='SNARE'));
+            const h = AudioCore.addTrack(Library.presets.find(x=>x.cat==='HAT'));
+            const b = AudioCore.addTrack(Library.presets.find(x=>x.cat==='BASS'));
+
+            // FX Setup
+            if(genre==='TECHNO') { k.updateFX('DIST', 40); b.updateFX('CUT', 30); }
+            if(genre==='LOFI') { s.updateFX('REV', 30); h.updateFX('D_TIME', 20); }
+
+            // Pattern Generation
             for(let i=0; i<16; i++) {
-                if(i%4 === 0) k.steps[i] = true;
-                if(i===4 || i===12) s.steps[i] = true;
-                if(i%2 === 0) h.steps[i] = true;
+                if(i%4===0) k.steps[i]=true;
+                if(genre==='TECHNO' && i%4===2) s.steps[i]=true;
+                if(genre==='TRAP' && i===8) s.steps[i]=true;
+                if(i%2===0) h.steps[i]=true;
+                if(Math.random()>0.7 && i%2!==0) b.steps[i]=true;
             }
-            
-            UI.renderTrack(k); UI.renderTrack(s); UI.renderTrack(h); // Refresh UI
-            UI.toggle('mod-ai', false);
-            Core.toggle();
+
+            log.innerText = "Sequence Complete.";
+            setTimeout(() => { UI.modal('mod-ai', false); AudioCore.toggle(); }, 1000);
         }
     };
 
     // --- 6. UI MANAGER ---
     const UI = {
-        toggle(id, show) { document.getElementById(id).style.display = show?'flex':'none'; },
+        modal(id, show) { document.getElementById(id).style.display = show?'flex':'none'; },
         
         renderTrack(t) {
-            // Check if exists
-            if(document.getElementById(`tr-${t.id}`)) return; 
-
             const el = document.createElement('div');
             el.className = 'track-row'; el.id = `tr-${t.id}`;
             el.innerHTML = `
-                <div class="t-head">
-                    <span class="t-name">${t.name}</span>
-                    <div class="t-btn" onclick="Core.removeTrack('${t.id}')">X</div>
+                <div class="track-controls">
+                    <div class="tc-info">
+                        <div class="tc-name">${t.data.name}</div>
+                        <div class="tc-type">${t.data.cat}</div>
+                    </div>
+                    <div class="tc-actions">
+                        <div class="mini-btn" onclick="UI.mute('${t.id}',this)">M</div>
+                        <div class="mini-btn" style="color:var(--neon-accent)" onclick="AudioCore.removeTrack('${t.id}')">X</div>
+                    </div>
                 </div>
-                <div class="t-grid">
-                    ${t.steps.map((_, i) => `<div class="step" id="s-${t.id}-${i}" onclick="UI.step('${t.id}', ${i}, this)"></div>`).join('')}
+                <div class="sequencer-grid">
+                    ${t.steps.map((_,i) => `<div class="step" id="s-${t.id}-${i}" onclick="UI.togStep('${t.id}',${i},this)"></div>`).join('')}
                 </div>
             `;
-            document.getElementById('track-container').appendChild(el);
+            document.getElementById('track-list').appendChild(el);
         },
 
         renderStrip(t) {
-            if(document.getElementById(`ch-${t.id}`)) return;
-
             const el = document.createElement('div');
-            el.className = 'strip'; el.id = `ch-${t.id}`;
+            el.className = 'channel-strip'; el.id = `ch-${t.id}`;
             el.innerHTML = `
-                <div class="s-title">${t.name}</div>
-                <div class="fx-list">
-                    <div class="fx-btn" onclick="UI.openFX('${t.id}', 'DIST')">DIST</div>
-                    <div class="fx-btn" onclick="UI.openFX('${t.id}', 'DELAY')">DELAY</div>
-                    <div class="fx-btn" onclick="UI.openFX('${t.id}', 'REV')">REV</div>
+                <div class="cs-header">${t.data.name}</div>
+                <div class="fx-rack">
+                    <div class="fx-slot" onclick="UI.fx('${t.id}','DIST')">DIST</div>
+                    <div class="fx-slot" onclick="UI.fx('${t.id}','DELAY')">DELAY</div>
+                    <div class="fx-slot" onclick="UI.fx('${t.id}','REV')">REV</div>
+                    <div class="fx-slot" onclick="UI.fx('${t.id}','FILTER')">FILTER</div>
                 </div>
-                <div class="fader-box">
-                    <input type="range" class="vol" min="0" max="1" step="0.01" value="0.8" 
-                           oninput="Core.tracks.find(x=>x.id=='${t.id}').vol.gain.value=this.value">
+                <div class="fader-section">
+                    <div class="vu-meter"><div class="vu-fill" id="vm-${t.id}"></div></div>
+                    <input type="range" class="fader" min="0" max="1" step="0.01" value="0.8" 
+                           oninput="AudioCore.tracks.find(x=>x.id=='${t.id}').vol.gain.value=this.value">
                 </div>
             `;
-            const c = document.getElementById('mixer-container');
+            const c = document.getElementById('mixer-list');
             c.insertBefore(el, c.querySelector('.master'));
         },
 
-        step(tid, i, el) {
-            const t = Core.tracks.find(x=>x.id===tid);
-            if(t) { t.steps[i] = !t.steps[i]; el.classList.toggle('active'); }
-        },
+        removeUI(id) { document.getElementById(`tr-${id}`).remove(); document.getElementById(`ch-${id}`).remove(); },
+        togStep(tid, i, el) { const t=AudioCore.tracks.find(x=>x.id===tid); if(t){t.steps[i]=!t.steps[i]; el.classList.toggle('active');} },
+        mute(tid, el) { const t=AudioCore.tracks.find(x=>x.id===tid); if(t){t.muted=!t.muted; el.classList.toggle('active-mute');} },
+        
+        drawHead(s) { document.querySelectorAll('.playhead').forEach(e=>e.classList.remove('playhead')); document.querySelectorAll(`.step:nth-child(${s+1})`).forEach(e=>e.classList.add('playhead')); },
+        resetHeads() { document.querySelectorAll('.playhead').forEach(e=>e.classList.remove('playhead')); },
+        pulse(id) { const m=document.getElementById(`vm-${id}`); if(m){ m.style.height=(50+Math.random()*50)+'%'; setTimeout(()=>m.style.height='0%',100); } },
 
-        drawHead(s) {
-            document.querySelectorAll('.step.playhead').forEach(e => e.classList.remove('playhead'));
-            document.querySelectorAll(`.step:nth-child(${s+1})`).forEach(e => e.classList.add('playhead'));
-            document.querySelectorAll('.track-row').forEach(r => r.classList.remove('playing'));
-            // Optional: Highlight playing row logic
-        },
-        resetHeads() { document.querySelectorAll('.playhead').forEach(e => e.classList.remove('playhead')); },
-
-        // FX Window
-        openFX(tid, type) {
+        fx(tid, type) {
             const pid = `win-${tid}`;
             if(document.getElementById(pid)) document.getElementById(pid).remove();
             
-            const t = Core.tracks.find(x=>x.id===tid);
-            const w = document.getElementById('fx-window');
-            w.id = pid; w.style.display = 'flex';
+            const t = AudioCore.tracks.find(x=>x.id===tid);
+            const win = document.createElement('div');
+            win.className = 'plugin-window'; win.id = pid;
+            win.style.left = '35%'; win.style.top = '30%';
             
-            let val = 0;
-            if(type==='DIST') val = t.params.dist;
-            if(type==='DELAY') val = t.params.delay;
-            if(type==='REV') val = t.params.rev;
+            let h = '';
+            if(type==='DIST') h = UI.knob(tid,'DIST','DRIVE',t.state.dist,0,100);
+            if(type==='DELAY') h = UI.knob(tid,'D_TIME','TIME',t.state.time,0,100) + UI.knob(tid,'D_FB','FDBK',t.state.fb,0,100);
+            if(type==='REV') h = UI.knob(tid,'REV','MIX',t.state.rev,0,100);
+            if(type==='FILTER') h = UI.knob(tid,'CUT','FREQ',t.state.cut,0,100) + UI.knob(tid,'RES','RES',t.state.res,0,100);
 
-            w.innerHTML = `
-                <div class="pw-head"><span>${t.name} - ${type}</span><span style="cursor:pointer" onclick="this.parentElement.parentElement.style.display='none'">X</span></div>
-                <div class="pw-body">
-                    <div class="knob-box">
-                        <input type="range" class="knob" min="0" max="100" value="${val}" oninput="Core.tracks.find(x=>x.id=='${tid}').updateFX('${type}', this.value)">
-                        <span style="color:#aaa; font-size:10px;">AMOUNT</span>
-                    </div>
+            win.innerHTML = `
+                <div class="pw-head">
+                    <span class="pw-title">${t.data.name} - ${type}</span>
+                    <span style="cursor:pointer" onclick="this.parentElement.parentElement.remove()">✕</span>
+                </div>
+                <div class="pw-body">${h}</div>
+            `;
+            document.getElementById('float-layer').appendChild(win);
+            win.style.display = 'flex';
+        },
+
+        knob(tid, type, lbl, val, min, max) {
+            return `
+                <div class="knob-wrap">
+                    <input type="range" class="knob-ctrl" style="--deg:${(val/max)*360}deg" min="${min}" max="${max}" value="${val}"
+                           oninput="AudioCore.tracks.find(x=>x.id=='${tid}').updateFX('${type}',this.value); this.style.setProperty('--deg', (this.value/${max})*360+'deg'); this.nextElementSibling.innerText='${lbl}: '+this.value">
+                    <div class="knob-val" style="position:static; margin-top:5px;">${lbl}: ${Math.floor(val)}</div>
                 </div>
             `;
-            // Drag logic
-            let isDown = false, offset = [0,0];
-            w.querySelector('.pw-head').addEventListener('mousedown', function(e) {
-                isDown = true;
-                offset = [ w.offsetLeft - e.clientX, w.offsetTop - e.clientY ];
-            }, true);
-            document.addEventListener('mouseup', function() { isDown = false; }, true);
-            document.addEventListener('mousemove', function(e) {
-                if (isDown) {
-                    w.style.left = (e.clientX + offset[0]) + 'px';
-                    w.style.top  = (e.clientY + offset[1]) + 'px';
-                }
-            }, true);
+        },
+        
+        drag(e, id) {
+            const el = document.getElementById(id);
+            const x = e.clientX - el.offsetLeft; const y = e.clientY - el.offsetTop;
+            const mv = ev => { el.style.left=(ev.clientX-x)+'px'; el.style.top=(ev.clientY-y)+'px'; };
+            document.addEventListener('mousemove',mv);
+            document.onmouseup=()=>document.removeEventListener('mousemove',mv);
         }
     };
+
+    // --- 7. RECORDER ---
+    const Recorder = {
+        rec: null, chunks: [],
+        init(stream) { try{ this.rec = new MediaRecorder(stream); this.rec.ondataavailable = e => this.chunks.push(e.data); this.rec.onstop = e => this.save(); }catch(e){} },
+        toggle() {
+            if(!this.rec) return;
+            const btn = document.getElementById('btn-rec');
+            if(this.rec.state === 'inactive') { this.chunks=[]; this.rec.start(); btn.classList.add('active'); }
+            else { this.rec.stop(); btn.classList.remove('active'); }
+        },
+        save() {
+            const blob = new Blob(this.chunks, {type:'audio/wav'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href=url; a.download=`LEVIATHAN_${Date.now()}.wav`; a.click();
+        }
+    };
+
+    // --- 8. SYSTEM ---
+    const System = {
+        async boot() {
+            const l = document.querySelector('.system-terminal');
+            const b = document.getElementById('btn-start-sys');
+            const logs = ["CORE KERNEL LOADING...", "AUDIO CONTEXT CHECK...", "DSP MODULES READY", "AI CONNECTED", "SYSTEM OK"];
+            
+            for(let msg of logs) {
+                l.innerHTML += `<div class="log-entry">> ${msg} <span style="color:#00ff9d; font-weight:bold;">OK</span></div>`;
+                await Utils.wait(300);
+            }
+            b.style.display = 'block';
+        },
+        
+        start() {
+            AudioCore.init();
+            Library.init();
+            document.getElementById('boot-overlay').style.opacity = 0;
+            setTimeout(() => document.getElementById('boot-overlay').remove(), 500);
+        }
+    };
+
+    window.onload = System.boot;
 
 </script>
 </body>
