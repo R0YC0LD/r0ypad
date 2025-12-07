@@ -154,31 +154,121 @@ class Cell {
     }
 
     botAI() {
-        // 1. En yakın yeme git
-        let closestFood = null;
-        let minDist = Infinity;
+        // Hedef yön değişimleri
+        let targetDx = 0;
+        let targetDy = 0;
+        
+        // Karar Ağırlıkları (Öncelik Sırası)
+        let fleeWeight = 50;  // Kaçma önceliği en yüksek
+        let huntWeight = 30;  // Avlanma önceliği orta
+        let foodWeight = 1;   // Yem yeme önceliği en düşük
 
-        // Yakın çevredeki yemleri tara
-        for (let f of foods) {
-            let d = getDist(this.x, this.y, f.x, f.y);
-            if (d < 200 && d < minDist) {
-                minDist = d;
-                closestFood = f;
+        let actionFound = false;
+
+        // 1. TEHDİT ANALİZİ (Korku Modu)
+        // Kendinden büyük (%20 daha büyük) hücrelerden kaç
+        let nearestThreat = null;
+        let minThreatDist = 300 + this.radius; // Görüş mesafesi
+
+        // Oyuncuyu kontrol et
+        player.cells.forEach(pCell => {
+            if (pCell.radius > this.radius * 1.2) { // Eğer oyuncu benden %20 büyükse
+                let d = getDist(this.x, this.y, pCell.x, pCell.y);
+                if (d < minThreatDist) {
+                    nearestThreat = pCell;
+                    minThreatDist = d;
+                }
+            }
+        });
+
+        // Diğer botları kontrol et
+        if (!nearestThreat) {
+            bots.forEach(b => {
+                if (b !== this && b.radius > this.radius * 1.2) {
+                    let d = getDist(this.x, this.y, b.x, b.y);
+                    if (d < minThreatDist) {
+                        nearestThreat = b;
+                        minThreatDist = d;
+                    }
+                }
+            });
+        }
+
+        if (nearestThreat) {
+            // Tehditten ters yöne kaçış vektörü hesapla
+            targetDx = this.x - nearestThreat.x;
+            targetDy = this.y - nearestThreat.y;
+            actionFound = true;
+        }
+
+        // 2. AVLANMA ANALİZİ (Saldırı Modu)
+        // Eğer kaçmıyorsak ve yiyebileceğimiz (%20 küçük) biri varsa kovala
+        if (!actionFound) {
+            let nearestPrey = null;
+            let minPreyDist = 250 + this.radius;
+
+            // Oyuncuyu avla
+            player.cells.forEach(pCell => {
+                if (this.radius > pCell.radius * 1.2) { // Ben oyuncudan büyüğüm
+                    let d = getDist(this.x, this.y, pCell.x, pCell.y);
+                    if (d < minPreyDist) {
+                        nearestPrey = pCell;
+                        minPreyDist = d;
+                    }
+                }
+            });
+
+            // Diğer küçük botları avla
+            if (!nearestPrey) {
+                bots.forEach(b => {
+                    if (b !== this && this.radius > b.radius * 1.2) {
+                        let d = getDist(this.x, this.y, b.x, b.y);
+                        if (d < minPreyDist) {
+                            nearestPrey = b;
+                            minPreyDist = d;
+                        }
+                    }
+                });
+            }
+
+            if (nearestPrey) {
+                targetDx = nearestPrey.x - this.x;
+                targetDy = nearestPrey.y - this.y;
+                actionFound = true;
             }
         }
 
-        if (closestFood) {
-            this.targetX = closestFood.x;
-            this.targetY = closestFood.y;
-        } else if (Math.random() < 0.02) {
-            // Rastgele dolaş
-            this.targetX = randomRange(0, MAP_WIDTH);
-            this.targetY = randomRange(0, MAP_HEIGHT);
+        // 3. BESLENME (Otlanma Modu)
+        // Tehlike veya av yoksa yeme git
+        if (!actionFound) {
+            let closestFood = null;
+            let minFoodDist = 150 + this.radius; // Yem görüş mesafesi daha kısa olabilir
+
+            for (let f of foods) {
+                let d = getDist(this.x, this.y, f.x, f.y);
+                if (d < minFoodDist) {
+                    minFoodDist = d;
+                    closestFood = f;
+                }
+            }
+
+            if (closestFood) {
+                targetDx = closestFood.x - this.x;
+                targetDy = closestFood.y - this.y;
+            } else {
+                // Etrafta hiçbir şey yoksa rastgele süzül (Perlin noise benzeri yumuşak geçiş)
+                // Mevcut hedefe doğru yavaşça devam et, ara sıra yön değiştir
+                if (Math.random() < 0.05) {
+                    this.randomTargetX = randomRange(0, MAP_WIDTH) - this.x;
+                    this.randomTargetY = randomRange(0, MAP_HEIGHT) - this.y;
+                }
+                targetDx = this.randomTargetX || 0;
+                targetDy = this.randomTargetY || 0;
+            }
         }
 
-        let dx = this.targetX - this.x;
-        let dy = this.targetY - this.y;
-        this.move(dx, dy);
+        // Hareketi Uygula
+        this.move(targetDx, targetDy);
     }
 }
 
